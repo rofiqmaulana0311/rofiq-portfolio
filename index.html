@@ -684,7 +684,12 @@ const footRise=()=>{const r=footEl.getBoundingClientRect(),k=clamp((innerHeight-
 addEventListener("scroll",()=>requestAnimationFrame(footRise),{passive:true});footRise();
 let ticking=false;
 addEventListener("scroll",()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{parallax();revealStmt();ticking=false})}},{passive:true});
-addEventListener("resize",()=>{base=null;parallax()});
+/* nama di hero memenuhi lebar layar (tetap menyatu): ukuran huruf dihitung dari lebar sebenarnya */
+const fitName=()=>{const ws=nameEl.querySelectorAll(".w");if(!ws.length)return;nameEl.style.fontSize="";
+  const fs=parseFloat(getComputedStyle(nameEl).fontSize),nat=ws[ws.length-1].getBoundingClientRect().right-ws[0].getBoundingClientRect().left,avail=nameEl.clientWidth;
+  if(nat>0)nameEl.style.fontSize=(fs*avail/nat*.995).toFixed(2)+"px"};
+fitName();document.fonts.ready.then(()=>{fitName();base=null;parallax()});
+addEventListener("resize",()=>{fitName();base=null;parallax()});
 
 /* pratinjau proyek mengikuti kursor */
 const peek=document.getElementById("peek"),tile=peek.querySelector(".tile");
