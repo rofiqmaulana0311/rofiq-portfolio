@@ -195,17 +195,17 @@ body.lock{overflow:hidden}
   .row .ini{display:none}
   .row .info .lbl{display:none}
 }
-/* ====== WORK: ROLODEX 3D ====== */
-.work{height:calc(100svh + var(--n,8) * 34svh);padding:0}
+/* ====== WORK: GALERI 3D MELENGKUNG ====== */
+.work{height:calc(100svh + var(--n,8) * 45svh);padding:0;background:#0a0a0a;color:var(--wh)}
 .wpin{position:sticky;top:0;height:100svh;overflow:hidden}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
-.wpin .work-head{position:absolute;left:max(2vw,16px);right:max(2vw,16px);top:clamp(64px,8vw,96px);margin:0;z-index:2;pointer-events:none}
-.drum{position:absolute;inset:0;list-style:none;margin:0;padding:0}
-.drum li{position:absolute;left:0;right:0;top:50%;height:0}
-.drum .row{position:absolute;left:50%;top:0;display:block;border:0;padding:0;gap:0;white-space:nowrap;font:400 clamp(40px,9vw,170px)/1 var(--cond);text-transform:uppercase;letter-spacing:-.005em;color:#a9a9a4;transform-origin:50% 50%;will-change:transform,opacity,filter;transition:color .3s;text-decoration:none}
-.drum li:last-child .row{border:0}
-.rows.drum:hover .row{color:#a9a9a4}
-.drum .row.on,.rows.drum .row.on:hover{color:var(--bk)}
+#wgl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
+/* daftar link tetap ada untuk keyboard & pembaca layar */
+.work .rows{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.work .rows .row:focus-visible{outline:2px solid #ff6a1a}
+/* tanpa WebGL: tampilkan daftar biasa */
+.work.nogl{height:auto}.work.nogl .wpin{position:static;height:auto;padding:120px max(2vw,16px)}.work.nogl #wgl{display:none}
+.work.nogl .rows{position:static;width:auto;height:auto;clip-path:none}
 /* ====== Mark Index (koleksi logo) ====== */
 .marks{position:relative;z-index:7;background:var(--wh);color:var(--bk);padding-block:clamp(40px,6vw,90px) clamp(100px,12vw,180px)}
 .mk-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
@@ -452,8 +452,9 @@ footer[data-mode] #flogoCv{touch-action:none}
   <section class="work" id="work">
    <div class="wpin pad">
     <h2 class="sr">Work</h2>
-    <!-- Rolodex: daftar proyek melingkar seperti tabung, berputar mengikuti scroll -->
-    <ul class="rows drum" id="rows"></ul>
+    <!-- Galeri 3D melengkung: cover proyek melayang di ruang gelap, kamera bergerak mengikuti scroll -->
+    <canvas id="wgl" aria-hidden="true"></canvas>
+    <ul class="rows" id="rows"></ul>
    </div>
   </section>
 
@@ -575,7 +576,7 @@ const SFX=(()=>{let ctx=null,on=false,noiseBuf=null,scr=null;
 /* ====== CURSOR custom: ikut kursor, merah di elemen interaktif, berputar pelan saat diam ====== */
 if(matchMedia("(hover:hover) and (pointer:fine)").matches){document.documentElement.classList.add("cc");
  const cu=document.getElementById("cur"),ftEl=document.getElementById("contact"),odEl=document.getElementById("odim");let x=-100,y=-100,on=false,rot=0,spin=0,lastMove=0,fm="",mvT=0;
- const SEL="a,button,.row,.mk,.portal,#odim .it,input,label";
+ const SEL="a,button,.row,.mk,.portal,#odim .it,input,label,#wgl[data-hot]";
  addEventListener("pointermove",e=>{x=e.clientX;y=e.clientY;lastMove=performance.now();cu.classList.add("show");
    const o=!!(e.target.closest&&e.target.closest(SEL));if(o!==on){on=o;cu.classList.toggle("on",o)}
    /* mode footer: batang kapur / penghapus */
@@ -738,30 +739,96 @@ const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
   requestAnimationFrame(loop)};
 loop();
 
-/* ====== ROLODEX: nama proyek di permukaan tabung; scroll memutar tabung, kecepatan scroll membuatnya miring ====== */
-const workEl=document.getElementById("work"),drumRows=[...rows.querySelectorAll(".row")],DN=drumRows.length;
+/* ====== WORK: GALERI 3D MELENGKUNG (WebGL) ======
+   Cover proyek melayang di ruang gelap pada beberapa kedalaman. Scroll menggerakkan kamera menyamping;
+   dunia dibengkokkan mengelilingi kamera sehingga cover di tepi melengkung seperti di dalam tabung.
+   Makin cepat scroll, makin kuat lengkungannya. Klik cover untuk membuka studi kasus.
+   Cover memakai gambar pertama proyek (assets/work/pXX/01.jpg); kalau belum ada, dibuat otomatis dari warna brand. */
+const workEl=document.getElementById("work"),DN=projects.length;
 workEl.style.setProperty("--n",Math.max(1,DN-1));
-let dPos=0,dSkew=0,dLastY=scrollY,dActive=-1,dOn=false;
-const drumTarget=()=>{const run=workEl.offsetHeight-innerHeight;return clamp(-workEl.getBoundingClientRect().top/Math.max(1,run))*(DN-1)};
-const drumY=i=>workEl.getBoundingClientRect().top+scrollY+(workEl.offsetHeight-innerHeight)*(DN>1?i/(DN-1):0);
-const drumFrame=()=>{const tgt=drumTarget();dPos+=(tgt-dPos)*(reduce?1:.14);
-  const v=scrollY-dLastY;dLastY=scrollY;dSkew+=((reduce?0:Math.max(-14,Math.min(14,v*.35)))-dSkew)*.15;
-  const H=innerHeight,R=H*(innerWidth>700?.3:.34),step=.5,blur=!reduce&&matchMedia("(hover:hover)").matches;
-  drumRows.forEach((el,i)=>{const a=(i-dPos)*step;
-    if(Math.abs(a)>1.62){el.style.visibility="hidden";return}el.style.visibility="";
-    const c=Math.cos(a);
-    el.style.transform=`translate(-50%,-50%) translateY(${(Math.sin(a)*R).toFixed(1)}px) skewX(${(dSkew-a*7).toFixed(2)}deg) scale(${(.86+.14*c).toFixed(3)},${Math.max(.03,c).toFixed(3)})`;
-    el.style.opacity=Math.max(0,1-Math.abs(a)/1.62).toFixed(3);
-    el.style.filter=blur&&Math.abs(a)>.12?`blur(${(Math.abs(a)*4).toFixed(1)}px)`:"none"});
-  const act=Math.round(clamp(dPos/(DN-1||1))*(DN-1));
-  if(act!==dActive){dActive=act;drumRows.forEach((el,i)=>el.classList.toggle("on",i===act));
-    if(dOn&&!reduce)SFX.tick()}
-  if(dOn||Math.abs(tgt-dPos)>.001)requestAnimationFrame(drumFrame)};
-new IntersectionObserver(es=>{const was=dOn;dOn=es[0].isIntersecting;if(dOn&&!was)requestAnimationFrame(drumFrame)}).observe(workEl);
-drumFrame();
-/* klik nama yang bukan di tengah: putar dulu ke tengah; nama di tengah membuka studi kasus */
-rows.addEventListener("click",e=>{const r=e.target.closest(".row");if(!r)return;const i=+r.dataset.i;
-  if(i!==dActive){e.preventDefault();const y=drumY(i);if(lenis)lenis.scrollTo(y,{duration:1.1});else scrollTo({top:y,behavior:"smooth"})}});
+const workY=i=>workEl.getBoundingClientRect().top+scrollY+(workEl.offsetHeight-innerHeight)*(DN>1?i/(DN-1):0);
+{
+const cv=document.getElementById("wgl"),gl=cv.getContext("webgl",{antialias:true,alpha:false,premultipliedAlpha:false});
+if(!gl){workEl.classList.add("nogl")}else{
+ const sh=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(s));return s};
+ const prog=gl.createProgram();
+ gl.attachShader(prog,sh(gl.VERTEX_SHADER,`
+  attribute vec2 aUV;uniform vec3 uC;uniform vec2 uS;uniform float uB,uF,uA;varying vec2 vUV;varying float vEdge;
+  void main(){vec3 p=uC+vec3((aUV.x-.5)*uS.x,(aUV.y-.5)*uS.y,0.);float r=-p.z;float R=r/uB;float th=p.x/R;
+   vec3 q=vec3(R*sin(th),p.y,-(r-R*(1.-cos(th))));float n=.1,f=80.;
+   gl_Position=vec4(uF*q.x/uA,uF*q.y,q.z*(f+n)/(n-f)+2.*f*n/(n-f),-q.z);vUV=vec2(aUV.x,1.-aUV.y);vEdge=abs(th);}`));
+ gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,`
+  precision mediump float;uniform sampler2D uT;uniform float uDim,uRad;uniform vec2 uAsp;varying vec2 vUV;varying float vEdge;
+  void main(){vec2 d=abs(vUV-.5)*uAsp-(uAsp*.5-uRad);float a=length(max(d,0.))-uRad;if(a>0.)discard;
+   vec3 c=texture2D(uT,vUV).rgb;float fog=1.-smoothstep(.55,1.35,vEdge);gl_FragColor=vec4(c*uDim*fog,1.);}`));
+ gl.linkProgram(prog);gl.useProgram(prog);
+ /* bidang dengan banyak potongan horizontal supaya bisa melengkung halus */
+ const SX=40,SY=6,V=[],I=[];for(let y=0;y<=SY;y++)for(let x=0;x<=SX;x++)V.push(x/SX,y/SY);
+ for(let y=0;y<SY;y++)for(let x=0;x<SX;x++){const a=y*(SX+1)+x,b=a+1,c=a+SX+1,d=c+1;I.push(a,b,c,b,d,c)}
+ const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(V),gl.STATIC_DRAW);
+ const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(I),gl.STATIC_DRAW);
+ const aUV=gl.getAttribLocation(prog,"aUV");gl.enableVertexAttribArray(aUV);gl.vertexAttribPointer(aUV,2,gl.FLOAT,false,0,0);
+ const U={};for(const n of ["uC","uS","uB","uF","uA","uT","uDim","uRad","uAsp"])U[n]=gl.getUniformLocation(prog,n);
+ gl.enable(gl.DEPTH_TEST);gl.clearColor(.039,.039,.039,1);
+ let W=0,H=0,dpr=1,F=1,A=1,need=true,on=false,camX=0,bend=.8,lastY=scrollY,hot=-1,mx=-9,my=-9,picks=[];
+ /* tekstur cover: gambar asli bila ada, kalau tidak dibuat dari warna brand */
+ const TW=1024,TH=768;
+ const ART={0:(a,b)=>`<rect width="160" height="120" fill="${a}"/><g stroke="${b}" stroke-width=".8" opacity=".3">${[...Array(13)].map((_,i)=>`<path d="M${i*13.3} 0V120M0 ${i*10}H160"/>`).join("")}</g><path d="M55 92V28L105 92V28" fill="none" stroke="${b}" stroke-width="12"/>`,
+  1:(a,b)=>`<rect width="160" height="120" fill="${a}"/><path d="M34 56c15-22 31-22 46 0s31 22 46 0" fill="none" stroke="#f2f2ee" stroke-width="10" stroke-linecap="round"/><path d="M34 78c15-15 31-15 46 0s31 15 46 0" fill="none" stroke="${b}" stroke-width="8" stroke-linecap="round"/>`,
+  2:(a,b)=>`<rect width="160" height="120" fill="${a}"/><circle cx="80" cy="56" r="30" fill="none" stroke="${b}" stroke-width="2"/><circle cx="80" cy="56" r="7" fill="${b}"/><rect x="40" y="100" width="80" height="2" fill="${b}"/>`,
+  3:(a,b)=>`<rect width="160" height="120" fill="${b}"/><path d="M14 64H54L66 30L80 96L92 46L102 64H146" fill="none" stroke="${a}" stroke-width="7" stroke-linejoin="round"/><circle cx="128" cy="24" r="9" fill="${a}"/>`,
+  4:(a,b)=>`<rect width="160" height="120" fill="${a}"/><path d="M44 26H116M44 26V96M80 26V96" stroke="${b}" stroke-width="15"/><rect x="92" y="70" width="24" height="26" fill="#ff3b1f"/>`,
+  5:(a,b)=>`<rect width="160" height="120" fill="${a}"/><path d="M50 108V58a30 30 0 0 1 60 0V108" fill="${b}"/><path d="M65 108V66a15 15 0 0 1 30 0V108" fill="${a}"/>`,
+  6:(a,b)=>`<rect width="160" height="120" fill="${a}"/><rect x="46" y="72" width="68" height="18" fill="${b}"/><rect x="56" y="50" width="48" height="18" fill="${b}" opacity=".7"/><rect x="66" y="28" width="28" height="18" fill="${b}" opacity=".45"/>`,
+  7:(a,b)=>`<rect width="160" height="120" fill="${a}"/>${[...Array(7)].map((_,i)=>`<path d="M${30+i*15} 108C${30+i*15} 80 ${38+i*15} 58 ${36+i*15} 38" stroke="${b}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join("")}<circle cx="128" cy="24" r="12" fill="${b}"/>`};
+ const texs=projects.map((p,i)=>{const t=gl.createTexture(),c=document.createElement("canvas");c.width=TW;c.height=TH;const g=c.getContext("2d");
+   const up=()=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);need=true};
+   g.fillStyle=p.c[0];g.fillRect(0,0,TW,TH);up();
+   const fallback=()=>{const im=new Image();im.onload=()=>{g.drawImage(im,0,0,TW,TH);up()};
+     im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 160 120">${ART[i%8](p.c[0],p.c[1])}</svg>`)};
+   const s=p.shots&&p.shots.find(x=>!x.video);
+   if(s){const im=new Image();im.onload=()=>{const k=Math.max(TW/im.width,TH/im.height),w=im.width*k,h=im.height*k;g.drawImage(im,(TW-w)/2,(TH-h)/2,w,h);up()};im.onerror=fallback;im.src=s.src}else fallback();
+   return t});
+ /* susunan: 3 baris pada kedalaman berbeda + lapisan jauh; tiap baris berulang tanpa ujung */
+ let cards=[],L=1,SP=1,CW=1,CH=1;
+ const build=()=>{const port=innerWidth<innerHeight;CW=port?3:3.4;CH=CW*.75;SP=CW*(port?1.3:1.75);L=DN*SP;cards=[];
+   const rnd=k=>{const x=Math.sin(k*91.7+3.1)*43758.5;return x-Math.floor(x)};
+   /* baris utama paling dekat; baris atas & bawah lebih jauh & lebih gelap; lapisan paling jauh hampir hilang di gelap */
+   for(let i=0;i<DN;i++){
+     cards.push({p:i,x:i*SP,y:(rnd(i+20)-.5)*CH*.25,z:-6.4,s:1,main:1});
+     cards.push({p:(i+3)%DN,x:i*SP+SP*.55+(rnd(i)-.5)*SP*.3,y:CH*(port?1.45:1.3)+rnd(i+9)*CH*.2,z:-9.5-rnd(i+4)*2.5,s:.92});
+     cards.push({p:(i+5)%DN,x:i*SP+SP*.35+(rnd(i+2)-.5)*SP*.3,y:-CH*(port?1.45:1.3)-rnd(i+7)*CH*.2,z:-9-rnd(i+5)*2.5,s:.92});
+     if(i%2===0)cards.push({p:(i+6)%DN,x:i*SP+SP*.8,y:(rnd(i+11)-.5)*CH*2.6,z:-17-rnd(i+3)*3,s:.85})}};
+ const size=()=>{dpr=Math.min(innerWidth<700?1.5:2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr|0;cv.height=H*dpr|0;gl.viewport(0,0,cv.width,cv.height);
+   A=W/H;F=1/Math.tan((A<1?62:46)*Math.PI/360);build();need=true};
+ new ResizeObserver(size).observe(cv);size();
+ const wrap=x=>{x=((x-camX)%L+L*1.5)%L-L*.5;return x};
+ const project=(x,y,z,B)=>{const r=-z,R=r/B,th=x/R,qx=R*Math.sin(th),qz=-(r-R*(1-Math.cos(th)));return [F*qx/A/(-qz),F*y/(-qz),th]};
+ const frame=()=>{const run=workEl.offsetHeight-innerHeight,p=clamp(-workEl.getBoundingClientRect().top/Math.max(1,run));
+   const tgt=p*(DN-1)*SP,v=scrollY-lastY;lastY=scrollY;const pc=camX;camX+=(tgt-camX)*(reduce?1:.09);
+   const sp=Math.abs(camX-pc);bend+=((reduce?.8:.8+Math.min(.55,sp*1.8))-bend)*.08;
+   if(Math.abs(camX-pc)>1e-5)need=true;
+   /* cari cover di bawah kursor */
+   picks=[];let best=-1,bz=-1e9;
+   const cy=Math.sin(camX*.25)*.25;
+   cards.forEach((c,k)=>{const x=wrap(c.x),y=c.y-cy,z=c.z,w=CW*c.s/2,h=CH*c.s/2;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,ok=true;
+     for(const [u,vv] of [[-w,-h],[0,-h],[w,-h],[-w,h],[0,h],[w,h]]){const q=project(x+u,y+vv,z,bend);if(Math.abs(q[2])>1.5)ok=false;x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1])}
+     c.vx=x;c.vy=y;if(ok&&mx>=x0&&mx<=x1&&my>=y0&&my<=y1&&z>bz){bz=z;best=k}});
+   if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick();need=true}
+   if(need){need=false;gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.uniform1f(U.uB,bend);gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform1f(U.uRad,.035);
+     cards.forEach((c,k)=>{const s=c.s*(k===hot?1.05:1);
+       const focus=Math.max(0,1-Math.abs(c.vx)/(SP*1.1));const dim=k===hot?1:(.22+.78*focus*(c.main?1:.45))*Math.pow(Math.min(1,6.4/(-c.z)),1.6);
+       gl.uniform3f(U.uC,c.vx,c.vy,c.z);gl.uniform2f(U.uS,CW*s,CH*s);gl.uniform2f(U.uAsp,1,.75);gl.uniform1f(U.uDim,dim);
+       gl.bindTexture(gl.TEXTURE_2D,texs[c.p]);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0)})}
+   if(on||Math.abs(tgt-camX)>.001)requestAnimationFrame(frame)};
+ new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){lastY=scrollY;requestAnimationFrame(frame)}}).observe(workEl);
+ const setM=e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width*2-1;my=1-(e.clientY-r.top)/r.height*2};
+ cv.addEventListener("pointermove",setM);cv.addEventListener("pointerleave",()=>{mx=my=-9});
+ cv.addEventListener("click",e=>{setM(e);requestAnimationFrame(()=>{frame();if(hot>=0){location.hash="#work-"+pad(cards[hot].p+1)}})});
+ frame();
+}}
+
 
 /* ====== halaman detail proyek ====== */
 const caseEl=document.getElementById("case"),wipe=document.getElementById("wipe");
@@ -973,7 +1040,7 @@ const hideCase=async()=>{if(openIdx<0||busy)return;busy=true;const backTo=openId
   wipe.className="cover";await wait(700);
   caseLenis?.destroy();caseLenis=null;
   caseEl.classList.remove("open","in");caseEl.innerHTML="";document.body.classList.remove("lock");lenis?.start();document.title="Rofiq Maulana / Brand designer";openIdx=-1;
-  {const y=drumY(backTo);if(lenis)lenis.scrollTo(y,{immediate:true,force:true});else scrollTo(0,y)}dPos=backTo;
+  {const y=workY(backTo);if(lenis)lenis.scrollTo(y,{immediate:true,force:true});else scrollTo(0,y)}
   wipe.className="cover out";await wait(750);wipe.className="";busy=false;route()};
 const route=()=>{if(location.hash==="#other-dimension"){openDim();return}if(dimOpen){closeDim();return}
   const m=location.hash.match(/^#work-(\d+)$/);const i=m?parseInt(m[1],10)-1:-1;
