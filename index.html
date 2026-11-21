@@ -324,7 +324,7 @@ body,#case,.gate,footer,#intro .bg{background-image:var(--grain,none);background
 footer[data-mode] #chalkCv{touch-action:none}
 /* tombol ikon: batang kapur & penghapus, digambar kasar, bergoyang saat aktif */
 .ftool{position:absolute;bottom:16px;z-index:3;width:64px;height:64px;padding:0;border:0;background:none;color:var(--wh);cursor:pointer}
-.ftool.l{left:max(2vw,16px)}.ftool.r{right:max(2vw,16px)}
+.ftool.l,.ftool.r{left:max(2vw,16px)}.ftool.l{bottom:88px} /* Erase tepat di bawah Draw */
 .ftool svg{width:100%;height:100%;overflow:visible;filter:url(#chalkSmall);transition:transform .5s cubic-bezier(.2,1.6,.3,1)}
 .ftool .bg{fill:none;stroke:currentColor;stroke-width:1.2;stroke-dasharray:4 5;opacity:.55;transform-box:fill-box;transform-origin:center;transition:opacity .3s}
 .ftool:hover svg{transform:rotate(-12deg) scale(1.08)}

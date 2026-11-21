@@ -49,7 +49,7 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 
 - **Intro infinite zoom**: kamera menembus kartu proyek dan mendarat di foto potret.
 - **Sistem kapur**: grain diam hanya di bidang hitam; foto, tirai studi kasus, dan portal membuka dengan tepi bergerigi.
-- **Footer papan tulis**: ikon batang kapur (kiri) = Draw, ikon penghapus (kanan) = Erase, lalu tekan & seret. Erase menghapus logo dan goresan. Saat Draw, titik gambar ada di ujung kapur (pojok kiri atas cursor); saat Erase, ikon penghapus selebar kuas (`BRUSH`).
+- **Footer papan tulis**: ikon batang kapur = Draw, ikon penghapus tepat di bawahnya = Erase (pojok kiri bawah), lalu tekan & seret. Erase menghapus logo dan goresan. Saat Draw, titik gambar ada di ujung kapur (pojok kiri atas cursor); saat Erase, ikon penghapus selebar kuas (`BRUSH`).
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
 - **Portal Other Side**: pusaran poster tersedot ke titik hitam; saat hover, huruf OTHER/SIDE meluncur halus ke tengah; masuk hanya dengan klik (atau ketuk di HP).
