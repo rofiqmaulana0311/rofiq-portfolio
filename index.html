@@ -95,9 +95,10 @@ header.fall .hc{transform:translate(var(--fx),calc(100svh + 40px)) rotate(var(--
 .statement{grid-column:1/-1;font:400 clamp(28px,4.4vw,72px)/.98 var(--cond);margin:0;text-wrap:balance}
 .statement .ln{display:block}
 /* reveal: kata naik dari balik garis, mengikuti scroll */
-.statement .wm{display:inline-block;overflow:hidden;vertical-align:top;padding:.06em .02em 0;margin-top:-.06em}
-.statement .wi{display:inline-block;transform:translateY(108%) rotate(4deg);transform-origin:0 100%;opacity:.0;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .5s}
-.statement .wi.on{transform:none;opacity:1}
+/* reveal halus di tempat: kata pudar masuk dari samar & blur, tanpa bergerak */
+.statement .wm{display:inline-block;vertical-align:top}
+.statement .wi{display:inline-block;opacity:0;filter:blur(10px);transition:opacity 1.1s cubic-bezier(.2,.7,.2,1),filter 1.1s cubic-bezier(.2,.7,.2,1)}
+.statement .wi.on{opacity:1;filter:blur(0)}
 .statement .u404{position:relative;display:inline-block;text-decoration:none;color:inherit}
 .statement .u404::after{content:"";position:absolute;left:0;right:0;bottom:.02em;height:max(2px,.05em);background:currentColor;transform:scaleX(0);transform-origin:0 50%;transition:transform .7s cubic-bezier(.2,.8,.2,1) .25s}
 .statement .u404.on::after{transform:none}
@@ -630,8 +631,8 @@ const wrapWords=el=>{for(const n of [...el.childNodes]){
   else if(n.nodeType===1)wrapWords(n)}};
 wrapWords(stmt);
 const words=[...stmt.querySelectorAll(".wi")],u404=stmt.querySelector(".u404");let shown=-1;
-/* teks mulai muncul saat section About naik ke layar (bukan setelah menempel di atas), selesai di tengah masa jeda */
-const revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,a0=innerHeight*.45,p=clamp((a0-r.top)/(a0+run*.5));
+/* teks baru muncul setelah section About menempel di layar; kata demi kata, selesai sebelum jeda akhir */
+const revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp((-r.top/run-.04)/.62);
   const n=reduce?words.length:Math.round(p*words.length);if(n===shown)return;shown=n;
   words.forEach((w,i)=>{w.classList.toggle("on",i<n);w.style.transitionDelay=i<n?`${Math.max(0,i-(n-4))*40}ms`:"0ms"});
   u404?.classList.toggle("on",!!u404.querySelector(".wi.on:last-child")&&n>=words.length)};
