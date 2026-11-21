@@ -48,13 +48,13 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 ## Fitur interaktif
 
 - **Intro infinite zoom**: kamera menembus kartu proyek dan mendarat di foto potret.
-- **Sistem kapur**: grain di seluruh layar; foto, tirai studi kasus, dan portal membuka dengan tepi bergerigi.
-- **Footer papan tulis**: kursor menghapus logogram, drag untuk menggambar kapur (kuas sama besar). Logo kembali lewat tombol *Restore mark*.
-- **Pratinjau & gambar cair**: pratinjau di daftar Work dan gambar studi kasus beriak mengikuti kursor.
+- **Sistem kapur**: grain diam di seluruh layar; foto, tirai studi kasus, dan portal membuka dengan tepi bergerigi.
+- **Footer papan tulis**: kursor menghapus logogram, drag untuk menggambar kapur (kuas sama besar). Di HP: sentuh logo untuk menghapus, di luar logo untuk menggambar (footer tidak ikut ter-scroll). Logo kembali utuh saat halaman dimuat ulang.
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
-- **Other Side**: kanvas tak berujung dengan lensa cembung.
-- **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): merah di elemen interaktif, berputar saat diam.
+- **Portal Other Side**: pusaran poster tersedot ke titik hitam; huruf OTHER/SIDE tertarik gravitasi dan tersedot saat portal diklik.
+- **Other Side**: kanvas tak berujung dengan lensa cembung; di HP dua kolom yang bergerak atas-bawah.
+- **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): oranye di elemen interaktif, berputar saat diam.
 - **Nav** jatuh berhamburan seperti serpihan kapur saat mentok di footer, kembali saat scroll naik.
 - **Suara** (default mati, ikon speaker di header): klik halus hanya saat hover cover proyek. Dibuat dengan WebAudio, tanpa file.
 - Semua animasi mati otomatis untuk pengunjung yang memilih *reduced motion*.
