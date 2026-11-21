@@ -204,9 +204,6 @@ body.lock{overflow:hidden}
 .drum li:last-child .row{border:0}
 .rows.drum:hover .row{color:#a9a9a4}
 .drum .row.on,.rows.drum .row.on:hover{color:var(--bk)}
-.dside{position:absolute;top:50%;transform:translateY(-50%);z-index:2;pointer-events:none;color:var(--bk)}
-.dside.l{left:max(2vw,16px)}.dside.r{right:max(2vw,16px);text-align:right}
-@media(max-width:700px){.dside{top:auto;bottom:28px;transform:none}}
 /* ====== Mark Index (koleksi logo) ====== */
 .marks{position:relative;z-index:7;background:var(--wh);color:var(--bk);padding-block:clamp(40px,6vw,90px) clamp(100px,12vw,180px)}
 .mk-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
@@ -452,8 +449,6 @@ footer[data-mode] #chalkCv{touch-action:none}
     <h2 class="sr">Work</h2>
     <!-- Rolodex: daftar proyek melingkar seperti tabung, berputar mengikuti scroll -->
     <ul class="rows drum" id="rows"></ul>
-    <div class="dside l lbl" aria-hidden="true"><span id="dIdx">01</span> / <span id="dTot">08</span></div>
-    <div class="dside r lbl" aria-hidden="true"><span id="dType"></span><br><span id="dYear"></span></div>
    </div>
   </section>
 
@@ -724,8 +719,6 @@ loop();
 /* ====== ROLODEX: nama proyek di permukaan tabung; scroll memutar tabung, kecepatan scroll membuatnya miring ====== */
 const workEl=document.getElementById("work"),drumRows=[...rows.querySelectorAll(".row")],DN=drumRows.length;
 workEl.style.setProperty("--n",Math.max(1,DN-1));
-document.getElementById("dTot").textContent=pad(DN);
-const dIdx=document.getElementById("dIdx"),dType=document.getElementById("dType"),dYear=document.getElementById("dYear");
 let dPos=0,dSkew=0,dLastY=scrollY,dActive=-1,dOn=false;
 const drumTarget=()=>{const run=workEl.offsetHeight-innerHeight;return clamp(-workEl.getBoundingClientRect().top/Math.max(1,run))*(DN-1)};
 const drumY=i=>workEl.getBoundingClientRect().top+scrollY+(workEl.offsetHeight-innerHeight)*(DN>1?i/(DN-1):0);
@@ -739,8 +732,8 @@ const drumFrame=()=>{const tgt=drumTarget();dPos+=(tgt-dPos)*(reduce?1:.14);
     el.style.opacity=Math.max(0,1-Math.abs(a)/1.62).toFixed(3);
     el.style.filter=blur&&Math.abs(a)>.12?`blur(${(Math.abs(a)*4).toFixed(1)}px)`:"none"});
   const act=Math.round(clamp(dPos/(DN-1||1))*(DN-1));
-  if(act!==dActive){dActive=act;drumRows.forEach((el,i)=>el.classList.toggle("on",i===act));const p=projects[act];
-    dIdx.textContent=pad(act+1);dType.textContent=p.type;dYear.textContent=p.year;if(dOn&&!reduce)SFX.tick()}
+  if(act!==dActive){dActive=act;drumRows.forEach((el,i)=>el.classList.toggle("on",i===act));
+    if(dOn&&!reduce)SFX.tick()}
   if(dOn||Math.abs(tgt-dPos)>.001)requestAnimationFrame(drumFrame)};
 new IntersectionObserver(es=>{const was=dOn;dOn=es[0].isIntersecting;if(dOn&&!was)requestAnimationFrame(drumFrame)}).observe(workEl);
 drumFrame();
