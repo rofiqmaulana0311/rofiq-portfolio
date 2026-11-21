@@ -196,6 +196,7 @@ body.lock{overflow:hidden}
 /* ====== WORK: ROLODEX 3D ====== */
 .work{height:calc(100svh + var(--n,8) * 34svh);padding:0}
 .wpin{position:sticky;top:0;height:100svh;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
 .wpin .work-head{position:absolute;left:max(2vw,16px);right:max(2vw,16px);top:clamp(64px,8vw,96px);margin:0;z-index:2;pointer-events:none}
 .drum{position:absolute;inset:0;list-style:none;margin:0;padding:0}
 .drum li{position:absolute;left:0;right:0;top:50%;height:0}
@@ -448,7 +449,7 @@ footer[data-mode] #chalkCv{touch-action:none}
 
   <section class="work" id="work">
    <div class="wpin pad">
-    <div class="work-head"><h2>Work</h2><span class="lbl">(<span id="nP2">0</span>)</span></div>
+    <h2 class="sr">Work</h2>
     <!-- Rolodex: daftar proyek melingkar seperti tabung, berputar mengikuti scroll -->
     <ul class="rows drum" id="rows"></ul>
     <div class="dside l lbl" aria-hidden="true"><span id="dIdx">01</span> / <span id="dTot">08</span></div>
@@ -522,7 +523,7 @@ const inkOn=c=>{const n=parseInt(c.slice(1),16),l=.299*(n>>16&255)+.587*(n>>8&25
 const flatTile=(p,i)=>`<div class="tileph" style="background:${p.c[0]};color:${inkOn(p.c[0])}"><span class="a">P.${pad(i+1)}</span><span class="b">${esc(p.name)}</span><span class="c">${p.year}</span></div>`;
 const rows=document.getElementById("rows");
 rows.innerHTML=projects.map((p,i)=>`<li><a class="row" href="#work-${pad(i+1)}" data-i="${i}" aria-label="${esc(p.name)}, ${esc(p.type)}, ${p.year}">${esc(p.name)}</a></li>`).join("");
-document.getElementById("nP2").textContent=pad(projects.length);
+
 
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
 
