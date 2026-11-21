@@ -53,7 +53,7 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
 - **Portal Other Side**: pusaran poster tersedot ke titik hitam; huruf OTHER/SIDE tertarik gravitasi; klik (atau ketuk di HP) untuk masuk.
-- **Statement About**: layar berhenti sejenak, kata demi kata muncul dari kerangka garis dengan huruf teracak.
+- **Statement About**: ditulis tangan dengan kapur seiring scroll (goresan zig-zag, batang kapur, debu jatuh, bunyi gesek bila suara menyala). Kata "404" retak, rontok, lalu ditulis ulang. Teks asli tetap ada untuk pembaca layar.
 - **Other Side**: kanvas tak berujung, poster tidak saling bersentuhan; di HP dua kolom yang bergerak atas-bawah.
 - **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): oranye di elemen interaktif, berputar saat diam; hitam di Other Side.
 - **Nav** jatuh berhamburan seperti serpihan kapur saat mentok di footer, kembali saat scroll naik.

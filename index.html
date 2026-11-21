@@ -96,11 +96,12 @@ header.fall .hc{transform:translate(var(--fx),calc(100svh + 40px)) rotate(var(--
 .statement{grid-column:1/-1;font:400 clamp(28px,4.4vw,72px)/.98 var(--cond);margin:0;text-wrap:balance}
 .statement .ln{display:block}
 /* kata: kerangka garis kapur → huruf diacak → terisi penuh */
-.wd{display:inline-block;color:transparent;-webkit-text-stroke:1px rgba(242,242,238,.3);transform:translateY(.12em) rotate(-2deg) skewX(-10deg);filter:blur(1.5px);transition:color .45s,-webkit-text-stroke-color .45s,transform .7s cubic-bezier(.2,1.4,.3,1),filter .45s}
-.wd.on{color:#f2f2ee;-webkit-text-stroke-color:rgba(242,242,238,0);transform:none;filter:none}
-.wd.scr{color:rgba(242,242,238,.6)}
-.statement .u404{text-decoration-color:transparent;transition:text-decoration-color .4s}
-.statement .u404:has(.wd.on){text-decoration-color:currentColor}
+/* statement ditulis tangan dengan kapur di canvas; teks asli tetap ada untuk pembaca layar & keyboard */
+#stmtCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.statement.chalked{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;margin:0}
+#stmtLink{position:absolute;z-index:2;display:none}
+#stmtPen{position:absolute;left:0;top:0;width:44px;height:44px;margin:-40px 0 0 -4px;pointer-events:none;opacity:0;transition:opacity .35s;z-index:3}
+#stmtPen svg{width:100%;height:100%;overflow:visible}
 
 
 /* projects */
@@ -422,6 +423,9 @@ footer[data-mode] #chalkCv{touch-action:none}
    <div class="grow" id="grow"></div>
    <section class="about pad" id="about">
     <div class="apin">
+    <canvas id="stmtCv" aria-hidden="true"></canvas>
+    <a id="stmtLink" href="404.html" tabindex="-1" aria-hidden="true"></a>
+    <div id="stmtPen" aria-hidden="true"><svg viewBox="0 0 40 40" filter="url(#chalkSmall)"><g transform="rotate(-42 20 20)"><rect x="17" y="-2" width="9" height="34" rx="2" fill="#f2f2ee"/><rect x="17" y="24" width="9" height="8" fill="#d6d6d1"/></g></svg></div>
     <p class="statement" id="stmt" aria-label="I care about the parts nobody puts in the brief: the clear space, the favicon, the 404.">
       <span class="ln">I care about the parts</span>
       <span class="ln">nobody puts in the brief:</span>
@@ -602,19 +606,83 @@ if(!reduce){const sig=()=>Math.max(50,innerWidth*.05);
 
 /* reveal saat scroll */
 const stmt=document.getElementById("stmt"),aboutEl=document.getElementById("about");
-/* pecah per kata (link 404 ikut), simpan teks asli untuk efek acak */
-const words=[];{const walk=n=>{for(const ch of [...n.childNodes]){if(ch.nodeType===3){const parts=ch.textContent.split(/(\s+)/);const frag=document.createDocumentFragment();
-  for(const p of parts){if(!p)continue;if(/^\s+$/.test(p)){frag.appendChild(document.createTextNode(p));continue}const w=document.createElement("span");w.className="wd";w.textContent=p;w.dataset.t=p;w.setAttribute("aria-hidden","true");frag.appendChild(w);words.push(w)}
-  ch.replaceWith(frag)}else walk(ch)}};walk(stmt)}
-const GL="ABCDEFGHJKLMNOPRSTUVWXYZ#*+/\\=01";
-const scramble=w=>{const fin=w.dataset.t;let f=0;w.classList.add("scr");clearInterval(w._iv);
-  w._iv=setInterval(()=>{f++;const keep=Math.floor(fin.length*f/9);w.textContent=[...fin].map((c,i)=>i<keep||/[.,:]/.test(c)?c:GL[Math.random()*GL.length|0]).join("");
-    if(f>=9){clearInterval(w._iv);w.textContent=fin;w.classList.remove("scr")}},38)};
-let shown=-1;
-const revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp(-r.top/run);
-  /* jeda di awal, kata muncul satu per satu, lalu diam sebentar di akhir */
-  const n=reduce?words.length:Math.round(clamp((p-.12)/.6)*words.length);
-  if(n===shown)return;words.forEach((w,i)=>{const on=i<n;if(on!==w.classList.contains("on")){w.classList.toggle("on",on);if(on&&!reduce)scramble(w)}});shown=n};
+/* ====== STATEMENT DITULIS TANGAN DENGAN KAPUR (mengikuti scroll) ======
+   Setiap huruf digores zig-zag seperti mengarsir kapur. Di kata "404" tulisannya retak,
+   rontok, lalu ditulis ulang. Teks HTML tetap ada (tersembunyi) untuk aksesibilitas. */
+let revealStmt=()=>{};
+if(!reduce){
+ stmt.classList.add("chalked");
+ const apin=stmt.parentElement,cv=document.getElementById("stmtCv"),sg=cv.getContext("2d"),pen=document.getElementById("stmtPen"),lnk=document.getElementById("stmtLink");
+ const mk=()=>document.createElement("canvas");const ink=mk(),mask=mk(),ig=ink.getContext("2d"),mg=mask.getContext("2d");
+ let W=0,H=0,dpr=1,fs=40,glyphs=[],rules=[],N=0,cur=0,target=0,penXY=null,lastWrite=0,alive=false,parts=[],okFont=false;
+ let g404=[],gLink=[],gag={state:0,t:0,done:false,crack:null};
+ const src=[...stmt.querySelectorAll(".ln")].map(l=>l.textContent.replace(/\s+/g," ").trim().toUpperCase());
+ const layout=()=>{dpr=Math.min(2,devicePixelRatio||1);W=apin.clientWidth;H=apin.clientHeight;
+   for(const c of [cv,ink,mask]){c.width=W*dpr;c.height=H*dpr}for(const g of [sg,ig,mg])g.setTransform(dpr,0,0,dpr,0,0);
+   fs=Math.max(28,Math.min(72,W*.044));const font=`400 ${fs}px Anton, Impact, sans-serif`;ig.font=font;
+   /* pecah baris bila terlalu lebar (HP) */
+   const lines=[];for(const l of src){let row="";for(const w of l.split(" ")){const t=row?row+" "+w:w;if(ig.measureText(t).width>W*.9&&row){lines.push(row);row=w}else row=t}lines.push(row)}
+   const lh=fs*.98,y0=H/2-(lines.length*lh)/2+fs*.78;glyphs=[];rules=[];
+   lines.forEach((ln,li)=>{const lw=ig.measureText(ln).width,x0=(W-lw)/2,by=y0+li*lh;rules.push([x0-fs*.3,x0+lw+fs*.3,by+fs*.1]);
+     for(let k=0;k<ln.length;k++){if(ln[k]===" ")continue;const x=x0+ig.measureText(ln.slice(0,k)).width,w=ig.measureText(ln.slice(0,k+1)).width-ig.measureText(ln.slice(0,k)).width;
+       glyphs.push({c:ln[k],x,w,top:by-fs*.78,bot:by+fs*.06,li,k,ln})}});
+   N=glyphs.length;
+   /* posisi "404" & "THE 404" untuk lelucon dan link */
+   const flat=glyphs.map(g=>g.c).join(""),p4=flat.lastIndexOf("404");g404=p4<0?[]:[p4,p4+1,p4+2];
+   const pt=flat.lastIndexOf("THE404");gLink=pt<0?g404:[pt,pt+1,pt+2,pt+3,pt+4,pt+5];
+   /* tinta: teks penuh bertekstur kapur */
+   ig.clearRect(0,0,W,H);ig.fillStyle="#f2f2ee";ig.textBaseline="alphabetic";
+   lines.forEach((ln,li)=>{const lw=ig.measureText(ln).width;ig.fillText(ln,(W-lw)/2,y0+li*lh)});
+   ig.globalCompositeOperation="destination-out";for(let i=0;i<W*H/40;i++){ig.globalAlpha=.15+Math.random()*.5;const s2=Math.random()*1.6+.5;ig.fillRect(Math.random()*W,Math.random()*H,s2,s2*(Math.random()<.3?3:1))}
+   ig.globalAlpha=1;ig.globalCompositeOperation="source-over";
+   /* gambar ulang progres yang sudah ada tanpa animasi */
+   mg.clearRect(0,0,W,H);const c0=cur;cur=0;advance(Math.min(c0,N),true)};
+ /* goresan zig-zag di dalam satu huruf, dari f0 ke f1 (0..1) */
+ const scribble=(i,f0,f1)=>{const g=glyphs[i];if(!g)return null;const n=Math.max(3,Math.ceil(g.w/(fs*.12))),sw=g.w/n*1.9;
+   const P=s=>{const seg=Math.min(n-1e-6,s*n),k=Math.floor(seg),t=seg-k,x=g.x+(k+.5)/n*g.w+(t-.5)*g.w/n*.7,up=k%2;return [x,up?g.bot+4-(g.bot-g.top+8)*t:g.top-4+(g.bot-g.top+8)*t]};
+   mg.save();mg.beginPath();mg.rect(g.x-1,g.top-fs*.06,g.w+2,g.bot-g.top+fs*.08);mg.clip();
+   mg.strokeStyle="#fff";mg.fillStyle="#fff";mg.lineCap="round";mg.lineJoin="round";mg.lineWidth=sw;
+   let p=P(f0);const steps=Math.max(1,Math.ceil((f1-f0)*n*10));mg.beginPath();mg.moveTo(p[0],p[1]);
+   for(let j=1;j<=steps;j++){p=P(f0+(f1-f0)*j/steps);mg.lineTo(p[0]+(Math.random()-.5)*1.5,p[1]+(Math.random()-.5)*1.5)}mg.stroke();
+   for(let j=0;j<6;j++){const a=Math.random()*6.283,r=sw*(.5+Math.random()*.4);mg.fillRect(p[0]+Math.cos(a)*r,p[1]+Math.sin(a)*r,2,2)}
+   mg.restore();return p};
+ function advance(amount,instant){while(amount>1e-6&&cur<N){const i=Math.floor(cur),f=cur-i,d=Math.min(amount,1-f);const p=scribble(i,f,f+d);if(p)penXY=p;cur+=d;amount-=d;
+   if(!instant&&p&&Math.random()<.5)parts.push({x:p[0],y:p[1],vx:(Math.random()-.5)*1.2,vy:Math.random()*.6,s:1+Math.random()*2,l:1})}}
+ const rewind=t=>{const i=Math.floor(t);for(let j=i;j<N;j++){const g=glyphs[j];mg.clearRect(g.x-fs*.15,g.top-fs*.2,g.w+fs*.3,g.bot-g.top+fs*.4)}
+   cur=i;if(t-i>0)advance(t-i,true)};
+ revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp(-r.top/run);target=clamp((p-.1)/.66)*N;
+   if(!alive&&r.top<innerHeight&&r.bottom>0){alive=true;requestAnimationFrame(frame)}};
+ function frame(now){if(!okFont)return requestAnimationFrame(frame);
+   const r=aboutEl.getBoundingClientRect();if(!(r.top<innerHeight&&r.bottom>0)&&!parts.length){alive=false;return}
+   /* lelucon 404: retak → rontok → ditulis ulang */
+   const done404=g404.length&&cur>=g404[2]+1;
+   if(target<(g404[0]??N)){gag={state:0,t:0,done:false,crack:null}}
+   if(done404&&!gag.done&&gag.state===0){gag.state=1;gag.t=now}
+   if(gag.state===1&&now-gag.t>450){gag.state=2;gag.t=now;const a=glyphs[g404[0]],b=glyphs[g404[2]],pts=[];const x0=a.x-6,x1=b.x+b.w+6;
+     for(let k=0;k<=8;k++)pts.push([x0+(x1-x0)*k/8,(a.top+a.bot)/2+(k%2?-1:1)*fs*.18*Math.random()]);gag.crack=pts;SFX.whoosh(false)}
+   if(gag.state===2&&now-gag.t>420){gag.state=3;gag.t=now;gag.crack=null;
+     for(const j of g404){const g=glyphs[j];for(let k=0;k<26;k++)parts.push({x:g.x+Math.random()*g.w,y:g.top+Math.random()*(g.bot-g.top),vx:(Math.random()-.5)*3,vy:-Math.random()*2,s:2+Math.random()*5,l:1})
+       mg.clearRect(g.x-fs*.15,g.top-fs*.2,g.w+fs*.3,g.bot-g.top+fs*.4)}cur=g404[0]}
+   if(gag.state===3&&now-gag.t>700){gag.state=0;gag.done=true}
+   /* tulis / hapus menuju target */
+   if(gag.state===0){if(cur<target-1e-3){const d=Math.min(target-cur,.2+(target-cur)*.05);advance(d,false);lastWrite=now;SFX.scratch(6)}
+     else if(cur>target+1e-3){rewind(target)}}
+   /* komposisi: garis papan tulis → tinta yang terbuka oleh goresan → retakan & debu */
+   sg.clearRect(0,0,W,H);sg.drawImage(mask,0,0,W,H);sg.globalCompositeOperation="source-in";sg.drawImage(ink,0,0,W,H);
+   sg.globalCompositeOperation="destination-over";sg.strokeStyle="rgba(242,242,238,.13)";sg.lineWidth=1;sg.setLineDash([6,7]);
+   for(const [a,b,y] of rules){sg.beginPath();sg.moveTo(a,y);sg.lineTo(b,y);sg.stroke()}sg.setLineDash([]);sg.globalCompositeOperation="source-over";
+   if(gag.crack){sg.strokeStyle="#0a0a0a";sg.lineWidth=Math.max(3,fs*.07);sg.beginPath();gag.crack.forEach(([x,y],k)=>k?sg.lineTo(x,y):sg.moveTo(x,y));sg.stroke()}
+   sg.fillStyle="#f2f2ee";parts=parts.filter(q=>(q.l-=.018)>0);for(const q of parts){q.vy+=.25;q.x+=q.vx;q.y+=q.vy;sg.globalAlpha=q.l;sg.fillRect(q.x,q.y,q.s,q.s)}sg.globalAlpha=1;
+   /* batang kapur mengikuti ujung goresan */
+   if(penXY&&now-lastWrite<220){pen.style.opacity=1;pen.style.transform=`translate(${penXY[0].toFixed(1)}px,${penXY[1].toFixed(1)}px) rotate(${(Math.sin(now/90)*6).toFixed(1)}deg)`}else pen.style.opacity=0;
+   /* link "the 404" bisa diklik setelah tertulis */
+   if(gLink.length&&cur>=gLink[gLink.length-1]+1&&gag.state===0){const a=glyphs[gLink[0]],b=glyphs[gLink[gLink.length-1]];
+     Object.assign(lnk.style,{display:"block",left:a.x+"px",top:a.top+"px",width:(b.x+b.w-a.x)+"px",height:(a.bot-a.top)+"px"});
+     sg.fillStyle="rgba(242,242,238,.9)";sg.fillRect(a.x,a.bot+fs*.05,b.x+b.w-a.x,Math.max(2,fs*.04))}else lnk.style.display="none";
+   requestAnimationFrame(frame)}
+ document.fonts.load(`400 72px Anton`).then(()=>{okFont=true;layout();revealStmt()}).catch(()=>{okFont=true;layout()});
+ new ResizeObserver(()=>{if(okFont)layout()}).observe(apin);
+}
 
 /* ====== parallax: foto membesar sampai penuh, About ter-scroll di atasnya ====== */
 const stage=document.getElementById("stage"),grow=document.getElementById("grow"),heroEl=document.getElementById("hero");
