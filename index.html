@@ -332,9 +332,11 @@ body,#case,.gate,footer,#intro .bg{background-image:var(--grain,none);background
 @media(hover:none),(pointer:coarse){#cur{display:none}}
 /* papan tulis di footer */
 #chalkCv{position:absolute;inset:0;z-index:1;width:100%;height:100%;touch-action:pan-y}
-footer[data-mode] #chalkCv{touch-action:none}
+/* coretan & hapus hanya di area logo */
+footer[data-mode] .flogo{pointer-events:auto;z-index:2}
+footer[data-mode] #flogoCv{touch-action:none}
 /* tombol ikon: batang kapur & penghapus, digambar kasar, bergoyang saat aktif */
-.ftool{position:absolute;bottom:16px;z-index:3;width:64px;height:64px;padding:0;border:0;background:none;color:var(--wh);cursor:pointer}
+.ftool{position:absolute;bottom:16px;z-index:5;width:64px;height:64px;padding:0;border:0;background:none;color:var(--wh);cursor:pointer}
 .ftool.l,.ftool.r,.ftool.rs{left:max(2vw,16px)}.ftool.l{bottom:160px}.ftool.r{bottom:88px} /* tumpuk: Draw, Erase, Reset */
 .ftool.up{right:max(2vw,16px);display:block}
 .ftool.rs:active svg{transform:rotate(-200deg) scale(.95);transition-duration:.25s}
@@ -574,7 +576,7 @@ if(matchMedia("(hover:hover) and (pointer:fine)").matches){document.documentElem
  addEventListener("pointermove",e=>{x=e.clientX;y=e.clientY;lastMove=performance.now();cu.classList.add("show");
    const o=!!(e.target.closest&&e.target.closest(SEL));if(o!==on){on=o;cu.classList.toggle("on",o)}
    /* mode footer: batang kapur / penghapus */
-   const m=e.target.id==="chalkCv"&&ftEl.dataset.mode?ftEl.dataset.mode:"";if(m!==fm){cu.classList.remove("m-draw","m-erase");if(m)cu.classList.add("m-"+m);fm=m}
+   const m=e.target.id==="flogoCv"&&ftEl.dataset.mode?ftEl.dataset.mode:"";if(m!==fm){cu.classList.remove("m-draw","m-erase");if(m)cu.classList.add("m-"+m);fm=m}
    cu.classList.add("moving");clearTimeout(mvT);mvT=setTimeout(()=>cu.classList.remove("moving"),120);
    /* di Other Side (latar putih): bintang hitam, oranye di poster */
    cu.classList.toggle("dark",odEl.classList.contains("open")||!!e.target.closest?.("#lgx"))},{passive:true});
@@ -663,7 +665,7 @@ const flogo=document.getElementById("flogo"),footEl=document.getElementById("con
 {const lc=document.getElementById("flogoCv"),lg=lc.getContext("2d"),cc=document.getElementById("chalkCv"),cg=cc.getContext("2d");
  const img=new Image();img.decoding="async";img.src="img/logo-white.webp";
  let ready=false,visible=false,dpr=Math.min(2,devicePixelRatio||1),last=null,drawing=false,erasedAt=0;
- const sizeLogo=()=>{const w=flogo.clientWidth;if(!w)return;lc.width=w*dpr;lc.height=w/1.259*dpr;lc.style.height=w/1.259+"px";lg.setTransform(dpr,0,0,dpr,0,0);if(ready)lg.drawImage(img,0,0,w,w/1.259)};
+ const sizeLogo=()=>{const w=flogo.clientWidth;if(!w||(lc.width===Math.round(w*dpr)&&lc.dataset.ok))return;if(ready)lc.dataset.ok=1;lc.width=w*dpr;lc.height=w/1.259*dpr;lc.style.height=w/1.259+"px";lg.setTransform(dpr,0,0,dpr,0,0);if(ready)lg.drawImage(img,0,0,w,w/1.259)};
  const sizeBoard=()=>{const old=cc.width?cc:null;let snap=null;if(old&&cc.width){snap=document.createElement("canvas");snap.width=cc.width;snap.height=cc.height;snap.getContext("2d").drawImage(cc,0,0)}
    cc.width=footEl.clientWidth*dpr;cc.height=footEl.clientHeight*dpr;cg.setTransform(dpr,0,0,dpr,0,0);if(snap)cg.drawImage(snap,0,0,snap.width/dpr,snap.height/dpr)};
  img.onload=()=>{ready=true;sizeLogo()};
@@ -680,13 +682,13 @@ const flogo=document.getElementById("flogo"),footEl=document.getElementById("con
  let mode=null,active=false;const tools=[...footEl.querySelectorAll(".ftool[data-mode]")];
  tools.forEach(b=>b.addEventListener("click",()=>{mode=mode===b.dataset.mode?null:b.dataset.mode;
    tools.forEach(t=>t.setAttribute("aria-pressed",t.dataset.mode===mode));if(mode)footEl.dataset.mode=mode;else delete footEl.dataset.mode}));
- cc.addEventListener("pointerdown",e=>{if(!mode)return;active=true;last=local(cc,e);last.l=local(lc,e);try{cc.setPointerCapture(e.pointerId)}catch(_){}});
- cc.addEventListener("pointermove",e=>{if(!active||!mode||!last)return;const [bx,by]=local(cc,e),[lx,ly]=local(lc,e);
-   if(mode==="draw"){cg.fillStyle="#f2f2ee";chalk(cg,last[0],last[1],bx,by,BRUSH,16,.9,3);SFX.scratch(Math.hypot(bx-last[0],by-last[1]))}
-   else{for(const [g,a0,a1,b0,b1] of [[cg,last[0],last[1],bx,by],ready?[lg,last.l[0],last.l[1],lx,ly]:null].filter(Boolean)){
-       g.save();g.globalCompositeOperation="destination-out";g.fillStyle="#000";chalk(g,a0,a1,b0,b1,BRUSH,16,1,3);g.restore()}
-     SFX.scratch(Math.hypot(bx-last[0],by-last[1])*.4)}
-   last=[bx,by];last.l=[lx,ly]});
+ /* goresan langsung di kanvas logo, jadi otomatis terbatas di area logo */
+ lc.addEventListener("pointerdown",e=>{if(!mode||!ready)return;active=true;last=local(lc,e);try{lc.setPointerCapture(e.pointerId)}catch(_){}});
+ lc.addEventListener("pointermove",e=>{if(!active||!mode||!last)return;const [lx,ly]=local(lc,e),d=Math.hypot(lx-last[0],ly-last[1]);
+   lg.save();
+   if(mode==="draw"){lg.fillStyle="#f2f2ee";chalk(lg,last[0],last[1],lx,ly,BRUSH,16,.9,3);SFX.scratch(d)}
+   else{lg.globalCompositeOperation="destination-out";lg.fillStyle="#000";chalk(lg,last[0],last[1],lx,ly,BRUSH,16,1,3);SFX.scratch(d*.4)}
+   lg.restore();last=[lx,ly]});
  const stop=()=>{active=false;last=null};addEventListener("pointerup",stop);addEventListener("pointercancel",stop);
  document.getElementById("chalkClear")?.addEventListener("click",()=>{cg.clearRect(0,0,cc.width,cc.height);if(ready){lg.clearRect(0,0,lc.width,lc.height);lg.drawImage(img,0,0,flogo.clientWidth,flogo.clientWidth/1.259)}});
  
