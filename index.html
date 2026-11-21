@@ -193,6 +193,19 @@ body.lock{overflow:hidden}
   .row .ini{display:none}
   .row .info .lbl{display:none}
 }
+/* ====== WORK: ROLODEX 3D ====== */
+.work{height:calc(100svh + var(--n,8) * 34svh);padding:0}
+.wpin{position:sticky;top:0;height:100svh;overflow:hidden}
+.wpin .work-head{position:absolute;left:max(2vw,16px);right:max(2vw,16px);top:clamp(64px,8vw,96px);margin:0;z-index:2;pointer-events:none}
+.drum{position:absolute;inset:0;list-style:none;margin:0;padding:0}
+.drum li{position:absolute;left:0;right:0;top:54%;height:0}
+.drum .row{position:absolute;left:50%;top:0;display:block;border:0;padding:0;gap:0;white-space:nowrap;font:400 clamp(40px,9vw,170px)/1 var(--cond);text-transform:uppercase;letter-spacing:-.005em;color:#a9a9a4;transform-origin:50% 50%;will-change:transform,opacity,filter;transition:color .3s;text-decoration:none}
+.drum li:last-child .row{border:0}
+.rows.drum:hover .row{color:#a9a9a4}
+.drum .row.on,.rows.drum .row.on:hover{color:var(--bk)}
+.dside{position:absolute;top:54%;transform:translateY(-50%);z-index:2;pointer-events:none;color:var(--bk)}
+.dside.l{left:max(2vw,16px)}.dside.r{right:max(2vw,16px);text-align:right}
+@media(max-width:700px){.dside{top:auto;bottom:28px;transform:none}}
 /* ====== Mark Index (koleksi logo) ====== */
 .marks{position:relative;z-index:7;background:var(--wh);color:var(--bk);padding-block:clamp(40px,6vw,90px) clamp(100px,12vw,180px)}
 .mk-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
@@ -433,9 +446,14 @@ footer[data-mode] #chalkCv{touch-action:none}
    </section>
   </div>
 
-  <section class="work pad" id="work">
+  <section class="work" id="work">
+   <div class="wpin pad">
     <div class="work-head"><h2>Work</h2><span class="lbl">(<span id="nP2">0</span>)</span></div>
-    <ul class="rows" id="rows"></ul>
+    <!-- Rolodex: daftar proyek melingkar seperti tabung, berputar mengikuti scroll -->
+    <ul class="rows drum" id="rows"></ul>
+    <div class="dside l lbl" aria-hidden="true"><span id="dIdx">01</span> / <span id="dTot">08</span></div>
+    <div class="dside r lbl" aria-hidden="true"><span id="dType"></span><br><span id="dYear"></span></div>
+   </div>
   </section>
 
   <section class="marks pad" id="marks">
@@ -497,15 +515,13 @@ footer[data-mode] #chalkCv{touch-action:none}
 /* Isi website diambil dari content.js */
 const {projects}=window.CONTENT;
 const pad=n=>String(n).padStart(2,"0");
+const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const ini=s=>s.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 const inkOn=c=>{const n=parseInt(c.slice(1),16),l=.299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255);return l>150?"#0a0a0a":"#f2f2ee"};
 /* tile datar: satu bidang warna + keterangan mono, tanpa gradasi */
 const flatTile=(p,i)=>`<div class="tileph" style="background:${p.c[0]};color:${inkOn(p.c[0])}"><span class="a">P.${pad(i+1)}</span><span class="b">${esc(p.name)}</span><span class="c">${p.year}</span></div>`;
 const rows=document.getElementById("rows");
-rows.innerHTML=projects.map((p,i)=>`<li><a class="row" href="#work-${pad(i+1)}" data-i="${i}">
-  <span class="num">P.${pad(i+1)}</span><span class="ini">${ini(p.name)}</span>
-  <span class="info"><span>${p.name}</span><span class="lbl">${p.year}</span></span>
-  <span class="arr">→</span></a></li>`).join("");
+rows.innerHTML=projects.map((p,i)=>`<li><a class="row" href="#work-${pad(i+1)}" data-i="${i}" aria-label="${esc(p.name)}, ${esc(p.type)}, ${p.year}">${esc(p.name)}</a></li>`).join("");
 document.getElementById("nP2").textContent=pad(projects.length);
 
 const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
@@ -695,7 +711,7 @@ addEventListener("resize",()=>{fitName();base=null;parallax()});
 const peek=document.getElementById("peek"),tile=peek.querySelector(".tile");
 let mx=innerWidth/2,my=innerHeight/2,px=mx,py=my;
 addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY});
-rows.addEventListener("pointerover",e=>{const r=e.target.closest(".row");if(!r)return;const p=projects[r.dataset.i];
+rows.addEventListener("pointerover",e=>{const r=e.target.closest(".row");if(!r||!r.classList.contains("on"))return;const p=projects[r.dataset.i];
   const i=+r.dataset.i;tile.innerHTML=p.shots&&p.shots[0]&&!p.shots[0].video?`<img src="${esc(p.shots[0].src)}" alt="" style="width:100%;height:100%;object-fit:cover">`:flatTile(p,i);peek.classList.add("on")});
 rows.addEventListener("pointerleave",()=>peek.classList.remove("on"));
 const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
@@ -704,9 +720,35 @@ const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
   requestAnimationFrame(loop)};
 loop();
 
+/* ====== ROLODEX: nama proyek di permukaan tabung; scroll memutar tabung, kecepatan scroll membuatnya miring ====== */
+const workEl=document.getElementById("work"),drumRows=[...rows.querySelectorAll(".row")],DN=drumRows.length;
+workEl.style.setProperty("--n",Math.max(1,DN-1));
+document.getElementById("dTot").textContent=pad(DN);
+const dIdx=document.getElementById("dIdx"),dType=document.getElementById("dType"),dYear=document.getElementById("dYear");
+let dPos=0,dSkew=0,dLastY=scrollY,dActive=-1,dOn=false;
+const drumTarget=()=>{const run=workEl.offsetHeight-innerHeight;return clamp(-workEl.getBoundingClientRect().top/Math.max(1,run))*(DN-1)};
+const drumY=i=>workEl.getBoundingClientRect().top+scrollY+(workEl.offsetHeight-innerHeight)*(DN>1?i/(DN-1):0);
+const drumFrame=()=>{const tgt=drumTarget();dPos+=(tgt-dPos)*(reduce?1:.14);
+  const v=scrollY-dLastY;dLastY=scrollY;dSkew+=((reduce?0:Math.max(-14,Math.min(14,v*.35)))-dSkew)*.15;
+  const H=innerHeight,R=H*(innerWidth>700?.3:.34),step=.5,blur=!reduce&&matchMedia("(hover:hover)").matches;
+  drumRows.forEach((el,i)=>{const a=(i-dPos)*step;
+    if(Math.abs(a)>1.62){el.style.visibility="hidden";return}el.style.visibility="";
+    const c=Math.cos(a);
+    el.style.transform=`translate(-50%,-50%) translateY(${(Math.sin(a)*R).toFixed(1)}px) skewX(${(dSkew-a*7).toFixed(2)}deg) scale(${(.86+.14*c).toFixed(3)},${Math.max(.03,c).toFixed(3)})`;
+    el.style.opacity=Math.max(0,1-Math.abs(a)/1.62).toFixed(3);
+    el.style.filter=blur&&Math.abs(a)>.12?`blur(${(Math.abs(a)*4).toFixed(1)}px)`:"none"});
+  const act=Math.round(clamp(dPos/(DN-1||1))*(DN-1));
+  if(act!==dActive){dActive=act;drumRows.forEach((el,i)=>el.classList.toggle("on",i===act));const p=projects[act];
+    dIdx.textContent=pad(act+1);dType.textContent=p.type;dYear.textContent=p.year;if(dOn&&!reduce)SFX.tick()}
+  if(dOn||Math.abs(tgt-dPos)>.001)requestAnimationFrame(drumFrame)};
+new IntersectionObserver(es=>{const was=dOn;dOn=es[0].isIntersecting;if(dOn&&!was)requestAnimationFrame(drumFrame)}).observe(workEl);
+drumFrame();
+/* klik nama yang bukan di tengah: putar dulu ke tengah; nama di tengah membuka studi kasus */
+rows.addEventListener("click",e=>{const r=e.target.closest(".row");if(!r)return;const i=+r.dataset.i;
+  if(i!==dActive){e.preventDefault();const y=drumY(i);if(lenis)lenis.scrollTo(y,{duration:1.1});else scrollTo({top:y,behavior:"smooth"})}});
+
 /* ====== halaman detail proyek ====== */
 const caseEl=document.getElementById("case"),wipe=document.getElementById("wipe");
-const esc=s=>String(s).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 const host=u=>{try{return new URL(u).hostname.replace(/^www\./,"")}catch(_){return "Visit site"}};
 const mock=(p,k)=>{const [a,b]=p.c,first=p.name.split(" ")[0];
   const v=[{bg:b,fg:a,word:first,tall:false},{bg:a,fg:inkOn(a),word:ini(p.name),tall:true},{bg:"#f2f2ee",fg:"#0a0a0a",word:"",tall:true,grid:true},{bg:"#1b1b1b",fg:a,word:p.name,tall:false},{bg:a,fg:inkOn(a),word:String(p.year),tall:false}][k];
@@ -911,11 +953,11 @@ const showCase=async i=>{if(busy)return;busy=true;
   wipe.className="cover out";await wait(50);requestAnimationFrame(()=>caseEl.classList.add("in"));
   await wait(700);wipe.className="";busy=false;route()};
 
-const hideCase=async()=>{if(openIdx<0||busy)return;busy=true;
+const hideCase=async()=>{if(openIdx<0||busy)return;busy=true;const backTo=openIdx;
   wipe.className="cover";await wait(700);
   caseLenis?.destroy();caseLenis=null;
   caseEl.classList.remove("open","in");caseEl.innerHTML="";document.body.classList.remove("lock");lenis?.start();document.title="Rofiq Maulana / Brand designer";openIdx=-1;
-  if(lenis)lenis.scrollTo(document.getElementById("work"),{immediate:true,force:true});else document.getElementById("work").scrollIntoView();
+  {const y=drumY(backTo);if(lenis)lenis.scrollTo(y,{immediate:true,force:true});else scrollTo(0,y)}dPos=backTo;
   wipe.className="cover out";await wait(750);wipe.className="";busy=false;route()};
 const route=()=>{if(location.hash==="#other-dimension"){openDim();return}if(dimOpen){closeDim();return}
   const m=location.hash.match(/^#work-(\d+)$/);const i=m?parseInt(m[1],10)-1:-1;
