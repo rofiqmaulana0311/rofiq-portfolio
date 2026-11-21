@@ -53,7 +53,7 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
 - **Portal Other Side**: pusaran poster tersedot ke titik hitam; saat hover, huruf OTHER/SIDE meluncur halus ke tengah; masuk hanya dengan klik (atau ketuk di HP).
-- **Statement About**: setelah section About menempel (200svh), kalimat tampil sebagai garis luar tipis lalu terisi kata demi kata dengan huruf acak sekejap (tanpa gerak, tanpa blur); "the 404" mendapat garis bawah di akhir.
+- **Statement About**: setelah section About menempel (200svh), kalimat tampil sebagai garis luar tipis lalu terisi kata demi kata (tanpa gerak, tanpa blur, tanpa huruf acak); kalimat hanya tampil selama section menempel, jadi tidak pernah terlihat bergerak naik; "the 404" mendapat garis bawah di akhir.
 - **Work: Rolodex 3D**: nama proyek melingkar seperti tabung yang berputar mengikuti scroll; makin cepat scroll makin miring. Nama di tengah (hitam) bisa diklik untuk membuka studi kasus; klik nama lain memutarnya ke tengah dulu. Kembali dari studi kasus langsung ke proyek yang tadi dibuka. Tanpa judul, nomor, atau info samping: hanya nama proyek.
 - **Other Side**: kanvas tak berujung, poster tidak saling bersentuhan; di HP dua kolom yang bergerak atas-bawah.
 - **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): oranye di elemen interaktif, berputar saat diam; hitam di Other Side.

@@ -95,14 +95,13 @@ header.fall .hc{transform:translate(var(--fx),calc(100svh + 40px)) rotate(var(--
 .statement{grid-column:1/-1;font:400 clamp(28px,4.4vw,72px)/.98 var(--cond);margin:0;text-wrap:balance}
 .statement .ln{display:block}
 /* reveal: kata naik dari balik garis, mengikuti scroll */
-/* reveal seperti versi awal: kata berupa garis luar tipis, lalu terisi satu per satu (dengan huruf acak sekejap); tanpa gerak & tanpa blur.
+/* reveal seperti versi awal: kata berupa garis luar tipis, lalu terisi satu per satu; tanpa gerak, tanpa blur, tanpa huruf acak.
    Kalimat baru tampil setelah section About menempel, jadi tidak ikut naik ke layar. */
-.statement{opacity:0;transition:opacity .35s}
+.statement{opacity:0;transition:opacity .3s}
 .statement.pinned{opacity:1}
 .statement .wm{display:inline-block;vertical-align:top}
 .statement .wi{display:inline-block;color:transparent;-webkit-text-stroke:1px rgba(242,242,238,.3);transition:color .45s,-webkit-text-stroke-color .45s}
 .statement .wi.on{color:#f2f2ee;-webkit-text-stroke-color:rgba(242,242,238,0)}
-.statement .wi.scr{color:rgba(242,242,238,.6)}
 .statement .u404{position:relative;display:inline-block;text-decoration:none;color:inherit}
 .statement .u404::after{content:"";position:absolute;left:0;right:0;bottom:.02em;height:max(2px,.05em);background:currentColor;transform:scaleX(0);transform-origin:0 50%;transition:transform .7s cubic-bezier(.2,.8,.2,1) .25s}
 .statement .u404.on::after{transform:none}
@@ -635,16 +634,12 @@ const wrapWords=el=>{for(const n of [...el.childNodes]){
   else if(n.nodeType===1)wrapWords(n)}};
 wrapWords(stmt);
 const words=[...stmt.querySelectorAll(".wi")],u404=stmt.querySelector(".u404");let shown=-1;
-words.forEach(w=>w.dataset.t=w.textContent);
-const GL="ABCDEFGHJKLMNOPRSTUVWXYZ#*+/\\=01";
-const scramble=w=>{const fin=w.dataset.t;let f=0;w.classList.add("scr");clearInterval(w._iv);
-  w._iv=setInterval(()=>{f++;const keep=Math.floor(fin.length*f/9);w.textContent=[...fin].map((c,i)=>i<keep||/[.,:]/.test(c)?c:GL[Math.random()*GL.length|0]).join("");
-    if(f>=9){clearInterval(w._iv);w.textContent=fin;w.classList.remove("scr")}},38)};
+
 /* teks baru muncul setelah section About menempel di layar; kata demi kata, selesai sebelum jeda akhir */
 const revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp((-r.top/run-.04)/.62);
-  stmt.classList.toggle("pinned",reduce||(r.top<=1&&r.bottom>0));
+  stmt.classList.toggle("pinned",reduce||(r.top<=1&&r.bottom>=innerHeight-1));
   const n=reduce?words.length:Math.round(p*words.length);if(n===shown)return;shown=n;
-  words.forEach((w,i)=>{const on=i<n;if(on!==w.classList.contains("on")){w.classList.toggle("on",on);if(on&&!reduce)scramble(w)}});
+  words.forEach((w,i)=>w.classList.toggle("on",i<n));
   u404?.classList.toggle("on",!!u404.querySelector(".wi.on:last-child")&&n>=words.length)};
 
 /* ====== parallax: foto membesar sampai penuh, About ter-scroll di atasnya ====== */
