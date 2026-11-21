@@ -7,6 +7,9 @@
 /* ---------- 1. FOTO POTRET (hero, about, intro) ---------- */
 const PORTRAIT="img/portrait.webp";
 
+/* ---------- 1b. STATUS: baris "Currently" di hero ---------- */
+const CURRENTLY="Identity for a coffee roaster in Semarang";
+
 /* ---------- 2. WORK: studi kasus brand identity ----------
    Setiap proyek punya folder sendiri: assets/work/<slug>/01.jpg, 02.jpg, 03.jpg ...
    W("slug", jumlahGambar). 0 = pakai mockup placeholder.
@@ -16,29 +19,29 @@ const PORTRAIT="img/portrait.webp";
    Video: {src:"assets/work/p01-.../03.mp4",video:true} */
 const W=(slug,n,ext="jpg")=>Array.from({length:n},(_,i)=>({src:`assets/work/${slug}/${String(i+1).padStart(2,"0")}.${ext}`}));
 const PROJECTS=[
-  {slug:"p01-northwind-studio",name:"Northwind Studio",type:"Agency site",year:2026,with:"Northwind Studio",site:"https://example.com",c:["#ff3b1f","#1a1a1a"],
-   info:"Independent branding studio from Oslo. A typographic site with WebGL page transitions and a fully editable case-study system.",
+  {slug:"p01-northwind-studio",name:"Northwind Studio",type:"Brand identity",year:2026,with:"Northwind Studio",site:"https://example.com",c:["#ff3b1f","#1a1a1a"],
+   info:"Independent branding studio from Oslo. A wordmark built on a strict grid, a monogram for small sizes and a type system for every touchpoint.",
    feat:["Site of the day","Codrops"],shots:W("p01-northwind-studio",0)},
-  {slug:"p02-laut-coffee",name:"Laut Coffee",type:"E-commerce",year:2026,with:"Studio Arus",site:"https://example.com",c:["#2b5cff","#0d1b4d"],
-   info:"Specialty coffee roaster in Bali. Headless Shopify storefront with an ocean-current shader on every product.",
+  {slug:"p02-laut-coffee",name:"Laut Coffee",type:"Identity & packaging",year:2026,with:"Studio Arus",site:"https://example.com",c:["#2b5cff","#0d1b4d"],
+   info:"Specialty coffee roaster in Bali. A wave mark, a hand-cut label system and packaging that changes colour per origin.",
    feat:["E-commerce honorable mention"],shots:W("p02-laut-coffee",0)},
-  {slug:"p03-mira-hartono",name:"Mira Hartono",type:"Photographer portfolio",year:2025,with:"Mira Hartono",site:"https://example.com",c:["#d9c9a8","#5a4630"],
-   info:"Portfolio for a documentary photographer. Infinite draggable gallery, film-grain hover reveals and a dark-room mode.",
+  {slug:"p03-mira-hartono",name:"Mira Hartono",type:"Personal identity",year:2025,with:"Mira Hartono",site:"https://example.com",c:["#d9c9a8","#5a4630"],
+   info:"Documentary photographer. A lowercase wordmark, a stamp for prints and a quiet stationery set.",
    feat:["Developer award"],shots:W("p03-mira-hartono",0)},
-  {slug:"p04-pulse-festival",name:"Pulse Festival",type:"Event / WebGL",year:2025,with:"Pulse Collective",site:"https://example.com",c:["#c6ff3a","#1c2b00"],
-   info:"Electronic music festival in Jakarta. Audio-reactive line-up, interactive map and a ticketing flow built for launch-day traffic.",
+  {slug:"p04-pulse-festival",name:"Pulse Festival",type:"Event identity",year:2025,with:"Pulse Collective",site:"https://example.com",c:["#c6ff3a","#1c2b00"],
+   info:"Electronic music festival in Jakarta. A pulse symbol that animates to the line-up, posters, wristbands and stage signage.",
    feat:["Website of the day"],shots:W("p04-pulse-festival",0)},
-  {slug:"p05-kinetic-type",name:"Kinetic Type",type:"Type foundry",year:2025,with:"Kinetic Type",site:"https://example.com",c:["#f2f2ee","#0a0a0a"],
-   info:"Small independent type foundry. Variable-font tester with live axes, glyph inspector and license checkout.",
+  {slug:"p05-kinetic-type",name:"Kinetic Type",type:"Rebrand",year:2025,with:"Kinetic Type",site:"https://example.com",c:["#f2f2ee","#0a0a0a"],
+   info:"Independent type foundry. Rebrand from a single logo to a flexible K monogram system.",
    feat:["Typewolf"],shots:W("p05-kinetic-type",0)},
-  {slug:"p06-atlas-archive",name:"Atlas Archive",type:"Digital archive",year:2024,with:"Atlas Foundation",site:"https://example.com",c:["#ff9ad5","#3d0f2a"],
-   info:"Online archive of 4,000 posters. Fast search, filterable timeline and zoomable high-resolution viewer.",
+  {slug:"p06-atlas-archive",name:"Atlas Archive",type:"Visual identity",year:2024,with:"Atlas Foundation",site:"https://example.com",c:["#ff9ad5","#3d0f2a"],
+   info:"Archive of 4,000 posters. A four-petal symbol, a catalogue numbering system and exhibition graphics.",
    feat:["Honorable mention"],shots:W("p06-atlas-archive",0)},
-  {slug:"p07-sora-furniture",name:"Sora Furniture",type:"Headless shop",year:2024,with:"Sora",site:"https://example.com",c:["#a8b39a","#2f3a27"],
-   info:"Japanese-inspired furniture maker. 3D product configurator and a calm, slow-scrolling editorial shop.",
+  {slug:"p07-sora-furniture",name:"Sora Furniture",type:"Identity & packaging",year:2024,with:"Sora",site:"https://example.com",c:["#a8b39a","#2f3a27"],
+   info:"Japanese-inspired furniture maker. A step-shaped mark, joinery-inspired pattern and box packaging.",
    feat:["E-commerce nominee"],shots:W("p07-sora-furniture",0)},
-  {slug:"p08-open-field",name:"Open Field",type:"Non-profit",year:2023,with:"Open Field",site:"https://example.com",c:["#ffb400","#3a2700"],
-   info:"Non-profit for urban farming. Accessible, fast campaign site with donation flow and volunteer map.",
+  {slug:"p08-open-field",name:"Open Field",type:"Brand identity",year:2023,with:"Open Field",site:"https://example.com",c:["#ffb400","#3a2700"],
+   info:"Urban farming non-profit. A sun-and-field symbol, campaign posters and volunteer kit.",
    feat:["CSS award"],shots:W("p08-open-field",0)}
 ];
 
@@ -93,4 +96,4 @@ const ARCHIVE=[
   {title:"Ruang Kosong",type:"Calendar",year:2022,format:"A3, 13 pp",ratio:1.414,c:["#FFB400","#0A0A0A"],src:"" /* assets/other/o12-ruang-kosong.jpg */}
 ];
 
-window.CONTENT={portrait:PORTRAIT,projects:PROJECTS,marks:MARKS,archive:ARCHIVE,G};
+window.CONTENT={currently:CURRENTLY,portrait:PORTRAIT,projects:PROJECTS,marks:MARKS,archive:ARCHIVE,G};

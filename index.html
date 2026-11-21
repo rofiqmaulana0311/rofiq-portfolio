@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Rofiq Maulana / Web developer</title>
+<title>Rofiq Maulana / Brand designer</title>
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,13 +13,13 @@
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
 <style>
 /*
-VOICE: dingin, percaya diri, editorial. Portofolio developer kreatif.
+VOICE: dingin, percaya diri, editorial. Portofolio brand designer.
 IDEA: lembar indeks arsip/katalog cetak: nomor P.01, label kecil, nama raksasa.
 PICTURE: satu foto potret kecil yang membesar memenuhi layar saat di-scroll.
-COLOUR and TYPE: hitam & putih murni + satu aksen; Archivo condensed 900 + JetBrains Mono.
+COLOUR and TYPE: monokrom murni (warna hanya dari karya klien) + tekstur kapur; Anton + Satoshi.
 LAYOUT: hero hitam penuh, pernyataan besar, daftar proyek putih, footer hitam.
 */
-:root{--bk:#0a0a0a;--wh:#f2f2ee;--grey:#9a9a96;--acc:#ff3b1f;--mono:"Satoshi","Figtree",system-ui,sans-serif;--cond:"Anton",Impact,"Arial Narrow",sans-serif}
+:root{--bk:#0a0a0a;--wh:#f2f2ee;--grey:#9a9a96;--acc:#f2f2ee;--mono:"Satoshi","Figtree",system-ui,sans-serif;--cond:"Anton",Impact,"Arial Narrow",sans-serif}
 html{font-synthesis:none}
 *{box-sizing:border-box;min-width:0}
 html:not(.lenis){scroll-behavior:smooth}
@@ -28,7 +28,7 @@ html.lenis,html.lenis body{height:auto}
 .lenis [data-lenis-prevent]{overscroll-behavior:contain}
 body{margin:0;background:var(--bk);color:var(--wh);font:500 12px/1.5 var(--mono);letter-spacing:.04em;text-transform:uppercase;overflow-x:clip;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-::selection{background:var(--acc);color:#fff}
+::selection{background:#c9c9c4;color:#0a0a0a}
 .lbl{color:var(--grey)}
 .pad{padding-inline:max(2vw,16px)}
 
@@ -49,14 +49,17 @@ body.intro{overflow:hidden}
 /* header */
 header{position:fixed;top:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;padding-block:18px;mix-blend-mode:difference;color:#fff}
 header nav{display:flex;gap:28px}
-header a:hover,footer a:hover{color:var(--acc)}
+header a:hover,footer a:hover,header button:hover{opacity:.5}
+header a,footer a,header button{transition:opacity .25s}
+.u404{text-decoration:underline;text-decoration-thickness:.06em;text-underline-offset:.12em;pointer-events:auto}
 header .r{text-align:right}
 
 /* hero */
 .stage{position:relative}
 .hero{position:sticky;top:0;height:100svh;display:flex;flex-direction:column;padding-top:52px;overflow:hidden}
 .grow{height:130svh}
-.bleed{position:absolute;inset:0;z-index:4;overflow:hidden;opacity:0;pointer-events:none;clip-path:inset(50%)}
+.bleed{position:absolute;inset:0;z-index:4;opacity:0;pointer-events:none}
+.bleed .bclip{clip-path:inset(50%)}
 .live .bleed{opacity:1}
 .live .pcard{visibility:hidden}
 .bimg{position:absolute;left:0;top:0;transform-origin:0 0}
@@ -69,6 +72,7 @@ header .r{text-align:right}
 .ready .name .ch{transform:none}
 .meta{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-top:18px}
 .meta p{margin:0;max-width:34ch}
+.meta p:last-child{flex:none;white-space:nowrap}
 .fig{position:relative;flex:1;min-height:240px}
 .comp{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;justify-items:center;gap:8px;pointer-events:none;font:500 11px/1.2 var(--mono);text-align:center}
 .mark,.pcard{opacity:0}
@@ -104,10 +108,12 @@ header .r{text-align:right}
 .row:hover .num{transform:translateX(1.2vw)}
 .row .info{display:flex;justify-content:space-between;gap:16px;color:var(--bk)}
 .row .arr{font:300 clamp(40px,6vw,100px)/1 var(--mono);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.row:hover .arr{transform:translateX(-1.2vw) rotate(-45deg);color:var(--acc)}
+.row:hover .arr{transform:translateX(-1.2vw) rotate(-45deg);color:var(--bk)}
 #peek{position:fixed;left:0;top:0;z-index:15;width:clamp(200px,20vw,320px);aspect-ratio:4/5;pointer-events:none;border-radius:2px;overflow:hidden;opacity:0;transform:translate(-50%,-50%) scale(.6);transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
 #peek.on{opacity:1}
-#peek .tile{position:absolute;inset:0}
+#peek .tile{position:absolute;inset:0;filter:url(#liquid)}
+.morph{position:fixed;z-index:41;overflow:hidden;pointer-events:none;border-radius:2px}
+.morph>*{width:100%;height:100%;object-fit:cover;display:block}
 
 /* footer */
 /* ====== footer: link di atas, logogram raksasa menempel di tepi bawah ====== */
@@ -121,13 +127,10 @@ footer{position:relative;min-height:100svh;overflow:hidden;padding-block:72px 0}
 
 @media(hover:none){#peek{display:none}}
 
-:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 
 /* ====== halaman detail proyek (case) ====== */
 body.lock{overflow:hidden}
-#wipe{position:fixed;inset:0;z-index:40;background:var(--bk);transform:scaleY(0);transform-origin:bottom;pointer-events:none;transition:transform .7s cubic-bezier(.77,0,.18,1)}
-#wipe.cover{transform:scaleY(1)}
-#wipe.out{transform:scaleY(0);transform-origin:top}
 #case{position:fixed;inset:0;z-index:30;background:var(--bk);color:var(--wh);overflow-y:auto;overscroll-behavior:contain;visibility:hidden}
 #case.open{visibility:visible}
 .cs{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:max(1vw,10px)}
@@ -143,7 +146,7 @@ body.lock{overflow:hidden}
 .cs-meta{display:grid;grid-template-columns:1fr 1fr auto;gap:16px}
 .cs-meta.full{grid-template-columns:1fr 1fr 1fr auto;margin-bottom:clamp(40px,7vw,110px)}
 .cs-back{cursor:pointer;background:none;border:0;color:inherit;font:inherit;text-transform:inherit;padding:0;text-align:left}
-.cs-back:hover,.cs-top a:hover{color:var(--acc)}
+.cs-back:hover,.cs-top a:hover{opacity:.5}
 .cs-info{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .cs-info p{margin:0;display:flex;gap:8px}
 .cs-info p span:first-child{flex:none}
@@ -161,7 +164,7 @@ body.lock{overflow:hidden}
 .next{display:block;border-top:1px solid #555;margin-top:max(2vw,16px);padding-top:10px}
 .next .lbl{display:block}
 .next b{display:block;font:400 clamp(56px,9vw,170px)/.85 var(--cond);transition:color .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
-.next:hover b{color:var(--acc);transform:translateX(1vw)}
+.next:hover b{color:transparent;-webkit-text-stroke:1px var(--wh);transform:translateX(1vw)}
 .cs-m{display:none}
 @media(max-width:900px){
   .cs{grid-template-columns:1fr}
@@ -221,6 +224,12 @@ body.lock{overflow:hidden}
 #lgx .sw{display:flex;gap:8px}
 #lgx .sw span{display:grid;align-content:end;width:76px;aspect-ratio:1;padding:6px;font-size:9px;box-shadow:inset 0 0 0 1px currentColor}
 #lgx .nav{display:flex;gap:8px}
+#lgx .ctl{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px 14px}
+#lgx .ctl input{width:100%;accent-color:currentColor;height:28px}
+#lgx .ctl output{min-width:13ch;text-align:right;font-variant-numeric:tabular-nums}
+#lgx .ctl .b{grid-column:1/-1;justify-self:start}
+#lgx.small .gd{opacity:0;transition:opacity .3s}
+#lgx .stage .big{transition:width .25s,height .25s}
 #lgx button.b{min-height:44px;min-width:44px;padding:10px 16px;border-radius:999px;border:1px solid currentColor;background:none;color:inherit;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
 #lgx button.b:hover{background:var(--mi);color:var(--mc)}
 @media(max-width:800px){#lgx{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}#lgx .info{padding:16px}#lgx .stage svg.big{width:min(70vw,48svh)}}
@@ -230,15 +239,15 @@ body.lock{overflow:hidden}
 .gate-top{display:flex;justify-content:space-between;gap:16px}
 .gate-mid{position:relative;display:grid;place-items:center}
 .gate-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none;font:400 clamp(48px,11vw,210px)/.9 var(--cond);color:var(--wh)}
-.portal{position:relative;z-index:2;width:clamp(150px,17vw,260px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:var(--acc);cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s;will-change:transform}
+.portal{position:relative;z-index:2;width:clamp(150px,17vw,260px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:var(--wh);cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s;will-change:transform}
 .portal canvas{position:absolute;inset:0;width:100%;height:100%}
 .portal span{position:absolute;inset:0;display:grid;place-items:center;font:400 clamp(26px,2.6vw,40px)/1 var(--cond);color:var(--bk);letter-spacing:.02em}
-.portal:hover{box-shadow:0 0 0 14px rgba(255,59,31,.18)}
+.portal:hover{box-shadow:0 0 0 14px rgba(242,242,238,.14)}
 .gate-foot{display:flex;justify-content:space-between;gap:16px;color:var(--grey)}
 main.away,footer.away,.gate.away{transform:scale(.93);filter:brightness(.4);transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 
-#odim{position:fixed;inset:0;z-index:45;background:var(--acc);color:var(--bk);visibility:hidden;overflow:hidden;touch-action:none;cursor:grab;clip-path:circle(0 at 50% 50%)}
+#odim{position:fixed;inset:0;z-index:45;background:var(--wh);color:var(--bk);visibility:hidden;overflow:hidden;touch-action:none;cursor:grab}
 #odim.open{visibility:visible}
 #odim.grabbing{cursor:grabbing}
 #odim .plane{position:absolute;inset:0;will-change:transform}
@@ -251,8 +260,8 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 .dhud{position:absolute;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px max(2vw,16px);pointer-events:none}
 .dhud.t{top:0}.dhud.b{bottom:0}
 .dhud button,.dhud a{pointer-events:auto}
-.dexit{background:var(--bk);color:var(--acc);border:0;border-radius:999px;padding:12px 18px;min-height:44px;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
-.dexit:hover{background:#fff;color:var(--bk)}
+.dexit{background:var(--bk);color:var(--wh);border:0;border-radius:999px;padding:12px 18px;min-height:44px;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+.dexit:hover{background:#555;color:#fff}
 .dtitle{font:400 clamp(28px,3vw,44px)/1 var(--cond)}
 /* poster placeholder (ganti dengan gambar asli lewat src) */
 .pst{display:block;font:400 10px/1.2 var(--mono);letter-spacing:.04em;text-transform:uppercase}
@@ -260,7 +269,7 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 .pst em{position:absolute;left:7%;top:5%;font-style:normal}.pst i{position:absolute;right:7%;top:5%;font-style:normal}
 .pst .sh{position:absolute}
 /* lightbox */
-.lb{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:32px;align-items:center;padding:80px max(4vw,16px);background:var(--acc);opacity:0;pointer-events:none;transition:opacity .45s;cursor:zoom-out}
+.lb{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);gap:32px;align-items:center;padding:80px max(4vw,16px);background:var(--wh);opacity:0;pointer-events:none;transition:opacity .45s;cursor:zoom-out}
 .lb.on{opacity:1;pointer-events:auto}
 .lb .big{position:relative;justify-self:center;height:min(76svh,100%);max-width:100%;overflow:hidden;transform:scale(.94);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 .lb.on .big{transform:none}
@@ -269,13 +278,73 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 .lb .meta2 h3{margin:0;font:400 clamp(40px,4vw,64px)/.9 var(--cond)}
 @media(max-width:700px){.lb{grid-template-columns:1fr;align-content:center}.lb .big{height:58svh}}
 
+/* ====== SISTEM KAPUR ====== */
+#grain{position:fixed;inset:-50%;z-index:70;pointer-events:none;opacity:.07;background-size:220px 220px;animation:grain .9s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-7%,4%)}40%{transform:translate(5%,-6%)}60%{transform:translate(-3%,8%)}80%{transform:translate(8%,2%)}100%{transform:translate(0,0)}}
+.svgdefs{position:absolute;width:0;height:0;overflow:hidden}
+.bclip{position:absolute;inset:0;overflow:hidden}
+#wipe{position:fixed;inset:-48px;z-index:40;pointer-events:none;filter:url(#chalkMask)}
+#wipe .wc{position:absolute;inset:0;background:var(--bk);clip-path:inset(100% 0 0 0);transition:clip-path .7s cubic-bezier(.77,0,.18,1)}
+#wipe.cover .wc{clip-path:inset(0 0 0 0)}
+#wipe.cover.out .wc{clip-path:inset(0 0 100% 0)}
+#wipe.snap .wc{transition:none}
+#ink{position:fixed;inset:-48px;z-index:46;pointer-events:none;filter:url(#chalkMask);visibility:hidden}
+#ink .ic{position:absolute;inset:0;background:var(--wh);clip-path:circle(0 at 50% 50%)}
+/* bintang ★ hanya di elemen interaktif */
+#star{position:fixed;left:0;top:0;z-index:80;width:18px;height:18px;margin:-9px 0 0 -9px;pointer-events:none;mix-blend-mode:difference;color:#fff;opacity:0;transition:opacity .2s}
+#star.on{opacity:1}
+#star svg{display:block;width:100%;height:100%;fill:currentColor}
+@media(hover:none){#star{display:none}}
+/* papan tulis di footer */
+#chalkCv{position:absolute;inset:0;z-index:1;width:100%;height:100%;cursor:crosshair}
+.flogo canvas{display:block;width:100%;height:auto}
+.fhint{position:absolute;left:max(2vw,16px);bottom:18px;z-index:3;display:flex;gap:18px;align-items:center;color:var(--grey)}
+.fhint button{background:none;border:0;padding:0;color:var(--wh);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;min-height:24px}
+/* tombol suara */
+.hr{display:flex;justify-content:flex-end;gap:24px}
+.snd{background:none;border:0;padding:0;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+
 @media(prefers-reduced-motion:reduce){
+  #grain{animation:none}
   *{transition:none!important;scroll-behavior:auto!important}
   .name .ch,.statement .ln>i,.comp .t>i{transform:none}
 }
 </style>
 </head>
 <body>
+<svg class="svgdefs" aria-hidden="true" focusable="false">
+  <!-- tepi bergerigi seperti kapur: alpha dipatahkan noise, isi gambar tetap utuh -->
+  <filter id="chalkMask" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency=".035 .06" numOctaves="4" seed="7" result="n"/>
+    <feDisplacementMap in="SourceAlpha" in2="n" scale="30" xChannelSelector="R" yChannelSelector="G" result="a"/>
+    <feComposite in="SourceGraphic" in2="a" operator="in"/>
+  </filter>
+  <filter id="chalkBleed" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency=".03 .05" numOctaves="4" seed="3" result="n"/>
+    <feDisplacementMap id="chalkBleedMap" in="SourceAlpha" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="a"/>
+    <feComposite in="SourceGraphic" in2="a" operator="in"/>
+  </filter>
+  <!-- cairan: untuk pratinjau hover & gambar studi kasus -->
+  <filter id="liquid" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence id="liqT" type="fractalNoise" baseFrequency=".008 .02" numOctaves="2" seed="2" result="n"/>
+    <feDisplacementMap id="liqMap" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="B"/>
+  </filter>
+  <filter id="liquid2" x="-5%" y="-5%" width="110%" height="110%">
+    <feTurbulence type="fractalNoise" baseFrequency=".006 .018" numOctaves="2" seed="5" result="n"/>
+    <feDisplacementMap id="liqMap2" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="B"/>
+  </filter>
+  <!-- RGB split untuk Other Side -->
+  <filter id="rgbSplit" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
+    <feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="r"/>
+    <feOffset id="rgbR" in="r" dx="0" dy="0" result="r2"/>
+    <feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="gb"/>
+    <feOffset id="rgbB" in="gb" dx="0" dy="0" result="gb2"/>
+    <feBlend in="r2" in2="gb2" mode="screen"/>
+  </filter>
+</svg>
+<div id="grain" aria-hidden="true"></div>
+<div id="star" aria-hidden="true"><svg viewBox="-1 -1 2 2"><path d="M0-1 .14-.25.87-.5.29 0 .87.5.14.25 0 1-.14.25-.87.5-.29 0-.87-.5-.14-.25Z"/></svg></div>
+<div id="ink" aria-hidden="true"><div class="ic" id="inkC"></div></div>
 
 <div id="intro" aria-hidden="true">
   <div class="bg"></div>
@@ -283,13 +352,13 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
   <div class="icount" id="icount">000</div>
 </div>
 <div id="peek" aria-hidden="true"><div class="tile"></div></div>
-<div id="wipe" aria-hidden="true"></div>
+<div id="wipe" aria-hidden="true"><div class="wc"></div></div>
 <div id="case" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Project detail"></div>
 
 <header class="pad">
   <a href="#top">Rofiq Maulana</a>
   <nav class="hide-m"><a href="#work">Work</a><a href="#marks">Marks</a><a href="#about">About</a><a href="#other-dimension">Other ◐</a></nav>
-  <a class="r" href="#contact">Contact</a>
+  <div class="hr"><button class="snd" id="snd" aria-pressed="false">Sound off</button><a href="#contact">Contact</a></div>
 </header>
 
 <main id="top">
@@ -299,8 +368,8 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
       <span class="w" aria-hidden="true">ROFIQ</span><span class="w" aria-hidden="true">MAULANA</span>
     </h1>
     <div class="meta">
-      <p>Independent web developer. Sites for studios, artists and small brands.</p>
-      <p style="text-align:right"><span class="lbl">Available</span> 01/2027</p>
+      <p>Independent brand designer. Identities for studios, artists and small brands.<br><span class="lbl">Currently</span> <span id="now"></span></p>
+      <p style="text-align:right"><span class="lbl">Central Java</span> <span id="clock">--:--</span> WIB<br><span class="lbl">Available</span> 01/2027</p>
     </div>
     <div class="fig">
       <div class="comp" id="comp">
@@ -312,7 +381,7 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
         </div>
       </div>
     </div>
-    <div class="bleed" id="bleed" aria-hidden="true"><div class="bimg" id="bimg"></div><i class="dim" id="dim"></i></div>
+    <div class="bleed" id="bleed" aria-hidden="true"><div class="bclip" id="bclip"><div class="bimg" id="bimg"></div><i class="dim" id="dim"></i></div></div>
    </section>
    <div class="grow" id="grow"></div>
    <section class="about pad" id="about">
@@ -320,7 +389,7 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
     <p class="statement" id="stmt">
       <span class="ln"><i>I care about the parts</i></span>
       <span class="ln"><i style="transition-delay:.06s">nobody puts in the brief:</i></span>
-      <span class="ln"><i style="transition-delay:.12s">scroll feel, load time, the 404.</i></span>
+      <span class="ln"><i style="transition-delay:.12s">the clear space, the favicon, <a href="404.html" class="u404">the 404</a>.</i></span>
     </p>
    </section>
   </div>
@@ -368,7 +437,9 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
     </nav>
     <a class="r" href="#top">Back to top ↑</a>
   </div>
-  <div class="flogo" id="flogo"><img src="img/logo-white.webp" alt="Rofiq Maulana logogram" width="1360" height="1080" loading="lazy" decoding="async"></div>
+  <canvas id="chalkCv" aria-hidden="true"></canvas>
+  <div class="flogo" id="flogo"><canvas id="flogoCv" role="img" aria-label="Rofiq Maulana logogram"></canvas></div>
+  <div class="fhint"><span id="fhintTxt">Hover to erase · drag to draw</span><button id="chalkClear">Clear board</button></div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.27/dist/lenis.min.js"></script>
@@ -398,11 +469,50 @@ document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#"]');i
   const el=document.getElementById(id);if(!el)return;e.preventDefault();
   if(lenis)lenis.scrollTo(el,{duration:1.6});else el.scrollIntoView({behavior:"smooth"})});
 
+/* ====== SUARA (opsional, default mati, dibuat dengan WebAudio, tanpa file) ====== */
+const SFX=(()=>{let ctx=null,on=false,noiseBuf=null,scr=null;
+  const btn=document.getElementById("snd");
+  const ensure=()=>{if(ctx)return;ctx=new (window.AudioContext||window.webkitAudioContext)();
+    noiseBuf=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1};
+  const noise=()=>{const n=ctx.createBufferSource();n.buffer=noiseBuf;n.loop=true;return n};
+  const set=v=>{on=v;btn.textContent=on?"Sound on":"Sound off";btn.setAttribute("aria-pressed",on);try{localStorage.setItem("rm-sound",on?"1":"0")}catch(_){}};
+  btn.addEventListener("click",()=>{try{ensure();ctx.resume();set(!on);if(on)tick(.6)}catch(_){}});
+  const tick=(v=.35)=>{if(!on||!ctx)return;const n=noise(),f=ctx.createBiquadFilter(),g=ctx.createGain(),t=ctx.currentTime;
+    f.type="highpass";f.frequency.value=3200;g.gain.setValueAtTime(v*.25,t);g.gain.exponentialRampToValueAtTime(.0001,t+.035);
+    n.connect(f).connect(g).connect(ctx.destination);n.start(t);n.stop(t+.05)};
+  const whoosh=(up=true)=>{if(!on||!ctx)return;const n=noise(),f=ctx.createBiquadFilter(),g=ctx.createGain(),t=ctx.currentTime;
+    f.type="bandpass";f.Q.value=1.2;f.frequency.setValueAtTime(up?260:2800,t);f.frequency.exponentialRampToValueAtTime(up?2800:260,t+.9);
+    g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.25);g.gain.exponentialRampToValueAtTime(.0001,t+1);
+    n.connect(f).connect(g).connect(ctx.destination);n.start(t);n.stop(t+1.05)};
+  const scratch=s=>{if(!on||!ctx)return;if(!scr){const n=noise(),f=ctx.createBiquadFilter(),g=ctx.createGain();f.type="bandpass";f.frequency.value=1800;f.Q.value=.7;g.gain.value=0;n.connect(f).connect(g).connect(ctx.destination);n.start();scr={n,f,g}}
+    const t=ctx.currentTime;scr.g.gain.cancelScheduledValues(t);scr.g.gain.setTargetAtTime(Math.min(.18,s*.01),t,.02);scr.f.frequency.setTargetAtTime(1200+Math.random()*1600,t,.03);
+    scr.g.gain.setTargetAtTime(0,t+.06,.05)};
+  return {tick,whoosh,scratch,get on(){return on}}})();
+document.addEventListener("pointerover",e=>{if(e.target.closest(".row,.mk,.portal,header a,footer a,.dexit"))SFX.tick()});
+
+/* ====== GRAIN kapur di seluruh layar ====== */
+{const c=document.createElement("canvas");c.width=c.height=220;const g=c.getContext("2d"),im=g.createImageData(220,220);
+ for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255|0;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.random()<.5?255:0}
+ g.putImageData(im,0,0);document.getElementById("grain").style.backgroundImage=`url(${c.toDataURL()})`}
+
+/* ====== BINTANG ★: muncul hanya di atas elemen interaktif ====== */
+{const st=document.getElementById("star");let sx=-50,sy=-50,tx=-50,ty=-50,rot=0,vis=false;
+ const SEL="a,button,.row,.mk,.portal,#odim .it,input";
+ addEventListener("pointermove",e=>{tx=e.clientX;ty=e.clientY;const on=!!(e.target.closest&&e.target.closest(SEL));if(on!==vis){vis=on;st.classList.toggle("on",on)}},{passive:true});
+ const go=()=>{const vx=tx-sx;sx+=(tx-sx)*.35;sy+=(ty-sy)*.35;rot+=1.2+Math.abs(vx)*.6;
+   st.style.transform=`translate(${(sx+14).toFixed(1)}px,${(sy+14).toFixed(1)}px) rotate(${rot.toFixed(1)}deg) scale(${vis?1:.3})`;requestAnimationFrame(go)};
+ if(matchMedia("(hover:hover)").matches)requestAnimationFrame(go)}
+
 const portrait=window.CONTENT.portrait;
 const silhouette=`<svg viewBox="0 0 80 100" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="100" fill="#d6d6d1"/><circle cx="43" cy="37" r="14" fill="#111"/><path d="M43 23c-9 0-15 5-15 13 0 2 1 4 2 5l-3 4 3 1c0 5 3 9 8 9h5c8 0 14-7 14-15 0-10-6-17-14-17z" fill="#111"/><path d="M6 100c1-22 13-33 37-33s35 11 36 33z" fill="#111"/></svg>`;
 const portraitHTML=portrait?`<img src="${portrait}" alt="">`:silhouette;
 document.getElementById("pcard").innerHTML=portraitHTML;
 document.getElementById("bimg").innerHTML=portraitHTML;
+
+/* status: jam lokal Central Java + baris Currently */
+document.getElementById("now").textContent=window.CONTENT.currently||"";
+{const ck=document.getElementById("clock"),f=new Intl.DateTimeFormat("en-GB",{timeZone:"Asia/Jakarta",hour:"2-digit",minute:"2-digit"});
+ const t=()=>{ck.textContent=f.format(new Date())};t();setInterval(t,15000)}
 
 /* nama dipecah per huruf untuk animasi naik bergelombang */
 {let li=0;for(const w of document.querySelectorAll(".name .w"))w.innerHTML=[...w.textContent.trim()].map(c=>`<span class="ch" style="transition-delay:${(li++)*45}ms">${c}</span>`).join("")}
@@ -433,7 +543,7 @@ io.observe(stmt);
 
 /* ====== parallax: foto membesar sampai penuh, About ter-scroll di atasnya ====== */
 const stage=document.getElementById("stage"),grow=document.getElementById("grow"),heroEl=document.getElementById("hero");
-const pc=document.getElementById("pcard"),bleed=document.getElementById("bleed"),bimg=document.getElementById("bimg"),dim=document.getElementById("dim");
+const pc=document.getElementById("pcard"),bleed=document.getElementById("bleed"),bclip=document.getElementById("bclip"),bimg=document.getElementById("bimg"),dim=document.getElementById("dim"),bleedMap=document.getElementById("chalkBleedMap");
 const fadeEls=[...document.querySelectorAll("#mark,.trio .l,.trio .r")],nameEl=document.querySelector(".name");
 let base=null;
 const measure=()=>{const r=pc.getBoundingClientRect(),h=heroEl.getBoundingClientRect(),W=heroEl.clientWidth,H=heroEl.clientHeight;
@@ -444,13 +554,51 @@ const parallax=()=>{if(!base)measure();const {x,y,w,h,W,H,sw,sh}=base;
   const s0=scrollY-stage.offsetTop,run=grow.offsetHeight;
   const p=clamp(s0/run),e=smooth(p),q=clamp((s0-run)/(H*.7));
   const k=1-e;
-  bleed.style.clipPath=`inset(${(y*k).toFixed(1)}px ${((W-x-w)*k).toFixed(1)}px ${((H-y-h)*k).toFixed(1)}px ${(x*k).toFixed(1)}px)`;
+  bclip.style.clipPath=`inset(${(y*k).toFixed(1)}px ${((W-x-w)*k).toFixed(1)}px ${((H-y-h)*k).toFixed(1)}px ${(x*k).toFixed(1)}px)`;
   const sc=lerp(w/sw,1,e),cx=lerp(x+w/2,W/2,e),cy=lerp(y+h/2,H/2,e);
   bimg.style.transform=`translate(${(cx-sw*sc/2).toFixed(1)}px,${(cy-sh*sc/2).toFixed(1)}px) scale(${sc.toFixed(4)})`;
   dim.style.opacity=(q*.5).toFixed(3);
+  /* tepi kapur hanya saat foto sedang membuka (tajam di awal & akhir) */
+  const rough=reduce?0:Math.sin(Math.PI*e)*34;
+  if(rough>.5){bleedMap.setAttribute("scale",rough.toFixed(1));bleed.style.filter="url(#chalkBleed)"}else bleed.style.filter="none";
   for(const f of fadeEls)f.style.opacity=comp.classList.contains("in")?Math.max(0,1-p*4):"";
   nameEl.style.opacity=1-e*.85};
 const flogo=document.getElementById("flogo"),footEl=document.getElementById("contact");
+/* ====== PAPAN TULIS: logogram bisa dihapus kursor & tumbuh lagi; drag untuk menggambar kapur ====== */
+{const lc=document.getElementById("flogoCv"),lg=lc.getContext("2d"),cc=document.getElementById("chalkCv"),cg=cc.getContext("2d");
+ const img=new Image();img.decoding="async";img.src="img/logo-white.webp";
+ let ready=false,visible=false,dpr=Math.min(2,devicePixelRatio||1),last=null,drawing=false,erasedAt=0;
+ const sizeLogo=()=>{const w=flogo.clientWidth;if(!w)return;lc.width=w*dpr;lc.height=w/1.259*dpr;lc.style.height=w/1.259+"px";lg.setTransform(dpr,0,0,dpr,0,0);if(ready)lg.drawImage(img,0,0,w,w/1.259)};
+ const sizeBoard=()=>{const old=cc.width?cc:null;let snap=null;if(old&&cc.width){snap=document.createElement("canvas");snap.width=cc.width;snap.height=cc.height;snap.getContext("2d").drawImage(cc,0,0)}
+   cc.width=footEl.clientWidth*dpr;cc.height=footEl.clientHeight*dpr;cg.setTransform(dpr,0,0,dpr,0,0);if(snap)cg.drawImage(snap,0,0,snap.width/dpr,snap.height/dpr)};
+ img.onload=()=>{ready=true;sizeLogo()};
+ new ResizeObserver(()=>{sizeLogo();sizeBoard()}).observe(footEl);
+ /* sapuan kapur: titik-titik acak sepanjang garis */
+ const chalk=(g,x0,y0,x1,y1,r,n,alpha,dot=1)=>{const d=Math.hypot(x1-x0,y1-y0),steps=Math.max(1,d/2);
+   for(let i=0;i<=steps;i++){const t=i/steps,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;
+     for(let k=0;k<n;k++){const a=Math.random()*6.283,rr=Math.random()**.6*r;g.globalAlpha=alpha*(.35+Math.random()*.65);
+       const sz=dot*(1+Math.random()*1.6);g.fillRect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,sz,sz)}}g.globalAlpha=1};
+ const local=(el,e)=>{const r=el.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
+ footEl.addEventListener("pointermove",e=>{if(e.target.closest(".ftop a,.fhint button"))return;
+   const [bx,by]=local(cc,e);
+   if(drawing&&last){cg.fillStyle="#f2f2ee";chalk(cg,last[0],last[1],bx,by,2.2,5,.9);SFX.scratch(Math.hypot(bx-last[0],by-last[1]))}
+   else if(ready){const [lx,ly]=local(lc,e),pl=last?last.l:null;lg.save();lg.globalCompositeOperation="destination-out";lg.fillStyle="#000";
+     chalk(lg,pl?pl[0]:lx,pl?pl[1]:ly,lx,ly,e.pointerType==="touch"?34:28,26,1,4.5);lg.restore();erasedAt=performance.now();
+     if(pl)SFX.scratch(Math.hypot(lx-pl[0],ly-pl[1])*.4)}
+   last=[bx,by];last.l=local(lc,e)},{passive:true});
+ footEl.addEventListener("pointerleave",()=>{last=null;drawing=false});
+ cc.addEventListener("pointerdown",e=>{if(e.pointerType==="touch")return;drawing=true;last=local(cc,e);last.l=local(lc,e)});
+ addEventListener("pointerup",()=>{drawing=false});
+ document.getElementById("chalkClear").addEventListener("click",()=>{cg.clearRect(0,0,cc.width,cc.height);if(ready){lg.clearRect(0,0,lc.width,lc.height);lg.drawImage(img,0,0,flogo.clientWidth,flogo.clientWidth/1.259)}});
+ if(matchMedia("(hover:none)").matches)document.getElementById("fhintTxt").textContent="Swipe across the mark to erase";
+ /* logogram tumbuh kembali perlahan */
+ new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible)requestAnimationFrame(regrow)}).observe(footEl);
+ function regrow(){if(!visible)return;const dt=performance.now()-erasedAt;
+   if(ready&&erasedAt&&dt>500){const w=flogo.clientWidth;
+     if(dt<4500){lg.globalAlpha=.04;lg.drawImage(img,0,0,w,w/1.259);lg.globalAlpha=1}
+     else{lg.clearRect(0,0,lc.width,lc.height);lg.drawImage(img,0,0,w,w/1.259);erasedAt=0}}
+   requestAnimationFrame(regrow)}
+}
 const footRise=()=>{const r=footEl.getBoundingClientRect(),k=clamp((innerHeight-r.top)/innerHeight);flogo.style.setProperty("--rise",(reduce?0:(1-smooth(k))*45).toFixed(2)+"%")};
 addEventListener("scroll",()=>requestAnimationFrame(footRise),{passive:true});footRise();
 let ticking=false;
@@ -464,7 +612,10 @@ addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY});
 rows.addEventListener("pointerover",e=>{const r=e.target.closest(".row");if(!r)return;const p=projects[r.dataset.i];
   const i=+r.dataset.i;tile.innerHTML=p.shots&&p.shots[0]&&!p.shots[0].video?`<img src="${esc(p.shots[0].src)}" alt="" style="width:100%;height:100%;object-fit:cover">`:flatTile(p,i);peek.classList.add("on")});
 rows.addEventListener("pointerleave",()=>peek.classList.remove("on"));
-const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
+const liqMap=document.getElementById("liqMap"),liqT=document.getElementById("liqT");let liq=0,lt=0;
+const loop=()=>{const sp=Math.hypot(mx-px,my-py);px+=(mx-px)*.12;py+=(my-py)*.12;
+  liq+=(Math.min(80,sp*1.1)-liq)*.15;lt+=.02;
+  if(peek.classList.contains("on")){liqMap.setAttribute("scale",liq.toFixed(1));if(liq>1)liqT.setAttribute("baseFrequency",`${(.008+.002*Math.sin(lt)).toFixed(4)} ${(.02+.004*Math.cos(lt*1.3)).toFixed(4)}`)}
   const tilt=Math.max(-12,Math.min(12,(mx-px)*.15));
   peek.style.transform=`translate(${px}px,${py}px) translate(-50%,-50%) rotate(${tilt}deg) scale(${peek.classList.contains("on")?1:.6})`;
   requestAnimationFrame(loop)};
@@ -519,12 +670,23 @@ const showMark=i=>{mkIdx=(i+marks.length)%marks.length;const m=marks[mkIdx];
    <div><h3>${esc(m.client)}</h3></div>
    <dl><dt>Type</dt><dd>${m.kind}</dd><dt>Industry</dt><dd>${esc(m.industry)}</dd><dt>Year</dt><dd>${m.year}</dd></dl>
    <div class="sw"><span style="background:${m.c[0]};color:${m.c[1]}">${m.c[0]}</span><span style="background:${m.c[1]};color:${m.c[0]}">${m.c[1]}</span></div>
+   <div class="ctl"><label for="mkScale">Scale test</label><input type="range" id="mkScale" min="0" max="100" value="100" aria-describedby="mkPx"><output id="mkPx">Full size</output><button class="b" data-x="inv" aria-pressed="false">Invert</button></div>
    <div class="nav"><button class="b" data-x="prev" aria-label="Previous logo">←</button><button class="b" data-x="next" aria-label="Next logo">→</button></div>`;
+  lgx.classList.remove("small");
   requestAnimationFrame(()=>requestAnimationFrame(()=>lgx.classList.add("draw")))};
 const openMark=i=>{showMark(i);lgx.classList.add("open");lenis?.stop();document.body.classList.add("lock");lgxInfo.querySelector("[data-x=close]").focus({preventScroll:true})};
 const closeMark=()=>{lgx.classList.remove("open","draw");mkIdx=-1;document.body.classList.remove("lock");lenis?.start();const b=mkGrid.querySelector(".mk:hover")||null};
 mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mk");if(b)openMark(+b.dataset.i)});
-lgx.addEventListener("click",e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;if(a==="close")closeMark();if(a==="prev")showMark(mkIdx-1);if(a==="next")showMark(mkIdx+1)});
+/* scale test: dari favicon 16px sampai ukuran penuh; invert: positif/negatif */
+const ctxName=px=>px<=24?"favicon":px<=72?"app icon":px<=160?"business card":px<=320?"poster":"billboard";
+lgx.addEventListener("input",e=>{if(e.target.id!=="mkScale")return;const v=+e.target.value,big=lgxStage.querySelectorAll(".big"),out=document.getElementById("mkPx");
+  if(v>=100){lgx.classList.remove("small");big.forEach(b=>{b.style.width="";b.style.height=""});out.textContent="Full size";return}
+  const max=Math.min(innerWidth,innerHeight)*.56,px=Math.round(16*Math.pow(max/16,v/100));
+  lgx.classList.add("small");big.forEach(b=>{b.style.width=px+"px";b.style.height=px+"px"});out.textContent=`${px} px · ${ctxName(px)}`;SFX.tick(.3)});
+lgx.addEventListener("click",e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;
+  if(a==="inv"){const m=marks[mkIdx],on=x.getAttribute("aria-pressed")!=="true";x.setAttribute("aria-pressed",on);
+    lgx.style.setProperty("--mc",on?m.c[1]:m.c[0]);lgx.style.setProperty("--mi",on?m.c[0]:m.c[1]);lgxStage.querySelector("svg.big")?.style.setProperty("--hole",on?m.c[1]:m.c[0]);return}
+  if(a==="close")closeMark();if(a==="prev")showMark(mkIdx-1);if(a==="next")showMark(mkIdx+1)});
 addEventListener("keydown",e=>{if(mkIdx<0)return;if(e.key==="Escape"){e.stopImmediatePropagation();closeMark()}if(e.key==="ArrowRight")showMark(mkIdx+1);if(e.key==="ArrowLeft")showMark(mkIdx-1)},true);
 
 /* ====================== DIMENSI LAIN: poster, print, dll ====================== */
@@ -549,15 +711,22 @@ const buildPlane=()=>{const vw=innerWidth,vh=innerHeight;cellW=Math.max(170,Math
     const el=document.createElement("div");el.className="it";el.dataset.i=ai;el.style.width=w+"px";
     el.innerHTML=`<div class="pic" style="height:${h}px;--fs:${(w*.2).toFixed(0)}px">${posterHTML(a,ai)}</div><div class="cap"><span>${esc(a.title)}</span><span>${a.year}</span></div>`;
     plane.appendChild(el);
-    slots.push({el,x:c*cellW+(cellW-w)/2+((r*13+c*29)%23-11),y:r*cellH+(c%2?cellH*.5:0)+((c*17+r*7)%21-10),d:.85+((c*5+r*11)%7)/20})}};
+    slots.push({el,w,h:h+24,x:c*cellW+(cellW-w)/2+((r*13+c*29)%23-11),y:r*cellH+(c%2?cellH*.5:0)+((c*17+r*7)%21-10),d:.85+((c*5+r*11)%7)/20})}};
 /* gerak kanvas: drag + roda + inersia, miring mengikuti kecepatan */
-let ox=0,oy=0,tx=0,ty=0,vx=0,vy=0,drag=null,raf=0;
+let ox=0,oy=0,tx=0,ty=0,vx=0,vy=0,drag=null,raf=0;const rgbR=document.getElementById("rgbR"),rgbB=document.getElementById("rgbB");
 const md=(a,m)=>((a%m)+m)%m;
 const frame=()=>{if(!drag){tx+=vx;ty+=vy;vx*=.93;vy*=.93}
   const px0=ox,py0=oy;ox+=(tx-ox)*.12;oy+=(ty-oy)*.12;
   const sx=Math.max(-10,Math.min(10,(ox-px0)*.25)),sy=Math.max(-10,Math.min(10,(oy-py0)*.25));
   plane.style.transform=`skew(${(-sx*.6).toFixed(2)}deg,${(-sy*.4).toFixed(2)}deg)`;
-  for(const s of slots){const X=md(s.x+ox*s.d,TW)-cellW,Y=md(s.y+oy*s.d,TH)-cellH;s.el.style.transform=`translate3d(${X.toFixed(1)}px,${Y.toFixed(1)}px,0)`}
+  /* lensa: makin ke tengah makin besar, makin cepat makin cembung */
+  const spd=Math.hypot(ox-px0,oy-py0),vw2=innerWidth/2,vh2=innerHeight/2,lens=.14+Math.min(.22,spd*.012);
+  for(const s of slots){const X=md(s.x+ox*s.d,TW)-cellW,Y=md(s.y+oy*s.d,TH)-cellH;
+    const dx=(X+s.w/2-vw2)/vw2,dy=(Y+s.h/2-vh2)/vh2,r2=Math.min(2,dx*dx+dy*dy),sc=Math.max(.62,1+lens-lens*1.5*r2);
+    s.el.style.transform=`translate3d(${(X+dx*vw2*(sc-1)*.35).toFixed(1)}px,${(Y+dy*vh2*(sc-1)*.35).toFixed(1)}px,0) scale(${sc.toFixed(3)})`}
+  /* RGB split saat dilempar cepat */
+  if(!reduce&&spd>1.4){const a=Math.min(14,spd*.6),ang=Math.atan2(oy-py0,ox-px0);rgbR.setAttribute("dx",(Math.cos(ang)*a).toFixed(1));rgbR.setAttribute("dy",(Math.sin(ang)*a).toFixed(1));rgbB.setAttribute("dx",(-Math.cos(ang)*a).toFixed(1));rgbB.setAttribute("dy",(-Math.sin(ang)*a).toFixed(1));plane.style.filter="url(#rgbSplit)"}
+  else plane.style.filter="none";
   if(dimOpen)raf=requestAnimationFrame(frame)};
 dimEl.addEventListener("pointerdown",e=>{if(e.target.closest(".dexit,.lb"))return;drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now()};vx=vy=0;dimEl.classList.add("grabbing");dimEl.setPointerCapture(e.pointerId)});
 dimEl.addEventListener("pointermove",e=>{if(!drag)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;tx+=dx*1.2;ty+=dy*1.2;vx=dx*.6;vy=dy*.6;drag.x=e.clientX;drag.y=e.clientY});
@@ -572,13 +741,17 @@ const EIO2="cubic-bezier(.77,0,.18,1)";
 const openDim=async()=>{if(dimOpen||dimBusy)return;dimBusy=true;
   const p=document.getElementById("portal").getBoundingClientRect();const fromPortal=p.top<innerHeight&&p.bottom>0;
   const o=fromPortal?{x:p.left+p.width/2,y:p.top+p.height/2}:lastPt;
-  buildPlane();ox=oy=tx=ty=0;vx=-2;vy=-1.2;dimEl.classList.add("open");dimOpen=true;raf=requestAnimationFrame(frame);
-  lenis?.stop();document.body.classList.add("lock");
+  buildPlane();ox=oy=tx=ty=0;vx=-2;vy=-1.2;dimOpen=true;
+  lenis?.stop();document.body.classList.add("lock");SFX.whoosh(true);
   for(const m of mainEls){m.style.transformOrigin=`${o.x}px ${o.y+scrollY-m.getBoundingClientRect().top-scrollY}px`;m.classList.add("away")}
   const R=Math.hypot(Math.max(o.x,innerWidth-o.x),Math.max(o.y,innerHeight-o.y));
   document.getElementById("dcount").textContent=pad(archive.length)+" works";
   dimEl.dataset.ox=o.x;dimEl.dataset.oy=o.y;
-  await dimEl.animate([{clipPath:`circle(${fromPortal?p.width/2:0}px at ${o.x}px ${o.y}px)`},{clipPath:`circle(${R}px at ${o.x}px ${o.y}px)`}],{duration:reduce?1:1100,easing:EIO2,fill:"forwards"}).finished;
+  /* tinta kapur meluber dari portal, lalu dunia lain muncul di baliknya */
+  const ink=document.getElementById("ink"),inkC=document.getElementById("inkC"),O=48;ink.style.visibility="visible";ink.style.opacity=1;
+  await inkC.animate([{clipPath:`circle(${fromPortal?p.width/2:0}px at ${o.x+O}px ${o.y+O}px)`},{clipPath:`circle(${R+O*2}px at ${o.x+O}px ${o.y+O}px)`}],{duration:reduce?1:1050,easing:EIO2,fill:"forwards"}).finished;
+  dimEl.classList.add("open");raf=requestAnimationFrame(frame);
+  await ink.animate([{opacity:1},{opacity:0}],{duration:reduce?1:350,fill:"forwards"}).finished;ink.style.visibility="hidden";
   dimEl.classList.add("in");dimBusy=false;document.getElementById("dexit").focus({preventScroll:true})};
 const closeDim=async()=>{if(!dimOpen||dimBusy)return;dimBusy=true;lb.classList.remove("on");
   const gate=document.getElementById("other");
@@ -587,9 +760,13 @@ const closeDim=async()=>{if(!dimOpen||dimBusy)return;dimBusy=true;lb.classList.r
   const p=document.getElementById("portal").getBoundingClientRect(),o={x:p.left+p.width/2,y:p.top+p.height/2};
   const R=Math.hypot(Math.max(o.x,innerWidth-o.x),Math.max(o.y,innerHeight-o.y));
   for(const m of mainEls){m.style.transformOrigin=`${o.x}px ${o.y-m.getBoundingClientRect().top}px`;m.classList.remove("away")}
-  dimEl.classList.remove("in");
-  await dimEl.animate([{clipPath:`circle(${R}px at ${o.x}px ${o.y}px)`},{clipPath:`circle(${p.width/2}px at ${o.x}px ${o.y}px)`}],{duration:reduce?1:900,easing:EIO2,fill:"forwards"}).finished;
-  dimEl.classList.remove("open");dimOpen=false;cancelAnimationFrame(raf);document.body.classList.remove("lock");lenis?.start();dimBusy=false};
+  dimEl.classList.remove("in");SFX.whoosh(false);
+  const ink=document.getElementById("ink"),inkC=document.getElementById("inkC"),O=48;
+  inkC.getAnimations().forEach(a=>a.cancel());inkC.style.clipPath=`circle(${R+O*2}px at ${o.x+O}px ${o.y+O}px)`;
+  ink.getAnimations().forEach(a=>a.cancel());ink.style.opacity=1;ink.style.visibility="visible";
+  await new Promise(r=>requestAnimationFrame(r));dimEl.classList.remove("open");
+  await inkC.animate([{clipPath:`circle(${R+O*2}px at ${o.x+O}px ${o.y+O}px)`},{clipPath:`circle(${p.width/2}px at ${o.x+O}px ${o.y+O}px)`}],{duration:reduce?1:900,easing:EIO2,fill:"forwards"}).finished;
+  ink.style.visibility="hidden";dimOpen=false;cancelAnimationFrame(raf);document.body.classList.remove("lock");lenis?.start();dimBusy=false};
 document.getElementById("portal").addEventListener("click",()=>{location.hash="other-dimension"});
 document.getElementById("dexit").addEventListener("click",()=>{location.hash="other"});
 /* jendela kecil di dalam tombol portal: poster-poster melayang */
@@ -608,19 +785,39 @@ document.getElementById("dexit").addEventListener("click",()=>{location.hash="ot
 let shotIO=null,busy=false,openIdx=-1,caseLenis=null;
 const wait=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
 const showCase=async i=>{if(busy)return;busy=true;
-  wipe.className="cover";await wait(700);
+  /* dari daftar Work: pratinjau yang mengikuti kursor berubah menjadi gambar pembuka */
+  const morph=peek.classList.contains("on")&&!reduce&&openIdx<0;let mo=null;
+  if(morph){const w=peek.offsetWidth,h=peek.offsetHeight;mo=document.createElement("div");mo.className="morph";mo.innerHTML=tile.innerHTML;
+    Object.assign(mo.style,{left:(px-w/2)+"px",top:(py-h/2)+"px",width:w+"px",height:h+"px"});document.body.appendChild(mo);
+    peek.classList.remove("on");peek.style.visibility="hidden";SFX.whoosh(true)}
+  else{wipe.className="cover";await wait(700)}
   caseEl.innerHTML=caseHTML(i);caseEl.classList.add("open");caseEl.classList.remove("in");caseEl.scrollTop=0;
   document.body.classList.add("lock");peek.classList.remove("on");lenis?.stop();
   caseLenis?.destroy();caseLenis=lenis?new Lenis({wrapper:caseEl,content:caseEl.firstElementChild,autoRaf:true,lerp:.085}):null;document.title=projects[i].name+" / Rofiq Maulana";openIdx=i;
   if(shotIO)shotIO.disconnect();
   shotIO=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){e.target.classList.add("v");shotIO.unobserve(e.target)}},{root:caseEl,threshold:.12});
   for(const s of caseEl.querySelectorAll(".shot"))shotIO.observe(s);
+  if(morph){const first=caseEl.querySelector(".shot");first.classList.add("v");first.style.visibility="hidden";
+    caseEl.animate([{opacity:0},{opacity:1}],{duration:550,easing:"ease-out"});
+    await new Promise(r=>requestAnimationFrame(r));const r1=first.getBoundingClientRect();
+    requestAnimationFrame(()=>caseEl.classList.add("in"));
+    await mo.animate([{left:mo.style.left,top:mo.style.top,width:mo.style.width,height:mo.style.height},{left:r1.left+"px",top:r1.top+"px",width:r1.width+"px",height:r1.height+"px"}],{duration:950,easing:"cubic-bezier(.77,0,.18,1)",fill:"forwards"}).finished;
+    first.style.visibility="";await mo.animate([{opacity:1},{opacity:0}],{duration:280,fill:"forwards"}).finished;mo.remove();peek.style.visibility="";
+    busy=false;route();return}
   wipe.className="cover out";await wait(50);requestAnimationFrame(()=>caseEl.classList.add("in"));
   await wait(700);wipe.className="";busy=false;route()};
+/* gambar studi kasus beriak seperti cairan mengikuti kursor & scroll */
+{let hov=null,lx=0,ly=0,amt=0,lastTop=0;const map2=document.getElementById("liqMap2");
+ caseEl.addEventListener("pointermove",e=>{const sh=e.target.closest(".shot");if(sh!==hov){if(hov)hov.style.filter="";hov=sh}
+   const sp=Math.hypot(e.clientX-lx,e.clientY-ly);lx=e.clientX;ly=e.clientY;amt=Math.min(55,amt+sp*.35)},{passive:true});
+ caseEl.addEventListener("pointerleave",()=>{if(hov)hov.style.filter="";hov=null});
+ const lp=()=>{if(openIdx>=0&&!reduce){const st=caseEl.scrollTop,sv=Math.abs(st-lastTop);lastTop=st;amt=Math.min(55,amt+sv*.25);amt*=.9;
+   if(hov){if(amt>.6){hov.style.filter="url(#liquid2)";map2.setAttribute("scale",amt.toFixed(1))}else hov.style.filter=""}}requestAnimationFrame(lp)};
+ requestAnimationFrame(lp)}
 const hideCase=async()=>{if(openIdx<0||busy)return;busy=true;
   wipe.className="cover";await wait(700);
   caseLenis?.destroy();caseLenis=null;
-  caseEl.classList.remove("open","in");caseEl.innerHTML="";document.body.classList.remove("lock");lenis?.start();document.title="Rofiq Maulana / Web developer";openIdx=-1;
+  caseEl.classList.remove("open","in");caseEl.innerHTML="";document.body.classList.remove("lock");lenis?.start();document.title="Rofiq Maulana / Brand designer";openIdx=-1;
   if(lenis)lenis.scrollTo(document.getElementById("work"),{immediate:true,force:true});else document.getElementById("work").scrollIntoView();
   wipe.className="cover out";await wait(750);wipe.className="";busy=false;route()};
 const route=()=>{if(location.hash==="#other-dimension"){openDim();return}if(dimOpen){closeDim();return}

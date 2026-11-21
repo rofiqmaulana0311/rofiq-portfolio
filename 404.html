@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>404 / Rofiq Maulana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<style>
+/*
+VOICE: kering dan jenaka. Halamannya "terhapus", pengunjung diajak memperbaikinya.
+IDEA: papan tulis; logogram R★ pecah jadi potongan yang bisa disusun ulang.
+PICTURE: puzzle logogram di tengah, garis putus-putus sebagai cetakannya.
+COLOUR and TYPE: hitam, putih kapur, grain; Anton + Satoshi, sama dengan situs utama.
+LAYOUT: label di atas, judul besar, papan puzzle, tombol pulang di bawah.
+*/
+:root{--bk:#0a0a0a;--wh:#f2f2ee;--grey:#9a9a96;--mono:"Satoshi","Figtree",system-ui,sans-serif;--cond:"Anton",Impact,"Arial Narrow",sans-serif}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%}
+body{margin:0;background:var(--bk);color:var(--wh);font:500 12px/1.5 var(--mono);letter-spacing:.04em;text-transform:uppercase;overflow:hidden;-webkit-font-smoothing:antialiased;user-select:none}
+a{color:inherit;text-decoration:none}
+.lbl{color:var(--grey)}
+#grain{position:fixed;inset:-50%;z-index:70;pointer-events:none;opacity:.07;background-size:220px 220px;animation:grain .9s steps(6) infinite}
+@keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-7%,4%)}50%{transform:translate(5%,-6%)}75%{transform:translate(-3%,8%)}100%{transform:translate(0,0)}}
+header{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;gap:16px;padding:18px max(2vw,16px)}
+header a:hover,.btn:hover{opacity:.5}
+.wrap{position:relative;height:100%;display:grid;grid-template-rows:auto 1fr auto;padding:72px max(2vw,16px) 20px}
+h1{margin:10px 0 0;font:400 clamp(44px,8vw,140px)/.9 var(--cond);text-wrap:balance}
+.boardzone{position:relative;display:grid;place-items:center}
+#board{position:relative;width:min(62vw,calc(52svh*1.259));aspect-ratio:1.259;outline:1px dashed rgba(242,242,238,.25);outline-offset:10px;transition:outline-color .6s}
+#board.done{outline-color:transparent}
+.tile{position:absolute;touch-action:none;cursor:grab;background-repeat:no-repeat;will-change:transform;transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .3s}
+.tile.drag{cursor:grabbing;transition:none;z-index:10;filter:drop-shadow(0 18px 24px rgba(0,0,0,.6))}
+.tile.placed{cursor:default}
+.foot{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;min-height:44px;padding:12px 20px;border-radius:999px;background:var(--wh);color:var(--bk);transition:opacity .25s}
+.btn.ghost{background:none;color:var(--wh);border:1px solid rgba(242,242,238,.4)}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+#msg{max-width:36ch}
+@media(prefers-reduced-motion:reduce){#grain{animation:none}.tile{transition:none}}
+</style>
+</head>
+<body>
+<div id="grain" aria-hidden="true"></div>
+<header><a href="./" data-home>Rofiq Maulana</a><span class="lbl">Error 404</span></header>
+<main class="wrap">
+  <div>
+    <span class="lbl">Page not found</span>
+    <h1 id="title">This page got erased.</h1>
+  </div>
+  <div class="boardzone"><div id="board" role="img" aria-label="Rofiq Maulana logogram, broken into pieces you can drag back into place"></div></div>
+  <div class="foot">
+    <p id="msg">Drag the pieces of the mark back into the frame. Or skip it, no hard feelings.</p>
+    <div class="acts"><a class="btn ghost" href="#" id="solve">Solve it for me</a><a class="btn" href="./" data-home>Back home ↗</a></div>
+  </div>
+</main>
+<script>
+{
+/* path dasar: GitHub Pages proyek (/repo/), domain sendiri (/), atau file lokal (./) */
+const BASE=location.protocol==="file:"?"./":location.hostname.endsWith("github.io")?`/${location.pathname.split("/")[1]}/`:"/";
+for(const a of document.querySelectorAll("[data-home]"))a.href=BASE;
+{const c=document.createElement("canvas");c.width=c.height=220;const g=c.getContext("2d"),im=g.createImageData(220,220);
+ for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255|0;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.random()<.5?255:0}
+ g.putImageData(im,0,0);document.getElementById("grain").style.backgroundImage=`url(${c.toDataURL()})`}
+
+const board=document.getElementById("board"),msg=document.getElementById("msg"),title=document.getElementById("title");
+const COLS=4,ROWS=3,SRC=BASE+"img/logo-white.webp";
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+let tiles=[],placed=0;
+const build=()=>{board.innerHTML="";tiles=[];placed=0;
+  const W=board.clientWidth,H=board.clientHeight,tw=W/COLS,th=H/ROWS,br=board.getBoundingClientRect();
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const el=document.createElement("div");el.className="tile";
+    Object.assign(el.style,{left:c*tw+"px",top:r*th+"px",width:tw+"px",height:th+"px",backgroundImage:`url(${SRC})`,backgroundSize:`${W}px ${H}px`,backgroundPosition:`${-c*tw}px ${-r*th}px`});
+    /* sebar di sekitar papan, tetap di dalam layar */
+    const sx=Math.random()*(innerWidth-tw)-br.left-c*tw,sy=Math.random()*(innerHeight*.75-th)+innerHeight*.12-br.top-r*th;
+    const t={el,x:sx,y:sy,rot:(Math.random()-.5)*50,done:false};tiles.push(t);board.appendChild(el);place(t)}};
+const place=t=>{t.el.style.transform=`translate(${t.x}px,${t.y}px) rotate(${t.rot}deg)`};
+const win=()=>{board.classList.add("done");
+  const full=new Image();full.src=SRC;full.alt="";Object.assign(full.style,{position:"absolute",inset:"0",width:"100%",height:"100%",opacity:"0",transition:"opacity .5s"});board.appendChild(full);
+  requestAnimationFrame(()=>{full.style.opacity="1";setTimeout(()=>tiles.forEach(t=>t.el.style.visibility="hidden"),500)});title.textContent="Mark restored.";msg.textContent="Thanks for fixing it. The page you wanted still doesn't exist, but the logo does.";document.getElementById("solve").style.display="none"};
+let cur=null;
+board.addEventListener("pointerdown",e=>{const el=e.target.closest(".tile");if(!el)return;const t=tiles.find(t=>t.el===el);if(t.done)return;
+  cur={t,sx:e.clientX,sy:e.clientY,ox:t.x,oy:t.y};t.rot=0;el.classList.add("drag");el.setPointerCapture(e.pointerId);place(t)});
+board.addEventListener("pointermove",e=>{if(!cur)return;cur.t.x=cur.ox+e.clientX-cur.sx;cur.t.y=cur.oy+e.clientY-cur.sy;place(cur.t)});
+const drop=()=>{if(!cur)return;const t=cur.t;t.el.classList.remove("drag");
+  if(Math.hypot(t.x,t.y)<Math.max(18,board.clientWidth*.04)){t.x=t.y=0;t.done=true;t.el.classList.add("placed");placed++;if(placed===tiles.length)win()}
+  place(t);cur=null};
+board.addEventListener("pointerup",drop);board.addEventListener("pointercancel",drop);
+document.getElementById("solve").addEventListener("click",e=>{e.preventDefault();
+  tiles.forEach((t,i)=>setTimeout(()=>{if(!t.done){t.x=t.y=0;t.rot=0;t.done=true;t.el.classList.add("placed");place(t)}},reduce?0:i*70));
+  setTimeout(win,reduce?0:tiles.length*70+300)});
+const img=new Image();img.onload=build;img.onerror=()=>{msg.textContent="Even the logo is missing. Head home."};img.src=SRC;
+let rt;addEventListener("resize",()=>{clearTimeout(rt);rt=setTimeout(()=>{if(placed<tiles.length)build()},200)});
+}
+</script>
+</body>
+</html>
