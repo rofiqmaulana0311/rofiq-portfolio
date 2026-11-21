@@ -49,11 +49,11 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 
 - **Intro infinite zoom**: kamera menembus kartu proyek dan mendarat di foto potret.
 - **Sistem kapur**: grain diam hanya di bidang hitam; foto, tirai studi kasus, dan portal membuka dengan tepi bergerigi.
-- **Footer papan tulis**: ikon batang kapur (kiri) = Draw, ikon penghapus (kanan) = Erase, lalu tekan & seret. Erase menghapus logo dan goresan. Cursor berubah jadi batang kapur / lingkaran penghapus. Tanpa memilih ikon, footer tidak bereaksi.
+- **Footer papan tulis**: ikon batang kapur (kiri) = Draw, ikon penghapus (kanan) = Erase, lalu tekan & seret. Erase menghapus logo dan goresan. Saat Draw, titik gambar ada di ujung kapur (pojok kiri atas cursor); saat Erase, ikon penghapus selebar kuas (`BRUSH`).
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
-- **Portal Other Side**: pusaran poster tersedot ke titik hitam; huruf OTHER/SIDE tertarik gravitasi; klik (atau ketuk di HP) untuk masuk.
-- **Statement About**: ditulis tangan dengan kapur seiring scroll (goresan zig-zag, batang kapur, debu jatuh, bunyi gesek bila suara menyala). Kata "404" retak, rontok, lalu ditulis ulang. Teks asli tetap ada untuk pembaca layar.
+- **Portal Other Side**: pusaran poster tersedot ke titik hitam; saat hover, huruf OTHER/SIDE meluncur halus ke tengah; masuk hanya dengan klik (atau ketuk di HP).
+- **Statement About**: layar berhenti sejenak, kata demi kata naik dari balik garis seiring scroll; "the 404" mendapat garis bawah di akhir.
 - **Other Side**: kanvas tak berujung, poster tidak saling bersentuhan; di HP dua kolom yang bergerak atas-bawah.
 - **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): oranye di elemen interaktif, berputar saat diam; hitam di Other Side.
 - **Nav** jatuh berhamburan seperti serpihan kapur saat mentok di footer, kembali saat scroll naik.

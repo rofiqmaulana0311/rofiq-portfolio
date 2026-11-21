@@ -44,7 +44,6 @@ a{color:inherit;text-decoration:none}
 #intro .icount{position:absolute;left:max(2vw,16px);bottom:18px;color:var(--grey);font:400 12px/1 var(--mono);font-variant-numeric:tabular-nums}
 .tileph{position:relative;display:block;width:100%;height:100%;font:400 10px/1.3 var(--mono);text-transform:uppercase}
 .tileph span{position:absolute}.tileph .a{left:8%;top:6%}.tileph .b{left:8%;bottom:6%}.tileph .c{right:8%;bottom:6%}
-body.intro{overflow:hidden}
 
 /* header */
 header{position:fixed;top:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;padding-block:18px;mix-blend-mode:difference;color:#fff}
@@ -95,13 +94,13 @@ header.fall .hc{transform:translate(var(--fx),calc(100svh + 40px)) rotate(var(--
 .about .lbl{color:rgba(255,255,255,.7)}
 .statement{grid-column:1/-1;font:400 clamp(28px,4.4vw,72px)/.98 var(--cond);margin:0;text-wrap:balance}
 .statement .ln{display:block}
-/* kata: kerangka garis kapur → huruf diacak → terisi penuh */
-/* statement ditulis tangan dengan kapur di canvas; teks asli tetap ada untuk pembaca layar & keyboard */
-#stmtCv{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.statement.chalked{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;margin:0}
-#stmtLink{position:absolute;z-index:2;display:none}
-#stmtPen{position:absolute;left:0;top:0;width:44px;height:44px;margin:-40px 0 0 -4px;pointer-events:none;opacity:0;transition:opacity .35s;z-index:3}
-#stmtPen svg{width:100%;height:100%;overflow:visible}
+/* reveal: kata naik dari balik garis, mengikuti scroll */
+.statement .wm{display:inline-block;overflow:hidden;vertical-align:top;padding:.06em .02em 0;margin-top:-.06em}
+.statement .wi{display:inline-block;transform:translateY(108%) rotate(4deg);transform-origin:0 100%;opacity:.0;transition:transform .9s cubic-bezier(.2,.8,.2,1),opacity .5s}
+.statement .wi.on{transform:none;opacity:1}
+.statement .u404{position:relative;display:inline-block;text-decoration:none;color:inherit}
+.statement .u404::after{content:"";position:absolute;left:0;right:0;bottom:.02em;height:max(2px,.05em);background:currentColor;transform:scaleX(0);transform-origin:0 50%;transition:transform .7s cubic-bezier(.2,.8,.2,1) .25s}
+.statement .u404.on::after{transform:none}
 
 
 /* projects */
@@ -310,11 +309,10 @@ body,#case,.gate,footer,#intro .bg{background-image:var(--grain,none);background
 #cur.dark .d{mix-blend-mode:normal;filter:brightness(0)}
 #cur .fc{position:absolute;left:13px;top:15.5px;opacity:0;pointer-events:none;transition:opacity .15s}
 #cur .fc svg{display:block;overflow:visible}
-#cur .fdraw{transform:translate(-3px,-37px)}
+#cur .fdraw{transform:translate(-6.4px,-2.6px)} /* titik gambar = ujung kapur di pojok kiri atas ikon */
 #cur .ferase{transform:translate(-50%,-50%)}
 #cur.m-draw .d,#cur.m-draw .p,#cur.m-erase .d,#cur.m-erase .p{opacity:0}
 #cur.m-draw .fdraw,#cur.m-erase .ferase{opacity:1}
-#cur .ferase .ring{animation:ring 2.4s linear infinite;transform-box:fill-box;transform-origin:center}
 @keyframes ring{to{transform:rotate(360deg)}}
 #cur .dust i{position:absolute;width:3px;height:3px;background:#f2f2ee;border-radius:1px;opacity:0}
 #cur.m-draw.moving .dust i{animation:dust .5s ease-out infinite}
@@ -381,9 +379,9 @@ footer[data-mode] #chalkCv{touch-action:none}
 <div id="cur" aria-hidden="true"><img class="d" src="img/cursor-default.png" alt=""><img class="p" src="img/cursor-pointer.png" alt="">
   <!-- cursor footer: batang kapur (Draw) -->
   <div class="fc fdraw"><svg width="40" height="40" viewBox="0 0 40 40" filter="url(#chalkSmall)"><g transform="rotate(-42 20 20)"><rect x="17" y="-2" width="9" height="34" rx="2" fill="#f2f2ee"/><rect x="17" y="24" width="9" height="8" fill="#d6d6d1"/><path d="M17 4h9M17 9h9" stroke="#bbb" stroke-width=".8"/></g></svg>
-    <span class="dust"><i style="left:0;top:36px;--dx:-8px;--dy:6px"></i><i style="left:3px;top:38px;--dx:-3px;--dy:10px"></i><i style="left:-2px;top:34px;--dx:-10px;--dy:-2px"></i></span></div>
+    <span class="dust"><i style="left:5px;top:3px;--dx:-8px;--dy:8px"></i><i style="left:7px;top:5px;--dx:-3px;--dy:12px"></i><i style="left:4px;top:1px;--dx:-10px;--dy:2px"></i></span></div>
   <!-- cursor footer: lingkaran penghapus seukuran kuas -->
-  <div class="fc ferase"><svg width="44" height="44" viewBox="-22 -22 44 44"><g class="ring"><circle r="15" fill="none" stroke="#f2f2ee" stroke-width="1.4" stroke-dasharray="3 4"/></g><rect x="-6" y="-4" width="12" height="8" rx="1.5" fill="#f2f2ee" transform="rotate(-20)"/><rect x="-6" y="1.5" width="12" height="2.5" fill="#888" transform="rotate(-20)"/></svg></div>
+  <div class="fc ferase"><svg id="eraseIc" width="24" height="24" viewBox="-12 -12 24 24"><rect x="-12" y="-7" width="24" height="14" rx="2" fill="#f2f2ee"/><rect x="-12" y="3" width="24" height="4" fill="#888"/></svg></div>
 </div>
 <div id="ink" aria-hidden="true"><div class="ic" id="inkC"></div></div>
 
@@ -423,9 +421,6 @@ footer[data-mode] #chalkCv{touch-action:none}
    <div class="grow" id="grow"></div>
    <section class="about pad" id="about">
     <div class="apin">
-    <canvas id="stmtCv" aria-hidden="true"></canvas>
-    <a id="stmtLink" href="404.html" tabindex="-1" aria-hidden="true"></a>
-    <div id="stmtPen" aria-hidden="true"><svg viewBox="0 0 40 40" filter="url(#chalkSmall)"><g transform="rotate(-42 20 20)"><rect x="17" y="-2" width="9" height="34" rx="2" fill="#f2f2ee"/><rect x="17" y="24" width="9" height="8" fill="#d6d6d1"/></g></svg></div>
     <p class="statement" id="stmt" aria-label="I care about the parts nobody puts in the brief: the clear space, the favicon, the 404.">
       <span class="ln">I care about the parts</span>
       <span class="ln">nobody puts in the brief:</span>
@@ -606,83 +601,17 @@ if(!reduce){const sig=()=>Math.max(50,innerWidth*.05);
 
 /* reveal saat scroll */
 const stmt=document.getElementById("stmt"),aboutEl=document.getElementById("about");
-/* ====== STATEMENT DITULIS TANGAN DENGAN KAPUR (mengikuti scroll) ======
-   Setiap huruf digores zig-zag seperti mengarsir kapur. Di kata "404" tulisannya retak,
-   rontok, lalu ditulis ulang. Teks HTML tetap ada (tersembunyi) untuk aksesibilitas. */
-let revealStmt=()=>{};
-if(!reduce){
- stmt.classList.add("chalked");
- const apin=stmt.parentElement,cv=document.getElementById("stmtCv"),sg=cv.getContext("2d"),pen=document.getElementById("stmtPen"),lnk=document.getElementById("stmtLink");
- const mk=()=>document.createElement("canvas");const ink=mk(),mask=mk(),ig=ink.getContext("2d"),mg=mask.getContext("2d");
- let W=0,H=0,dpr=1,fs=40,glyphs=[],rules=[],N=0,cur=0,target=0,penXY=null,lastWrite=0,alive=false,parts=[],okFont=false;
- let g404=[],gLink=[],gag={state:0,t:0,done:false,crack:null};
- const src=[...stmt.querySelectorAll(".ln")].map(l=>l.textContent.replace(/\s+/g," ").trim().toUpperCase());
- const layout=()=>{dpr=Math.min(2,devicePixelRatio||1);W=apin.clientWidth;H=apin.clientHeight;
-   for(const c of [cv,ink,mask]){c.width=W*dpr;c.height=H*dpr}for(const g of [sg,ig,mg])g.setTransform(dpr,0,0,dpr,0,0);
-   fs=Math.max(28,Math.min(72,W*.044));const font=`400 ${fs}px Anton, Impact, sans-serif`;ig.font=font;
-   /* pecah baris bila terlalu lebar (HP) */
-   const lines=[];for(const l of src){let row="";for(const w of l.split(" ")){const t=row?row+" "+w:w;if(ig.measureText(t).width>W*.9&&row){lines.push(row);row=w}else row=t}lines.push(row)}
-   const lh=fs*.98,y0=H/2-(lines.length*lh)/2+fs*.78;glyphs=[];rules=[];
-   lines.forEach((ln,li)=>{const lw=ig.measureText(ln).width,x0=(W-lw)/2,by=y0+li*lh;rules.push([x0-fs*.3,x0+lw+fs*.3,by+fs*.1]);
-     for(let k=0;k<ln.length;k++){if(ln[k]===" ")continue;const x=x0+ig.measureText(ln.slice(0,k)).width,w=ig.measureText(ln.slice(0,k+1)).width-ig.measureText(ln.slice(0,k)).width;
-       glyphs.push({c:ln[k],x,w,top:by-fs*.78,bot:by+fs*.06,li,k,ln})}});
-   N=glyphs.length;
-   /* posisi "404" & "THE 404" untuk lelucon dan link */
-   const flat=glyphs.map(g=>g.c).join(""),p4=flat.lastIndexOf("404");g404=p4<0?[]:[p4,p4+1,p4+2];
-   const pt=flat.lastIndexOf("THE404");gLink=pt<0?g404:[pt,pt+1,pt+2,pt+3,pt+4,pt+5];
-   /* tinta: teks penuh bertekstur kapur */
-   ig.clearRect(0,0,W,H);ig.fillStyle="#f2f2ee";ig.textBaseline="alphabetic";
-   lines.forEach((ln,li)=>{const lw=ig.measureText(ln).width;ig.fillText(ln,(W-lw)/2,y0+li*lh)});
-   ig.globalCompositeOperation="destination-out";for(let i=0;i<W*H/40;i++){ig.globalAlpha=.15+Math.random()*.5;const s2=Math.random()*1.6+.5;ig.fillRect(Math.random()*W,Math.random()*H,s2,s2*(Math.random()<.3?3:1))}
-   ig.globalAlpha=1;ig.globalCompositeOperation="source-over";
-   /* gambar ulang progres yang sudah ada tanpa animasi */
-   mg.clearRect(0,0,W,H);const c0=cur;cur=0;advance(Math.min(c0,N),true)};
- /* goresan zig-zag di dalam satu huruf, dari f0 ke f1 (0..1) */
- const scribble=(i,f0,f1)=>{const g=glyphs[i];if(!g)return null;const n=Math.max(3,Math.ceil(g.w/(fs*.12))),sw=g.w/n*1.9;
-   const P=s=>{const seg=Math.min(n-1e-6,s*n),k=Math.floor(seg),t=seg-k,x=g.x+(k+.5)/n*g.w+(t-.5)*g.w/n*.7,up=k%2;return [x,up?g.bot+4-(g.bot-g.top+8)*t:g.top-4+(g.bot-g.top+8)*t]};
-   mg.save();mg.beginPath();mg.rect(g.x-1,g.top-fs*.06,g.w+2,g.bot-g.top+fs*.08);mg.clip();
-   mg.strokeStyle="#fff";mg.fillStyle="#fff";mg.lineCap="round";mg.lineJoin="round";mg.lineWidth=sw;
-   let p=P(f0);const steps=Math.max(1,Math.ceil((f1-f0)*n*10));mg.beginPath();mg.moveTo(p[0],p[1]);
-   for(let j=1;j<=steps;j++){p=P(f0+(f1-f0)*j/steps);mg.lineTo(p[0]+(Math.random()-.5)*1.5,p[1]+(Math.random()-.5)*1.5)}mg.stroke();
-   for(let j=0;j<6;j++){const a=Math.random()*6.283,r=sw*(.5+Math.random()*.4);mg.fillRect(p[0]+Math.cos(a)*r,p[1]+Math.sin(a)*r,2,2)}
-   mg.restore();return p};
- function advance(amount,instant){while(amount>1e-6&&cur<N){const i=Math.floor(cur),f=cur-i,d=Math.min(amount,1-f);const p=scribble(i,f,f+d);if(p)penXY=p;cur+=d;amount-=d;
-   if(!instant&&p&&Math.random()<.5)parts.push({x:p[0],y:p[1],vx:(Math.random()-.5)*1.2,vy:Math.random()*.6,s:1+Math.random()*2,l:1})}}
- const rewind=t=>{const i=Math.floor(t);for(let j=i;j<N;j++){const g=glyphs[j];mg.clearRect(g.x-fs*.15,g.top-fs*.2,g.w+fs*.3,g.bot-g.top+fs*.4)}
-   cur=i;if(t-i>0)advance(t-i,true)};
- revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp(-r.top/run);target=clamp((p-.1)/.66)*N;
-   if(!alive&&r.top<innerHeight&&r.bottom>0){alive=true;requestAnimationFrame(frame)}};
- function frame(now){if(!okFont)return requestAnimationFrame(frame);
-   const r=aboutEl.getBoundingClientRect();if(!(r.top<innerHeight&&r.bottom>0)&&!parts.length){alive=false;return}
-   /* lelucon 404: retak → rontok → ditulis ulang */
-   const done404=g404.length&&cur>=g404[2]+1;
-   if(target<(g404[0]??N)){gag={state:0,t:0,done:false,crack:null}}
-   if(done404&&!gag.done&&gag.state===0){gag.state=1;gag.t=now}
-   if(gag.state===1&&now-gag.t>450){gag.state=2;gag.t=now;const a=glyphs[g404[0]],b=glyphs[g404[2]],pts=[];const x0=a.x-6,x1=b.x+b.w+6;
-     for(let k=0;k<=8;k++)pts.push([x0+(x1-x0)*k/8,(a.top+a.bot)/2+(k%2?-1:1)*fs*.18*Math.random()]);gag.crack=pts;SFX.whoosh(false)}
-   if(gag.state===2&&now-gag.t>420){gag.state=3;gag.t=now;gag.crack=null;
-     for(const j of g404){const g=glyphs[j];for(let k=0;k<26;k++)parts.push({x:g.x+Math.random()*g.w,y:g.top+Math.random()*(g.bot-g.top),vx:(Math.random()-.5)*3,vy:-Math.random()*2,s:2+Math.random()*5,l:1})
-       mg.clearRect(g.x-fs*.15,g.top-fs*.2,g.w+fs*.3,g.bot-g.top+fs*.4)}cur=g404[0]}
-   if(gag.state===3&&now-gag.t>700){gag.state=0;gag.done=true}
-   /* tulis / hapus menuju target */
-   if(gag.state===0){if(cur<target-1e-3){const d=Math.min(target-cur,.2+(target-cur)*.05);advance(d,false);lastWrite=now;SFX.scratch(6)}
-     else if(cur>target+1e-3){rewind(target)}}
-   /* komposisi: garis papan tulis → tinta yang terbuka oleh goresan → retakan & debu */
-   sg.clearRect(0,0,W,H);sg.drawImage(mask,0,0,W,H);sg.globalCompositeOperation="source-in";sg.drawImage(ink,0,0,W,H);
-   sg.globalCompositeOperation="destination-over";sg.strokeStyle="rgba(242,242,238,.13)";sg.lineWidth=1;sg.setLineDash([6,7]);
-   for(const [a,b,y] of rules){sg.beginPath();sg.moveTo(a,y);sg.lineTo(b,y);sg.stroke()}sg.setLineDash([]);sg.globalCompositeOperation="source-over";
-   if(gag.crack){sg.strokeStyle="#0a0a0a";sg.lineWidth=Math.max(3,fs*.07);sg.beginPath();gag.crack.forEach(([x,y],k)=>k?sg.lineTo(x,y):sg.moveTo(x,y));sg.stroke()}
-   sg.fillStyle="#f2f2ee";parts=parts.filter(q=>(q.l-=.018)>0);for(const q of parts){q.vy+=.25;q.x+=q.vx;q.y+=q.vy;sg.globalAlpha=q.l;sg.fillRect(q.x,q.y,q.s,q.s)}sg.globalAlpha=1;
-   /* batang kapur mengikuti ujung goresan */
-   if(penXY&&now-lastWrite<220){pen.style.opacity=1;pen.style.transform=`translate(${penXY[0].toFixed(1)}px,${penXY[1].toFixed(1)}px) rotate(${(Math.sin(now/90)*6).toFixed(1)}deg)`}else pen.style.opacity=0;
-   /* link "the 404" bisa diklik setelah tertulis */
-   if(gLink.length&&cur>=gLink[gLink.length-1]+1&&gag.state===0){const a=glyphs[gLink[0]],b=glyphs[gLink[gLink.length-1]];
-     Object.assign(lnk.style,{display:"block",left:a.x+"px",top:a.top+"px",width:(b.x+b.w-a.x)+"px",height:(a.bot-a.top)+"px"});
-     sg.fillStyle="rgba(242,242,238,.9)";sg.fillRect(a.x,a.bot+fs*.05,b.x+b.w-a.x,Math.max(2,fs*.04))}else lnk.style.display="none";
-   requestAnimationFrame(frame)}
- document.fonts.load(`400 72px Anton`).then(()=>{okFont=true;layout();revealStmt()}).catch(()=>{okFont=true;layout()});
- new ResizeObserver(()=>{if(okFont)layout()}).observe(apin);
-}
+/* ====== STATEMENT: kata demi kata naik dari balik garis seiring scroll (layar berhenti sejenak) ====== */
+const wrapWords=el=>{for(const n of [...el.childNodes]){
+  if(n.nodeType===3){const f=document.createDocumentFragment();n.textContent.split(/(\s+)/).forEach(t=>{if(!t)return;
+     if(/^\s+$/.test(t)){f.append(" ");return}const m=document.createElement("span");m.className="wm";m.setAttribute("aria-hidden","true");m.innerHTML=`<span class="wi"></span>`;m.firstChild.textContent=t;f.append(m)});n.replaceWith(f)}
+  else if(n.nodeType===1)wrapWords(n)}};
+wrapWords(stmt);
+const words=[...stmt.querySelectorAll(".wi")],u404=stmt.querySelector(".u404");let shown=-1;
+const revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp(-r.top/run);
+  const n=reduce?words.length:Math.round(clamp((p-.12)/.55)*words.length);if(n===shown)return;shown=n;
+  words.forEach((w,i)=>{w.classList.toggle("on",i<n);w.style.transitionDelay=i<n?`${Math.max(0,i-(n-4))*40}ms`:"0ms"});
+  u404?.classList.toggle("on",!!u404.querySelector(".wi.on:last-child")&&n>=words.length)};
 
 /* ====== parallax: foto membesar sampai penuh, About ter-scroll di atasnya ====== */
 const stage=document.getElementById("stage"),grow=document.getElementById("grow"),heroEl=document.getElementById("hero");
@@ -693,9 +622,13 @@ const measure=()=>{const r=pc.getBoundingClientRect(),h=heroEl.getBoundingClient
   const sw=Math.max(W,H*.8);base={x:r.left-h.left,y:r.top-h.top,w:r.width,h:r.height,W,H,sw,sh:sw/.8};
   bimg.style.width=base.sw+"px";bimg.style.height=base.sh+"px"};
 const smooth=x=>x*x*(3-2*x),lerp=(a,b,t)=>a+(b-a)*t,clamp=x=>Math.min(1,Math.max(0,x));
-const parallax=()=>{if(!base)measure();const {x,y,w,h,W,H,sw,sh}=base;
-  const s0=scrollY-stage.offsetTop,run=grow.offsetHeight;
-  const p=clamp(s0/run),e=smooth(p),q=clamp((s0-run)/(H*.7));
+let isLive=false;
+const parallax=()=>{const s0=scrollY-stage.offsetTop,run=grow.offsetHeight,p=clamp(s0/run);
+  /* saat diam di atas, yang tampil kartu foto asli (tidak mungkin bergeser); salinan besar baru dipakai begitu mulai scroll, diukur ulang saat itu */
+  const lv=document.body.classList.contains("ready")&&p>.0005;
+  if(lv!==isLive){isLive=lv;if(lv)measure();document.body.classList.toggle("live",lv)}
+  if(!base)measure();const {x,y,w,h,W,H,sw,sh}=base;
+  const e=smooth(p),q=clamp((s0-run)/(H*.7));
   const k=1-e;
   bclip.style.clipPath=`inset(${(y*k).toFixed(1)}px ${((W-x-w)*k).toFixed(1)}px ${((H-y-h)*k).toFixed(1)}px ${(x*k).toFixed(1)}px)`;
   const sc=lerp(w/sw,1,e),cx=lerp(x+w/2,W/2,e),cy=lerp(y+h/2,H/2,e);
@@ -717,6 +650,7 @@ const flogo=document.getElementById("flogo"),footEl=document.getElementById("con
  img.onload=()=>{ready=true;sizeLogo()};
  new ResizeObserver(()=>{sizeLogo();sizeBoard()}).observe(footEl);
  const BRUSH=12;   /* ukuran kuas kapur: sama untuk menghapus & menggambar */
+ {const ic=document.getElementById("eraseIc");if(ic){ic.setAttribute("width",BRUSH*2);ic.setAttribute("height",BRUSH*2)}}  /* ikon hapus = diameter kuas */
  /* sapuan kapur: titik-titik acak sepanjang garis */
  const chalk=(g,x0,y0,x1,y1,r,n,alpha,dot=1)=>{const d=Math.hypot(x1-x0,y1-y0),steps=Math.max(1,d/2);
    for(let i=0;i<=steps;i++){const t=i/steps,x=x0+(x1-x0)*t,y=y0+(y1-y0)*t;
@@ -909,7 +843,7 @@ document.getElementById("portal").addEventListener("click",()=>{location.hash="o
 document.getElementById("dexit").addEventListener("click",()=>{location.hash="other"});
 /* ====== PORTAL: pusaran poster tersedot ke titik hitam; huruf OTHER/SIDE tertarik gravitasi ====== */
 {const cv=document.getElementById("portalCv"),g=cv.getContext("2d"),btn=document.getElementById("portal"),gate=document.getElementById("other");
- let hov=0,t=0,on=false,sp=.4,hole=.06,suck=0;
+ let hov=0,t=0,on=false,sp=.4,hole=.06,suck=0,hs=0;
  const size=()=>{const d=Math.min(2,devicePixelRatio||1);cv.width=cv.clientWidth*d;cv.height=cv.clientHeight*d;g.setTransform(d,0,0,d,0,0)};
  new ResizeObserver(size).observe(cv);
  /* huruf judul dipecah agar bisa ditarik satu-satu */
@@ -929,16 +863,17 @@ document.getElementById("dexit").addEventListener("click",()=>{location.hash="ot
    g.globalAlpha=1;const hr=W*hole,grd=g.createRadialGradient(cx,cy,0,cx,cy,hr*2.2);grd.addColorStop(0,"rgba(10,10,10,1)");grd.addColorStop(.45,"rgba(10,10,10,.95)");grd.addColorStop(1,"rgba(10,10,10,0)");
    g.fillStyle=grd;g.beginPath();g.arc(cx,cy,hr*2.2,0,6.283);g.fill();
    /* gravitasi pada huruf */
-   const br=btn.getBoundingClientRect(),pcx=br.left+br.width/2,pcy=br.top+br.height/2,near=Math.max(suck,mx<-1e3?0:Math.max(0,1-Math.hypot(mx-pcx,my-pcy)/(innerWidth*.42)));
+   const br=btn.getBoundingClientRect(),pcx=br.left+br.width/2,pcy=br.top+br.height/2;
+   hs+=((hov&&!reduce?1:0)-hs)*(hov?.05:.07);const S=Math.max(suck,hs*hs*(3-2*hs)),near=Math.max(S,mx<-1e3?0:Math.max(0,1-Math.hypot(mx-pcx,my-pcy)/(innerWidth*.42)));
    chars.forEach((c,i)=>{const s0=st[i],cr=c.getBoundingClientRect(),dx=pcx-(cr.left+cr.width/2-s0.x),dy=pcy-(cr.top+cr.height/2-s0.y),dist=Math.hypot(dx,dy)||1;
-     const gv=reduce?0:near*.32*Math.min(1,320/dist+.25)*(1-suck),pull=gv+suck*(1-gv),k=suck>0?.3:.12;
-     s0.x+=(dx*pull-s0.x)*k;s0.y+=(dy*(gv*.6+suck*(1-gv))-s0.y)*k;s0.sx+=((1+gv*1.4)*(1-suck)-s0.sx)*k;s0.r+=((dx>0?1:-1)*(gv*18+suck*120)-s0.r)*k;
-     c.style.transform=`translate(${s0.x.toFixed(1)}px,${s0.y.toFixed(1)}px) scale(${Math.max(.001,s0.sx).toFixed(3)},${Math.max(.001,(1-gv*.25)*(1-suck)).toFixed(3)}) rotate(${s0.r.toFixed(1)}deg)`;
-     c.style.opacity=(1-suck*suck).toFixed(3)});
-   if(!reduce||suck)requestAnimationFrame(tick)}
+     const gv=reduce?0:near*.32*Math.min(1,320/dist+.25)*(1-S),pull=gv+S*(1-gv),k=S>.01?.25:.12;
+     s0.x+=(dx*pull-s0.x)*k;s0.y+=(dy*(gv*.6+S*(1-gv))-s0.y)*k;s0.sx+=((1+gv*1.4)*(1-S)-s0.sx)*k;s0.r+=((dx>0?1:-1)*(gv*18+S*120)-s0.r)*k;
+     c.style.transform=`translate(${s0.x.toFixed(1)}px,${s0.y.toFixed(1)}px) scale(${Math.max(.001,s0.sx).toFixed(3)},${Math.max(.001,(1-gv*.25)*(1-S)).toFixed(3)}) rotate(${s0.r.toFixed(1)}deg)`;
+     c.style.opacity=(1-S*S).toFixed(3)});
+   if(!reduce||suck||hs>.001)requestAnimationFrame(tick)}
  gateSuck=()=>new Promise(res=>{const t0=performance.now(),D=reduce?1:780;if(!on)requestAnimationFrame(tick);
    const st=()=>{const k=Math.min(1,(performance.now()-t0)/D);suck=k<.5?4*k*k*k:1-(-2*k+2)**3/2;if(k<1)requestAnimationFrame(st);else res()};st()});
- gateReset=()=>{suck=0}}
+ gateReset=()=>{suck=0;hs=0;hov=0}}
 let shotIO=null,busy=false,openIdx=-1,caseLenis=null;
 const wait=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
 const showCase=async i=>{if(busy)return;busy=true;
@@ -985,11 +920,13 @@ route();
 const intro=document.getElementById("intro"),ibg=intro.querySelector(".bg"),cam=document.getElementById("cam"),icount=document.getElementById("icount");
 const comp=document.getElementById("comp"),pcard=document.getElementById("pcard");
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
-const finishIntro=()=>{document.body.classList.add("ready");comp.classList.add("in");intro.remove();document.body.classList.remove("intro");lenis?.start();base=null;parallax();document.body.classList.add("live")};
+const finishIntro=()=>{document.body.classList.add("ready");comp.classList.add("in");intro.remove();document.body.classList.remove("intro");lenis?.start();base=null;parallax()};
 const easeIO=t=>t<.5?8*t**4:1-(-2*t+2)**4/2;
 const runIntro=async()=>{
   if(reduce||/^#(work-\d+|other-dimension)$/.test(location.hash)){finishIntro();return}
   document.body.classList.add("intro");scrollTo(0,0);lenis?.stop();
+  const block=e=>{if(document.body.classList.contains("intro")){if(e.type!=="keydown"||/^(Arrow|Page|Home|End| )/.test(e.key))e.preventDefault()}};
+  for(const t of ["wheel","touchmove","keydown"])addEventListener(t,block,{passive:false});
   await Promise.race([document.fonts.ready,sleep(2000)]);
   /* pakai lebar layout (tanpa scrollbar) supaya kartu mendarat tepat di posisi foto */
   const vw=document.documentElement.clientWidth,vh=innerHeight,P=900,D=Math.max(520,vh*.7);
