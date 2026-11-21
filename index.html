@@ -90,12 +90,17 @@ header.fall .hc{transform:translate(var(--fx),calc(100svh + 40px)) rotate(var(--
 
 
 /* about */
-.about{position:relative;z-index:6;min-height:100svh;padding-block:clamp(140px,20vw,320px);display:grid;grid-template-columns:minmax(0,1fr);align-content:center;justify-items:center;gap:16px;color:#fff;text-align:center}
+.about{position:relative;z-index:6;height:280svh;color:#fff;text-align:center}
+.apin{position:sticky;top:0;height:100svh;display:grid;place-items:center;padding-inline:max(2vw,16px)}
 .about .lbl{color:rgba(255,255,255,.7)}
 .statement{grid-column:1/-1;font:400 clamp(28px,4.4vw,72px)/.98 var(--cond);margin:0;text-wrap:balance}
-.statement .ln{display:block;overflow:hidden}
-.statement .ln>i{display:block;font-style:normal;transform:translateY(100%);transition:transform 1s cubic-bezier(.2,.8,.2,1)}
-.statement.in .ln>i{transform:none}
+.statement .ln{display:block}
+/* kata: kerangka garis kapur → huruf diacak → terisi penuh */
+.wd{display:inline-block;color:transparent;-webkit-text-stroke:1px rgba(242,242,238,.3);transform:translateY(.12em) rotate(-2deg) skewX(-10deg);filter:blur(1.5px);transition:color .45s,-webkit-text-stroke-color .45s,transform .7s cubic-bezier(.2,1.4,.3,1),filter .45s}
+.wd.on{color:#f2f2ee;-webkit-text-stroke-color:rgba(242,242,238,0);transform:none;filter:none}
+.wd.scr{color:rgba(242,242,238,.6)}
+.statement .u404{text-decoration-color:transparent;transition:text-decoration-color .4s}
+.statement .u404:has(.wd.on){text-decoration-color:currentColor}
 
 
 /* projects */
@@ -282,7 +287,8 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 @media(max-width:700px){.lb{grid-template-columns:1fr;align-content:center}.lb .big{height:58svh}}
 
 /* ====== SISTEM KAPUR ====== */
-#grain{position:fixed;inset:0;z-index:70;pointer-events:none;opacity:.07;background-size:220px 220px}
+/* grain hanya di bidang hitam (bidang putih & Other Side bersih) */
+body,#case,.gate,footer,#intro .bg{background-image:var(--grain,none);background-size:220px 220px}
 .svgdefs{position:absolute;width:0;height:0;overflow:hidden}
 .bclip{position:absolute;inset:0;overflow:hidden}
 #wipe{position:fixed;inset:-48px;z-index:40;pointer-events:none;filter:url(#chalkMask)}
@@ -302,7 +308,11 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 #cur.on .p{opacity:1}#cur.on .d{opacity:0}
 @media(hover:none),(pointer:coarse){#cur{display:none}}
 /* papan tulis di footer */
-#chalkCv{position:absolute;inset:0;z-index:1;width:100%;height:100%;cursor:crosshair;touch-action:none}
+#chalkCv{position:absolute;inset:0;z-index:1;width:100%;height:100%;touch-action:pan-y}
+footer[data-mode] #chalkCv{touch-action:none}
+.ftool{position:absolute;bottom:18px;z-index:3;min-height:44px;padding:12px 20px;border-radius:999px;border:1px solid rgba(242,242,238,.45);background:none;color:var(--wh);font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s}
+.ftool.l{left:max(2vw,16px)}.ftool.r{right:max(2vw,16px)}
+.ftool[aria-pressed=true]{background:var(--wh);color:var(--bk);border-color:var(--wh)}
 .ftop{touch-action:pan-y}
 .flogo canvas{display:block;width:100%;height:auto}
 .fhint{position:absolute;left:max(2vw,16px);bottom:18px;z-index:3;display:flex;gap:18px;align-items:center;color:var(--grey)}
@@ -337,7 +347,6 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
     <feComposite in="SourceGraphic" in2="a" operator="in"/>
   </filter>
 </svg>
-<div id="grain" aria-hidden="true"></div>
 <div id="cur" aria-hidden="true"><img class="d" src="img/cursor-default.png" alt=""><img class="p" src="img/cursor-pointer.png" alt=""></div>
 <div id="ink" aria-hidden="true"><div class="ic" id="inkC"></div></div>
 
@@ -376,11 +385,13 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
    </section>
    <div class="grow" id="grow"></div>
    <section class="about pad" id="about">
-    <p class="statement" id="stmt" aria-label="About">
-      <span class="ln"><i>I care about the parts</i></span>
-      <span class="ln"><i style="transition-delay:.06s">nobody puts in the brief:</i></span>
-      <span class="ln"><i style="transition-delay:.12s">the clear space, the favicon, <a href="404.html" class="u404">the 404</a>.</i></span>
+    <div class="apin">
+    <p class="statement" id="stmt" aria-label="I care about the parts nobody puts in the brief: the clear space, the favicon, the 404.">
+      <span class="ln">I care about the parts</span>
+      <span class="ln">nobody puts in the brief:</span>
+      <span class="ln">the clear space, the favicon, <a href="404.html" class="u404">the 404</a>.</span>
     </p>
+    </div>
    </section>
   </div>
 
@@ -428,6 +439,8 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
     <a class="r" href="#top">Back to top ↑</a>
   </div>
   <canvas id="chalkCv" aria-hidden="true"></canvas>
+  <button class="ftool l" data-mode="draw" aria-pressed="false">Draw</button>
+  <button class="ftool r" data-mode="erase" aria-pressed="false">Erase</button>
   <div class="flogo" id="flogo"><canvas id="flogoCv" role="img" aria-label="Rofiq Maulana logogram"></canvas></div>
 </footer>
 
@@ -493,8 +506,8 @@ const SFX=(()=>{let ctx=null,on=false,noiseBuf=null,scr=null;
 
 /* ====== GRAIN kapur di seluruh layar ====== */
 {const c=document.createElement("canvas");c.width=c.height=220;const g=c.getContext("2d"),im=g.createImageData(220,220);
- for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255|0;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.random()<.5?255:0}
- g.putImageData(im,0,0);document.getElementById("grain").style.backgroundImage=`url(${c.toDataURL()})`}
+ for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255|0;im.data[i]=im.data[i+1]=im.data[i+2]=v;im.data[i+3]=Math.random()<.5?18:0}
+ g.putImageData(im,0,0);document.documentElement.style.setProperty("--grain",`url(${c.toDataURL()})`)}
 
 /* ====== CURSOR custom: ikut kursor, merah di elemen interaktif, berputar pelan saat diam ====== */
 if(matchMedia("(hover:hover) and (pointer:fine)").matches){document.documentElement.classList.add("cc");
@@ -543,9 +556,20 @@ if(!reduce){const sig=()=>Math.max(50,innerWidth*.05);
 }
 
 /* reveal saat scroll */
-const stmt=document.getElementById("stmt");
-const io=new IntersectionObserver(es=>{for(const e of es)if(e.isIntersecting){stmt.classList.add("in");io.unobserve(stmt)}},{threshold:.35});
-io.observe(stmt);
+const stmt=document.getElementById("stmt"),aboutEl=document.getElementById("about");
+/* pecah per kata (link 404 ikut), simpan teks asli untuk efek acak */
+const words=[];{const walk=n=>{for(const ch of [...n.childNodes]){if(ch.nodeType===3){const parts=ch.textContent.split(/(\s+)/);const frag=document.createDocumentFragment();
+  for(const p of parts){if(!p)continue;if(/^\s+$/.test(p)){frag.appendChild(document.createTextNode(p));continue}const w=document.createElement("span");w.className="wd";w.textContent=p;w.dataset.t=p;w.setAttribute("aria-hidden","true");frag.appendChild(w);words.push(w)}
+  ch.replaceWith(frag)}else walk(ch)}};walk(stmt)}
+const GL="ABCDEFGHJKLMNOPRSTUVWXYZ#*+/\\=01";
+const scramble=w=>{const fin=w.dataset.t;let f=0;w.classList.add("scr");clearInterval(w._iv);
+  w._iv=setInterval(()=>{f++;const keep=Math.floor(fin.length*f/9);w.textContent=[...fin].map((c,i)=>i<keep||/[.,:]/.test(c)?c:GL[Math.random()*GL.length|0]).join("");
+    if(f>=9){clearInterval(w._iv);w.textContent=fin;w.classList.remove("scr")}},38)};
+let shown=-1;
+const revealStmt=()=>{const r=aboutEl.getBoundingClientRect(),run=r.height-innerHeight,p=clamp(-r.top/run);
+  /* jeda di awal, kata muncul satu per satu, lalu diam sebentar di akhir */
+  const n=reduce?words.length:Math.round(clamp((p-.12)/.6)*words.length);
+  if(n===shown)return;words.forEach((w,i)=>{const on=i<n;if(on!==w.classList.contains("on")){w.classList.toggle("on",on);if(on&&!reduce)scramble(w)}});shown=n};
 
 /* ====== parallax: foto membesar sampai penuh, About ter-scroll di atasnya ====== */
 const stage=document.getElementById("stage"),grow=document.getElementById("grow"),heroEl=document.getElementById("hero");
@@ -586,22 +610,16 @@ const flogo=document.getElementById("flogo"),footEl=document.getElementById("con
      for(let k=0;k<n;k++){const a=Math.random()*6.283,rr=Math.random()**.6*r;g.globalAlpha=alpha*(.35+Math.random()*.65);
        const sz=dot*(1+Math.random()*1.6);g.fillRect(x+Math.cos(a)*rr,y+Math.sin(a)*rr,sz,sz)}}g.globalAlpha=1};
  const local=(el,e)=>{const r=el.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]};
- let touchErase=false;
- footEl.addEventListener("pointermove",e=>{if(e.target.closest(".ftop a,.fhint button"))return;
-   if(e.pointerType==="touch"&&!drawing&&!touchErase)return;
-   const [bx,by]=local(cc,e);
-   if(drawing&&last){cg.fillStyle="#f2f2ee";chalk(cg,last[0],last[1],bx,by,BRUSH,16,.9,3);SFX.scratch(Math.hypot(bx-last[0],by-last[1]))}
-   else if(ready&&(e.pointerType!=="touch"||touchErase)){const [lx,ly]=local(lc,e),pl=last?last.l:null;lg.save();lg.globalCompositeOperation="destination-out";lg.fillStyle="#000";
-     chalk(lg,pl?pl[0]:lx,pl?pl[1]:ly,lx,ly,BRUSH,16,1,3);lg.restore();
-     if(pl)SFX.scratch(Math.hypot(lx-pl[0],ly-pl[1])*.4)}
-   last=[bx,by];last.l=local(lc,e)},{passive:true});
- footEl.addEventListener("pointerleave",()=>{last=null;drawing=false});
- /* mouse: hover menghapus, drag menggambar. Sentuh: mulai di atas logo = menghapus, di luar logo = menggambar */
- cc.addEventListener("pointerdown",e=>{last=local(cc,e);last.l=local(lc,e);
-   if(e.pointerType==="touch"){const r=lc.getBoundingClientRect(),inLogo=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;
-     touchErase=inLogo;drawing=!inLogo;try{cc.setPointerCapture(e.pointerId)}catch(_){}}else drawing=true});
- addEventListener("pointerup",()=>{drawing=false;touchErase=false});
- addEventListener("pointercancel",()=>{drawing=false;touchErase=false});
+ /* tidak ada yang terjadi sampai tombol Draw atau Erase dipilih; lalu tekan & seret */
+ let mode=null,active=false;const tools=[...footEl.querySelectorAll(".ftool")];
+ tools.forEach(b=>b.addEventListener("click",()=>{mode=mode===b.dataset.mode?null:b.dataset.mode;
+   tools.forEach(t=>t.setAttribute("aria-pressed",t.dataset.mode===mode));if(mode)footEl.dataset.mode=mode;else delete footEl.dataset.mode}));
+ cc.addEventListener("pointerdown",e=>{if(!mode)return;active=true;last=local(cc,e);last.l=local(lc,e);try{cc.setPointerCapture(e.pointerId)}catch(_){}});
+ cc.addEventListener("pointermove",e=>{if(!active||!mode||!last)return;const [bx,by]=local(cc,e),[lx,ly]=local(lc,e);
+   if(mode==="draw"){cg.fillStyle="#f2f2ee";chalk(cg,last[0],last[1],bx,by,BRUSH,16,.9,3);SFX.scratch(Math.hypot(bx-last[0],by-last[1]))}
+   else if(ready){lg.save();lg.globalCompositeOperation="destination-out";lg.fillStyle="#000";chalk(lg,last.l[0],last.l[1],lx,ly,BRUSH,16,1,3);lg.restore();SFX.scratch(Math.hypot(lx-last.l[0],ly-last.l[1])*.4)}
+   last=[bx,by];last.l=[lx,ly]});
+ const stop=()=>{active=false;last=null};addEventListener("pointerup",stop);addEventListener("pointercancel",stop);
  document.getElementById("chalkClear")?.addEventListener("click",()=>{cg.clearRect(0,0,cc.width,cc.height);if(ready){lg.clearRect(0,0,lc.width,lc.height);lg.drawImage(img,0,0,flogo.clientWidth,flogo.clientWidth/1.259)}});
  
 
@@ -609,7 +627,7 @@ const flogo=document.getElementById("flogo"),footEl=document.getElementById("con
 const footRise=()=>{const r=footEl.getBoundingClientRect(),k=clamp((innerHeight-r.top)/innerHeight);flogo.style.setProperty("--rise",(reduce?0:(1-smooth(k))*45).toFixed(2)+"%")};
 addEventListener("scroll",()=>requestAnimationFrame(footRise),{passive:true});footRise();
 let ticking=false;
-addEventListener("scroll",()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{parallax();ticking=false})}},{passive:true});
+addEventListener("scroll",()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{parallax();revealStmt();ticking=false})}},{passive:true});
 addEventListener("resize",()=>{base=null;parallax()});
 
 /* pratinjau proyek mengikuti kursor */
@@ -717,7 +735,7 @@ const buildPlane=()=>{const vw=innerWidth,vh=innerHeight;mobDim=vw<700;
     const el=document.createElement("div");el.className="it";el.dataset.i=ai;el.style.width=w+"px";
     el.innerHTML=`<div class="pic" style="height:${h}px;--fs:${(w*.2).toFixed(0)}px">${posterHTML(a,ai)}</div><div class="cap"><span>${esc(a.title)}</span><span>${a.year}</span></div>`;
     plane.appendChild(el);
-    slots.push({el,w,h:h+24,x:c*cellW+(cellW-w)/2+(mobDim?0:((r*13+c*29)%23-11)),y:r*cellH+(c%2?cellH*.5:0)+((c*17+r*7)%21-10),d:.85+((c*5+r*11)%7)/20})}};
+    slots.push({el,w,h:h+24,x:c*cellW+(cellW-w)/2+(mobDim?0:((r*13+c*29)%23-11)),y:r*cellH+(c%2?cellH*.5:0)+((c*17+r*7)%21-10),d:1})}};
 /* gerak kanvas: drag + roda + inersia, miring mengikuti kecepatan */
 let ox=0,oy=0,tx=0,ty=0,vx=0,vy=0,drag=null,raf=0;
 const md=(a,m)=>((a%m)+m)%m;
@@ -728,8 +746,8 @@ const frame=()=>{if(!drag){tx+=vx;ty+=vy;vx*=.93;vy*=.93}
   /* lensa: makin ke tengah makin besar, makin cepat makin cembung */
   const spd=Math.hypot(ox-px0,oy-py0),vw2=innerWidth/2,vh2=innerHeight/2,lens=.14+Math.min(.22,spd*.012);
   for(const s of slots){const X=mobDim?s.x:md(s.x+ox*s.d,TW)-cellW,Y=md(s.y+oy*(mobDim?1:s.d),TH)-cellH;
-    const dx=(X+s.w/2-vw2)/vw2,dy=(Y+s.h/2-vh2)/vh2,r2=Math.min(2,dx*dx+dy*dy),sc=mobDim?1:Math.max(.62,1+lens-lens*1.5*r2);
-    s.el.style.transform=`translate3d(${(X+dx*vw2*(sc-1)*.35).toFixed(1)}px,${(Y+dy*vh2*(sc-1)*.35).toFixed(1)}px,0) scale(${sc.toFixed(3)})`}
+    const dx=(X+s.w/2-vw2)/vw2,dy=(Y+s.h/2-vh2)/vh2,r2=Math.min(2,dx*dx+dy*dy),sc=mobDim?1:Math.max(.62,Math.min(1,1-lens*1.2*r2));
+    s.el.style.transform=`translate3d(${X.toFixed(1)}px,${Y.toFixed(1)}px,0) scale(${sc.toFixed(3)})`}
 
   if(dimOpen)raf=requestAnimationFrame(frame)};
 dimEl.addEventListener("pointerdown",e=>{if(e.target.closest(".dexit,.lb"))return;drag={x:e.clientX,y:e.clientY,sx:e.clientX,sy:e.clientY,t:performance.now()};vx=vy=0;dimEl.classList.add("grabbing");try{dimEl.setPointerCapture(e.pointerId)}catch(_){}});
@@ -783,7 +801,9 @@ document.getElementById("dexit").addEventListener("click",()=>{location.hash="ot
  const chars=[];for(const w of gate.querySelectorAll(".gate-title span")){const tx=w.textContent;w.innerHTML=[...tx].map(c=>`<span class="gc">${c}</span>`).join("");chars.push(...w.querySelectorAll(".gc"))}
  const st=chars.map(()=>({x:0,y:0,sx:1,r:0}));
  let mx=-1e4,my=-1e4;gate.addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});gate.addEventListener("pointerleave",()=>{mx=my=-1e4});
- btn.addEventListener("pointerenter",()=>hov=1);btn.addEventListener("pointerleave",()=>{hov=0;btn.style.transform=""});
+ let dwell=0;
+ btn.addEventListener("pointerenter",e=>{hov=1;if(e.pointerType==="mouse"){clearTimeout(dwell);dwell=setTimeout(()=>{if(location.hash!=="#other-dimension")location.hash="other-dimension"},140)}});
+ btn.addEventListener("pointerleave",()=>{hov=0;clearTimeout(dwell);btn.style.transform=""});
  btn.addEventListener("pointermove",e=>{const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;btn.style.transform=`translate(${dx*.18}px,${dy*.18}px) scale(1.07)`});
  new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on)requestAnimationFrame(tick)}).observe(gate);
  function tick(){if(!on&&suck===0)return;const W=cv.clientWidth,H=cv.clientHeight,cx=W/2,cy=H/2,R=Math.hypot(W,H)/2;
@@ -797,11 +817,13 @@ document.getElementById("dexit").addEventListener("click",()=>{location.hash="ot
    /* gravitasi pada huruf */
    const br=btn.getBoundingClientRect(),pcx=br.left+br.width/2,pcy=br.top+br.height/2,near=Math.max(suck,mx<-1e3?0:Math.max(0,1-Math.hypot(mx-pcx,my-pcy)/(innerWidth*.42)));
    chars.forEach((c,i)=>{const s0=st[i],cr=c.getBoundingClientRect(),dx=pcx-(cr.left+cr.width/2-s0.x),dy=pcy-(cr.top+cr.height/2-s0.y),dist=Math.hypot(dx,dy)||1;
-     const pull=reduce?0:near*(suck?1:.32)*Math.min(1,320/dist+.25);
-     s0.x+=(dx*pull-s0.x)*.12;s0.y+=(dy*pull*.6-s0.y)*.12;s0.sx+=((1+pull*1.4*(suck?0:1))*(1-suck)+(suck?.02:0)-s0.sx)*.12;s0.r+=((dx>0?1:-1)*pull*18-s0.r)*.12;
-     c.style.transform=`translate(${s0.x.toFixed(1)}px,${s0.y.toFixed(1)}px) scale(${s0.sx.toFixed(3)},${(1-pull*.25).toFixed(3)}) rotate(${s0.r.toFixed(1)}deg)`});
+     const gv=reduce?0:near*.32*Math.min(1,320/dist+.25)*(1-suck),pull=gv+suck*(1-gv),k=suck>0?.3:.12;
+     s0.x+=(dx*pull-s0.x)*k;s0.y+=(dy*(gv*.6+suck*(1-gv))-s0.y)*k;s0.sx+=((1+gv*1.4)*(1-suck)-s0.sx)*k;s0.r+=((dx>0?1:-1)*(gv*18+suck*120)-s0.r)*k;
+     c.style.transform=`translate(${s0.x.toFixed(1)}px,${s0.y.toFixed(1)}px) scale(${Math.max(.001,s0.sx).toFixed(3)},${Math.max(.001,(1-gv*.25)*(1-suck)).toFixed(3)}) rotate(${s0.r.toFixed(1)}deg)`;
+     c.style.opacity=(1-suck*suck).toFixed(3)});
    if(!reduce||suck)requestAnimationFrame(tick)}
- gateSuck=()=>new Promise(res=>{suck=1;if(!on)requestAnimationFrame(tick);setTimeout(res,reduce?0:520)});
+ gateSuck=()=>new Promise(res=>{const t0=performance.now(),D=reduce?1:780;if(!on)requestAnimationFrame(tick);
+   const st=()=>{const k=Math.min(1,(performance.now()-t0)/D);suck=k<.5?4*k*k*k:1-(-2*k+2)**3/2;if(k<1)requestAnimationFrame(st);else res()};st()});
  gateReset=()=>{suck=0}}
 let shotIO=null,busy=false,openIdx=-1,caseLenis=null;
 const wait=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
