@@ -95,16 +95,14 @@ header.fall .hc{transform:translate(var(--fx),calc(100svh + 40px)) rotate(var(--
 .statement{grid-column:1/-1;font:400 clamp(28px,4.4vw,72px)/.98 var(--cond);margin:0;text-wrap:balance}
 .statement .ln{display:block}
 /* reveal: kata naik dari balik garis, mengikuti scroll */
-/* reveal seperti versi awal: kata berupa garis luar tipis, lalu terisi satu per satu; tanpa gerak, tanpa blur, tanpa huruf acak.
+/* reveal biasa: kata tak terlihat, lalu muncul satu per satu; tanpa gerak, tanpa blur, tanpa huruf acak.
    Kalimat baru tampil setelah section About menempel, jadi tidak ikut naik ke layar. */
 .statement{opacity:0;transition:opacity .3s}
 .statement.pinned{opacity:1}
 .statement .wm{display:inline-block;vertical-align:top}
-.statement .wi{display:inline-block;color:transparent;-webkit-text-stroke:1px rgba(242,242,238,.3);transition:color .45s,-webkit-text-stroke-color .45s}
-.statement .wi.on{color:#f2f2ee;-webkit-text-stroke-color:rgba(242,242,238,0)}
+.statement .wi{display:inline-block;opacity:0;transition:opacity .5s}
+.statement .wi.on{opacity:1}
 .statement .u404{position:relative;display:inline-block;text-decoration:none;color:inherit}
-.statement .u404::after{content:"";position:absolute;left:0;right:0;bottom:.02em;height:max(2px,.05em);background:currentColor;transform:scaleX(0);transform-origin:0 50%;transition:transform .7s cubic-bezier(.2,.8,.2,1) .25s}
-.statement .u404.on::after{transform:none}
 
 
 /* projects */
