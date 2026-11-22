@@ -157,6 +157,7 @@ body.lock{overflow:hidden}
 .cs-meta.full{grid-template-columns:1fr 1fr 1fr auto;margin-bottom:clamp(40px,7vw,110px)}
 .cs-back{cursor:pointer;background:none;border:0;color:inherit;font:inherit;text-transform:inherit;padding:0;text-align:left}
 .cs-back:hover,.cs-top a:hover{opacity:.5}
+.cs-top .cs-back{padding-top:14px;white-space:nowrap}
 .cs-info{margin-top:auto;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .cs-info p{margin:0;display:flex;gap:8px}
 .cs-info p span:first-child{flex:none}
@@ -862,13 +863,12 @@ const caseHTML=i=>{const p=projects[i],no=pad(i+1),nx=(i+1)%projects.length,q=pr
   <div class="cs-left">
     <div class="giant"><span>P.${no}</span></div>
     <hr class="rule">
-    <div class="cs-meta full"><button class="cs-back" data-back>← Back to home</button></div>
-    <div class="cs-m"><div class="cs-meta">${meta}</div>${info}<a href="${esc(p.site)}" style="text-decoration:underline">${esc(host(p.site))} ↗</a></div>
+    <div class="cs-m"><div class="cs-meta">${meta}</div>${info}<button class="cs-back" data-back>← Back to home</button></div>
     <div class="media">${shotsFor(p).map(s=>`<div class="shot${s.tall?" tall":""}" style="${s.tall?"":"grid-column:1/-1"}">${s.html}</div>`).join("")}</div>
     <a class="next" href="#work-${pad(nx+1)}"><span class="lbl">Next project / P.${pad(nx+1)}</span><b>${esc(q.name)} →</b></a>
   </div>
   <aside class="cs-right">
-    <div class="cs-top"><div class="giant"><span>${ini(p.name)}</span></div><a href="${esc(p.site)}">${esc(host(p.site))} ↗</a></div>
+    <div class="cs-top"><div class="giant"><span>${ini(p.name)}</span></div><button class="cs-back" data-back>← Back to home</button></div>
     <hr class="rule">
     <div class="cs-meta">${meta}</div>
     ${info}
