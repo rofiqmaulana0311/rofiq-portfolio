@@ -176,10 +176,11 @@ body.lock{overflow:hidden}
 .mock .body{position:relative;display:flex;align-items:flex-end;padding:12px;overflow:hidden}
 .mock .word{font:400 clamp(48px,9vw,170px)/.8 var(--cond);letter-spacing:-.01em}
 .mock .cap{position:absolute;right:12px;top:12px;opacity:.7}
-.next{display:block;border-top:1px solid #555;margin-top:max(2vw,16px);padding-top:10px}
+.next{display:block;border-top:1px solid #555;margin-top:max(2vw,16px);padding:10px 0 0}
+.next .lbl{margin-bottom:clamp(80px,14vw,260px)} /* area lebih tinggi ke atas */
 .next .lbl{display:block}
-.next b{display:block;font:400 clamp(56px,9vw,170px)/.85 var(--cond);transition:color .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
-.next:hover b{color:transparent;-webkit-text-stroke:1px var(--wh);transform:translateX(1vw)}
+.next b{display:block;font:400 clamp(56px,9vw,170px)/.85 var(--cond);transition:color .35s}
+.next:hover b{color:var(--nc,var(--wh))} /* warna proyek berikutnya */
 .cs-m{display:none}
 @media(max-width:900px){
   .cs{grid-template-columns:1fr}
@@ -869,7 +870,7 @@ const caseHTML=i=>{const p=projects[i],no=pad(i+1),nx=(i+1)%projects.length,q=pr
     <hr class="rule">
     <div class="cs-m"><div class="cs-meta">${meta}</div>${info}<button class="cs-back" data-back>← Back to home</button></div>
     <div class="media">${shotsFor(p).map(s=>`<div class="shot${s.tall?" tall":""}" style="${s.tall?"":"grid-column:1/-1"}">${s.html}</div>`).join("")}</div>
-    <a class="next" href="#work-${pad(nx+1)}"><span class="lbl">Next project / P.${pad(nx+1)}</span><b>${esc(q.name)} →</b></a>
+    <a class="next" href="#work-${pad(nx+1)}" style="--nc:${q.c[0]}"><span class="lbl">Next project / P.${pad(nx+1)}</span><b>${esc(q.name)}</b></a>
   </div>
   <aside class="cs-right">
     <div class="cs-top"><div class="giant"><span>${ini(p.name)}</span></div><button class="cs-back" data-back>← Back to home</button></div>
