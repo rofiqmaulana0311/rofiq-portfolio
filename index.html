@@ -195,10 +195,11 @@ body.lock{overflow:hidden}
   .row .ini{display:none}
   .row .info .lbl{display:none}
 }
-/* ====== WORK: GALERI 3D MELENGKUNG ====== */
+/* ====== WORK: SPIRAL 3D ====== */
 .work{height:calc(100svh + var(--n,8) * 45svh);padding:0;background:#0a0a0a;color:var(--wh)}
 .wpin{position:sticky;top:0;height:100svh;overflow:hidden}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
+.wpin{background-image:linear-gradient(rgba(242,242,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(242,242,238,.035) 1px,transparent 1px);background-size:56px 56px;background-position:center}
 #wgl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
 /* daftar link tetap ada untuk keyboard & pembaca layar */
 .work .rows{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
@@ -452,7 +453,7 @@ footer[data-mode] #flogoCv{touch-action:none}
   <section class="work" id="work">
    <div class="wpin pad">
     <h2 class="sr">Work</h2>
-    <!-- Galeri 3D melengkung: cover proyek melayang di ruang gelap, kamera bergerak mengikuti scroll -->
+    <!-- Spiral 3D: cover proyek memutar seperti tangga spiral, berputar mengikuti scroll -->
     <canvas id="wgl" aria-hidden="true"></canvas>
     <ul class="rows" id="rows"></ul>
    </div>
@@ -739,94 +740,108 @@ const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
   requestAnimationFrame(loop)};
 loop();
 
-/* ====== WORK: GALERI 3D MELENGKUNG (WebGL) ======
-   Cover proyek melayang di ruang gelap pada beberapa kedalaman. Scroll menggerakkan kamera menyamping;
-   dunia dibengkokkan mengelilingi kamera sehingga cover di tepi melengkung seperti di dalam tabung.
-   Makin cepat scroll, makin kuat lengkungannya. Klik cover untuk membuka studi kasus.
-   Cover memakai gambar pertama proyek (assets/work/pXX/01.jpg); kalau belum ada, dibuat otomatis dari warna brand. */
+/* ====== WORK: SPIRAL 3D (WebGL) ======
+   Cover proyek tersusun memutar seperti tangga spiral. Scroll memutar spiral; saat bergerak, cover
+   melengkung ke samping, lalu spiral terus berputar pelan sendiri. Sisi belakang cover tampil kabur.
+   Hover memperbesar isi cover, klik membuka studi kasus. Cover = gambar pertama tiap proyek
+   (assets/work/pXX/01.jpg); selama belum ada, dibuat otomatis dari warna brand. */
 const workEl=document.getElementById("work"),DN=projects.length;
 workEl.style.setProperty("--n",Math.max(1,DN-1));
-const workY=i=>workEl.getBoundingClientRect().top+scrollY+(workEl.offsetHeight-innerHeight)*(DN>1?i/(DN-1):0);
+let spDrift=0;
+const CNT=DN*2,CEN=Math.floor(CNT/2),FRONT=1.85; /* sudut .85 x 1.85 = menghadap kamera */
+const workY=i=>{const r=workEl.getBoundingClientRect(),run=workEl.offsetHeight-innerHeight;
+  const off=(((i-CEN-FRONT-spDrift)%DN)+DN)%DN;return r.top+scrollY+run*Math.min(.999,off/DN)};
 {
-const cv=document.getElementById("wgl"),gl=cv.getContext("webgl",{antialias:true,alpha:false,premultipliedAlpha:false});
+const cv=document.getElementById("wgl"),gl=cv.getContext("webgl",{antialias:true,alpha:true,premultipliedAlpha:false});
 if(!gl){workEl.classList.add("nogl")}else{
  const sh=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(s));return s};
  const prog=gl.createProgram();
  gl.attachShader(prog,sh(gl.VERTEX_SHADER,`
-  attribute vec2 aUV;uniform vec3 uC;uniform vec2 uS;uniform float uB,uF,uA;varying vec2 vUV;varying float vEdge;
-  void main(){vec3 p=uC+vec3((aUV.x-.5)*uS.x,(aUV.y-.5)*uS.y,0.);float r=-p.z;float R=r/uB;float th=p.x/R;
-   vec3 q=vec3(R*sin(th),p.y,-(r-R*(1.-cos(th))));float n=.1,f=80.;
-   gl_Position=vec4(uF*q.x/uA,uF*q.y,q.z*(f+n)/(n-f)+2.*f*n/(n-f),-q.z);vUV=vec2(aUV.x,1.-aUV.y);vEdge=abs(th);}`));
+  attribute vec2 aUV;uniform vec3 uPos;uniform float uRot,uSpeed,uF,uA;uniform vec2 uScale;varying vec2 vUV;
+  #define PI 3.14159265
+  void main(){vec3 l=vec3((aUV.x-.5)*uScale.x,(aUV.y-.5)*uScale.y,sin(aUV.x*PI)*.2);
+   float c=cos(uRot),s=sin(uRot);vec3 w=vec3(c*l.x+s*l.z,l.y,-s*l.x+c*l.z)+uPos;
+   vec3 v=w-vec3(0.,0.,8.);
+   v.x+=pow(uPos.y+l.y,2.)*.1;          /* spiral melengkung ke samping */
+   v.x+=sin(aUV.y*PI)*uSpeed*2.;        /* cover membusur saat scroll */
+   float n=.1,f=100.;gl_Position=vec4(uF*v.x/uA,uF*v.y,v.z*(f+n)/(n-f)+2.*f*n/(n-f),-v.z);vUV=aUV;}`));
  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,`
-  precision mediump float;uniform sampler2D uT;uniform float uDim,uRad;uniform vec2 uAsp;varying vec2 vUV;varying float vEdge;
-  void main(){vec2 d=abs(vUV-.5)*uAsp-(uAsp*.5-uRad);float a=length(max(d,0.))-uRad;if(a>0.)discard;
-   vec3 c=texture2D(uT,vUV).rgb;float fog=1.-smoothstep(.55,1.35,vEdge);gl_FragColor=vec4(c*uDim*fog,1.);}`));
+  precision mediump float;uniform sampler2D uT;uniform float uZoom,uReveal,uDim;varying vec2 vUV;
+  float rr(vec2 uv,vec2 sz,float r){vec2 d=abs(uv-.5)-sz*.5+r;return length(max(d,0.))-r;}
+  void main(){vec2 uv=vec2(vUV.x,1.-vUV.y);vec4 col;
+   if(gl_FrontFacing){col=texture2D(uT,(uv-.5)/uZoom+.5);}
+   else{float o=40./1024.;vec4 c=vec4(0.);   /* sisi belakang: kabur */
+    c+=texture2D(uT,uv+vec2(-o,-o));c+=2.*texture2D(uT,uv+vec2(0.,-o));c+=texture2D(uT,uv+vec2(o,-o));
+    c+=2.*texture2D(uT,uv+vec2(-o,0.));c+=4.*texture2D(uT,uv);c+=2.*texture2D(uT,uv+vec2(o,0.));
+    c+=texture2D(uT,uv+vec2(-o,o));c+=2.*texture2D(uT,uv+vec2(0.,o));c+=texture2D(uT,uv+vec2(o,o));col=c/16.;}
+   float rv=clamp(uReveal,0.,1.),sdf=rr(vUV,vec2(rv),.05*rv);
+   float a=(1.-smoothstep(0.,.002,sdf))*smoothstep(.1,1.,uReveal);
+   gl_FragColor=vec4(col.rgb*uDim,a);}`));
  gl.linkProgram(prog);gl.useProgram(prog);
- /* bidang dengan banyak potongan horizontal supaya bisa melengkung halus */
- const SX=40,SY=6,V=[],I=[];for(let y=0;y<=SY;y++)for(let x=0;x<=SX;x++)V.push(x/SX,y/SY);
+ const SX=16,SY=8,V=[],I=[];for(let y=0;y<=SY;y++)for(let x=0;x<=SX;x++)V.push(x/SX,y/SY);
  for(let y=0;y<SY;y++)for(let x=0;x<SX;x++){const a=y*(SX+1)+x,b=a+1,c=a+SX+1,d=c+1;I.push(a,b,c,b,d,c)}
  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(V),gl.STATIC_DRAW);
  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(I),gl.STATIC_DRAW);
  const aUV=gl.getAttribLocation(prog,"aUV");gl.enableVertexAttribArray(aUV);gl.vertexAttribPointer(aUV,2,gl.FLOAT,false,0,0);
- const U={};for(const n of ["uC","uS","uB","uF","uA","uT","uDim","uRad","uAsp"])U[n]=gl.getUniformLocation(prog,n);
- gl.enable(gl.DEPTH_TEST);gl.clearColor(.039,.039,.039,1);
- let W=0,H=0,dpr=1,F=1,A=1,need=true,on=false,camX=0,bend=.8,lastY=scrollY,hot=-1,mx=-9,my=-9,picks=[];
- /* tekstur cover: gambar asli bila ada, kalau tidak dibuat dari warna brand */
- const TW=1024,TH=768;
- const ART={0:(a,b)=>`<rect width="160" height="120" fill="${a}"/><g stroke="${b}" stroke-width=".8" opacity=".3">${[...Array(13)].map((_,i)=>`<path d="M${i*13.3} 0V120M0 ${i*10}H160"/>`).join("")}</g><path d="M55 92V28L105 92V28" fill="none" stroke="${b}" stroke-width="12"/>`,
-  1:(a,b)=>`<rect width="160" height="120" fill="${a}"/><path d="M34 56c15-22 31-22 46 0s31 22 46 0" fill="none" stroke="#f2f2ee" stroke-width="10" stroke-linecap="round"/><path d="M34 78c15-15 31-15 46 0s31 15 46 0" fill="none" stroke="${b}" stroke-width="8" stroke-linecap="round"/>`,
-  2:(a,b)=>`<rect width="160" height="120" fill="${a}"/><circle cx="80" cy="56" r="30" fill="none" stroke="${b}" stroke-width="2"/><circle cx="80" cy="56" r="7" fill="${b}"/><rect x="40" y="100" width="80" height="2" fill="${b}"/>`,
-  3:(a,b)=>`<rect width="160" height="120" fill="${b}"/><path d="M14 64H54L66 30L80 96L92 46L102 64H146" fill="none" stroke="${a}" stroke-width="7" stroke-linejoin="round"/><circle cx="128" cy="24" r="9" fill="${a}"/>`,
-  4:(a,b)=>`<rect width="160" height="120" fill="${a}"/><path d="M44 26H116M44 26V96M80 26V96" stroke="${b}" stroke-width="15"/><rect x="92" y="70" width="24" height="26" fill="#ff3b1f"/>`,
-  5:(a,b)=>`<rect width="160" height="120" fill="${a}"/><path d="M50 108V58a30 30 0 0 1 60 0V108" fill="${b}"/><path d="M65 108V66a15 15 0 0 1 30 0V108" fill="${a}"/>`,
-  6:(a,b)=>`<rect width="160" height="120" fill="${a}"/><rect x="46" y="72" width="68" height="18" fill="${b}"/><rect x="56" y="50" width="48" height="18" fill="${b}" opacity=".7"/><rect x="66" y="28" width="28" height="18" fill="${b}" opacity=".45"/>`,
-  7:(a,b)=>`<rect width="160" height="120" fill="${a}"/>${[...Array(7)].map((_,i)=>`<path d="M${30+i*15} 108C${30+i*15} 80 ${38+i*15} 58 ${36+i*15} 38" stroke="${b}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join("")}<circle cx="128" cy="24" r="12" fill="${b}"/>`};
+ const U={};for(const n of ["uPos","uRot","uSpeed","uF","uA","uScale","uT","uZoom","uReveal","uDim"])U[n]=gl.getUniformLocation(prog,n);
+ gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.CULL_FACE);gl.clearColor(0,0,0,0);
+ let need=true;
+ /* tekstur cover 1.7:1 */
+ const TW=1088,TH=640;
+ const ART={0:(a,b)=>`<g stroke="${b}" stroke-width=".8" opacity=".3">${[...Array(13)].map((_,i)=>`<path d="M${i*13.3} 0V120M0 ${i*10}H160"/>`).join("")}</g><path d="M55 92V28L105 92V28" fill="none" stroke="${b}" stroke-width="12"/>`,
+  1:(a,b)=>`<path d="M34 56c15-22 31-22 46 0s31 22 46 0" fill="none" stroke="#f2f2ee" stroke-width="10" stroke-linecap="round"/><path d="M34 78c15-15 31-15 46 0s31 15 46 0" fill="none" stroke="${b}" stroke-width="8" stroke-linecap="round"/>`,
+  2:(a,b)=>`<circle cx="80" cy="56" r="30" fill="none" stroke="${b}" stroke-width="2"/><circle cx="80" cy="56" r="7" fill="${b}"/><rect x="40" y="100" width="80" height="2" fill="${b}"/>`,
+  3:(a,b)=>`<path d="M14 64H54L66 30L80 96L92 46L102 64H146" fill="none" stroke="${a}" stroke-width="7" stroke-linejoin="round"/><circle cx="128" cy="24" r="9" fill="${a}"/>`,
+  4:(a,b)=>`<path d="M44 26H116M44 26V96M80 26V96" stroke="${b}" stroke-width="15"/><rect x="92" y="70" width="24" height="26" fill="#ff3b1f"/>`,
+  5:(a,b)=>`<path d="M50 108V58a30 30 0 0 1 60 0V108" fill="${b}"/><path d="M65 108V66a15 15 0 0 1 30 0V108" fill="${a}"/>`,
+  6:(a,b)=>`<rect x="46" y="72" width="68" height="18" fill="${b}"/><rect x="56" y="50" width="48" height="18" fill="${b}" opacity=".7"/><rect x="66" y="28" width="28" height="18" fill="${b}" opacity=".45"/>`,
+  7:(a,b)=>`${[...Array(7)].map((_,i)=>`<path d="M${30+i*15} 108C${30+i*15} 80 ${38+i*15} 58 ${36+i*15} 38" stroke="${b}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join("")}<circle cx="128" cy="24" r="12" fill="${b}"/>`};
  const texs=projects.map((p,i)=>{const t=gl.createTexture(),c=document.createElement("canvas");c.width=TW;c.height=TH;const g=c.getContext("2d");
-   const up=()=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
+   const up=()=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
      gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);need=true};
-   g.fillStyle=p.c[0];g.fillRect(0,0,TW,TH);up();
-   const fallback=()=>{const im=new Image();im.onload=()=>{g.drawImage(im,0,0,TW,TH);up()};
-     im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${TW}" height="${TH}" viewBox="0 0 160 120">${ART[i%8](p.c[0],p.c[1])}</svg>`)};
+   const bg=i%8===3?p.c[1]:p.c[0];g.fillStyle=bg;g.fillRect(0,0,TW,TH);up();
+   const fallback=()=>{const im=new Image();im.onload=()=>{const h=TH,w=h*160/120;g.drawImage(im,(TW-w)/2,0,w,h);up()};
+     im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(TH*160/120)}" height="${TH}" viewBox="0 0 160 120">${ART[i%8](p.c[0],p.c[1])}</svg>`)};
    const s=p.shots&&p.shots.find(x=>!x.video);
    if(s){const im=new Image();im.onload=()=>{const k=Math.max(TW/im.width,TH/im.height),w=im.width*k,h=im.height*k;g.drawImage(im,(TW-w)/2,(TH-h)/2,w,h);up()};im.onerror=fallback;im.src=s.src}else fallback();
    return t});
- /* susunan: 3 baris pada kedalaman berbeda + lapisan jauh; tiap baris berulang tanpa ujung */
- let cards=[],L=1,SP=1,CW=1,CH=1;
- const build=()=>{const port=innerWidth<innerHeight;CW=port?3:3.4;CH=CW*.75;SP=CW*(port?1.3:1.75);L=DN*SP;cards=[];
-   const rnd=k=>{const x=Math.sin(k*91.7+3.1)*43758.5;return x-Math.floor(x)};
-   /* baris utama paling dekat; baris atas & bawah lebih jauh & lebih gelap; lapisan paling jauh hampir hilang di gelap */
-   for(let i=0;i<DN;i++){
-     cards.push({p:i,x:i*SP,y:(rnd(i+20)-.5)*CH*.25,z:-6.4,s:1,main:1});
-     cards.push({p:(i+3)%DN,x:i*SP+SP*.55+(rnd(i)-.5)*SP*.3,y:CH*(port?1.45:1.3)+rnd(i+9)*CH*.2,z:-9.5-rnd(i+4)*2.5,s:.92});
-     cards.push({p:(i+5)%DN,x:i*SP+SP*.35+(rnd(i+2)-.5)*SP*.3,y:-CH*(port?1.45:1.3)-rnd(i+7)*CH*.2,z:-9-rnd(i+5)*2.5,s:.92});
-     if(i%2===0)cards.push({p:(i+6)%DN,x:i*SP+SP*.8,y:(rnd(i+11)-.5)*CH*2.6,z:-17-rnd(i+3)*3,s:.85})}};
+ /* bidang: proyek diulang 2x supaya spiral penuh */
+ const planes=[...Array(CNT)].map((_,k)=>({k,p:k%DN,hover:0,hid:1,hidT:1,delay:(k%4)*50}));
+ let W=0,H=0,dpr=1,F=1,A=1,on=false,off=0,speed=0,lastOff=null,hot=-1,mx=-9,my=-9,revealed=false,last=performance.now();
  const size=()=>{dpr=Math.min(innerWidth<700?1.5:2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr|0;cv.height=H*dpr|0;gl.viewport(0,0,cv.width,cv.height);
-   A=W/H;F=1/Math.tan((A<1?62:46)*Math.PI/360);build();need=true};
+   A=W/H;F=1/Math.tan((W<900?45:35)*Math.PI/360);need=true};
  new ResizeObserver(size).observe(cv);size();
- const wrap=x=>{x=((x-camX)%L+L*1.5)%L-L*.5;return x};
- const project=(x,y,z,B)=>{const r=-z,R=r/B,th=x/R,qx=R*Math.sin(th),qz=-(r-R*(1-Math.cos(th)));return [F*qx/A/(-qz),F*y/(-qz),th]};
- const frame=()=>{const run=workEl.offsetHeight-innerHeight,p=clamp(-workEl.getBoundingClientRect().top/Math.max(1,run));
-   const tgt=p*(DN-1)*SP,v=scrollY-lastY;lastY=scrollY;const pc=camX;camX+=(tgt-camX)*(reduce?1:.09);
-   const sp=Math.abs(camX-pc);bend+=((reduce?.8:.8+Math.min(.55,sp*1.8))-bend)*.08;
-   if(Math.abs(camX-pc)>1e-5)need=true;
-   /* cari cover di bawah kursor */
-   picks=[];let best=-1,bz=-1e9;
-   const cy=Math.sin(camX*.25)*.25;
-   cards.forEach((c,k)=>{const x=wrap(c.x),y=c.y-cy,z=c.z,w=CW*c.s/2,h=CH*c.s/2;let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,ok=true;
-     for(const [u,vv] of [[-w,-h],[0,-h],[w,-h],[-w,h],[0,h],[w,h]]){const q=project(x+u,y+vv,z,bend);if(Math.abs(q[2])>1.5)ok=false;x0=Math.min(x0,q[0]);x1=Math.max(x1,q[0]);y0=Math.min(y0,q[1]);y1=Math.max(y1,q[1])}
-     c.vx=x;c.vy=y;if(ok&&mx>=x0&&mx<=x1&&my>=y0&&my<=y1&&z>bz){bz=z;best=k}});
-   if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick();need=true}
-   if(need){need=false;gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);gl.uniform1f(U.uB,bend);gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform1f(U.uRad,.035);
-     cards.forEach((c,k)=>{const s=c.s*(k===hot?1.05:1);
-       const focus=Math.max(0,1-Math.abs(c.vx)/(SP*1.1));const dim=k===hot?1:(.22+.78*focus*(c.main?1:.45))*Math.pow(Math.min(1,6.4/(-c.z)),1.6);
-       gl.uniform3f(U.uC,c.vx,c.vy,c.z);gl.uniform2f(U.uS,CW*s,CH*s);gl.uniform2f(U.uAsp,1,.75);gl.uniform1f(U.uDim,dim);
-       gl.bindTexture(gl.TEXTURE_2D,texs[c.p]);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0)})}
-   if(on||Math.abs(tgt-camX)>.001)requestAnimationFrame(frame)};
- new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){lastY=scrollY;requestAnimationFrame(frame)}}).observe(workEl);
+ const SCX=1.7,SCY=1,GAP=.5,AGAP=.85,RAD=2;
+ const place=pl=>{let N=pl.k-off;N=((N%CNT)+CNT)%CNT;const B=N-CEN,dir=pl.hidT?1.5:-1.5;
+   const y=B*GAP-.8-pl.hid*dir,G=RAD*(1-pl.hid/2),a=B*AGAP;return {x:Math.cos(a)*G,y,z:Math.sin(a)*G,rot:-a+Math.PI/2}};
+ const proj=(x,y,z)=>{const vz=z-8;return [F*x/A/(-vz),F*y/(-vz)]};
+ const frame=now=>{const dt=Math.min(50,now-last);last=now;
+   const run=workEl.offsetHeight-innerHeight,p=clamp(-workEl.getBoundingClientRect().top/Math.max(1,run));
+   if(!reduce)spDrift+=.002*dt/16.7;              /* spiral berputar pelan sendiri */
+   const tgt=p*DN+spDrift;if(lastOff===null)off=tgt;
+   const prev=off;off+=(tgt-off)*(reduce?1:.1);const d=off-prev;lastOff=off;
+   speed+=((reduce?0:Math.max(-.6,Math.min(.6,(d-.002*dt/16.7)*3)))-speed)*.12;
+   /* muncul dari bawah saat section pertama terlihat */
+   if(!revealed&&on){revealed=true;planes.forEach(pl=>setTimeout(()=>{pl.hidT=0},pl.delay+100))}
+   for(const pl of planes){pl.hid+=(pl.hidT-pl.hid)*(1-Math.pow(.95,dt*.15));pl.P=place(pl)}
+   /* hover: cari bidang menghadap kamera yang memuat kursor, paling dekat */
+   let best=-1,bz=-1e9;
+   for(const pl of planes){const P=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P.rot),nz=Math.cos(P.rot);
+     if(nx*(0-P.x)+nz*(8-P.z)<=0)continue;const c=Math.cos(P.rot),s=Math.sin(P.rot),pts=[];
+     for(const [u,v] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){const lx=u*SCX,ly=v*SCY;pts.push(proj(c*lx+P.x+Math.pow(P.y+ly,2)*.1,ly+P.y,-s*lx+P.z))}
+     let inside=false;for(let i=0,j=3;i<4;j=i++){const [xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>my)!==(yj>my)&&mx<(xj-xi)*(my-yi)/(yj-yi)+xi)inside=!inside}
+     if(inside&&P.z>bz){bz=P.z;best=pl.k}}
+   if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick()}
+   gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform2f(U.uScale,SCX,SCY);gl.uniform1f(U.uSpeed,speed);
+   [...planes].sort((a,b)=>a.P.z-b.P.z).forEach(pl=>{pl.hover+=((pl.k===hot?1:0)-pl.hover)*.12;const P=pl.P;
+     gl.uniform3f(U.uPos,P.x,P.y,P.z);gl.uniform1f(U.uRot,P.rot);gl.uniform1f(U.uZoom,1+.05*pl.hover);
+     gl.uniform1f(U.uReveal,(1-pl.hover*.05)*(1-pl.hid));gl.uniform1f(U.uDim,1);
+     gl.bindTexture(gl.TEXTURE_2D,texs[pl.p]);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0)});
+   if(on)requestAnimationFrame(frame)};
+ new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(workEl);
  const setM=e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width*2-1;my=1-(e.clientY-r.top)/r.height*2};
  cv.addEventListener("pointermove",setM);cv.addEventListener("pointerleave",()=>{mx=my=-9});
- cv.addEventListener("click",e=>{setM(e);requestAnimationFrame(()=>{frame();if(hot>=0){location.hash="#work-"+pad(cards[hot].p+1)}})});
- frame();
+ cv.addEventListener("click",e=>{setM(e);requestAnimationFrame(t=>{frame(t);if(hot>=0)location.hash="#work-"+pad(hot%DN+1)})});
 }}
 
 
