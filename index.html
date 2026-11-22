@@ -791,7 +791,7 @@ if(!gl){jEl.classList.add("nogl")}else{
    /* tersedot ke satu titik di tengah */
    float k=uCol*uCol;w=mix(w,vec3(0.,0.,1.5),k);
    vec3 v=w-vec3(0.,0.,8.);
-   v.x+=pow(uPos.y+l.y,2.)*.1*(1.-k);
+   float yy=uPos.y+l.y;v.x+=yy*yy*.1*(1.-k);   /* bukan pow(): pow dengan bilangan negatif = NaN di GPU Windows */
    v.x+=sin(aUV.y*PI)*uSpeed*2.;
    float n=.1,f=100.;gl_Position=vec4(uF*v.x/uA,uF*v.y,v.z*(f+n)/(n-f)+2.*f*n/(n-f),-v.z);vUV=aUV;}`));
  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,`
