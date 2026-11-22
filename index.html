@@ -234,6 +234,20 @@ body.lock{overflow:hidden}
 .mk.hide{display:none}
 @media(max-width:900px){.mk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:560px){.mk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mk .c{opacity:1;transform:none}.mk-grid:hover .mk{opacity:1}}
+/* ====== MARKS: ORBIT LUBANG HITAM ====== */
+.marks{height:320svh;padding:0;background:#0a0a0a;color:var(--wh)}
+.mpin{position:sticky;top:0;height:100svh;overflow:hidden;background-image:linear-gradient(rgba(242,242,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(242,242,238,.035) 1px,transparent 1px);background-size:56px 56px;background-position:center}
+.orbits{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.orbits ellipse{fill:none;stroke:#f2f2ee}
+.bh{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:var(--bk);z-index:5;pointer-events:none;
+  box-shadow:0 0 0 2px #ff6a1a,0 0 26px 8px rgba(255,106,26,.55),0 0 90px 36px rgba(242,242,238,.10);will-change:transform}
+.mk-orbit{position:absolute;inset:0}
+.mo{position:absolute;left:0;top:0;width:96px;height:96px;margin:-48px 0 0 -48px;padding:0;border:0;border-radius:50%;background:none;color:var(--c);cursor:pointer;will-change:transform,opacity}
+.mo svg,.mo img{width:100%;height:100%;object-fit:contain;display:block;overflow:visible;pointer-events:none}
+.mo::after{content:"";position:absolute;inset:-14%;border-radius:50%;border:1.5px solid #ff6a1a;opacity:0;transform:scale(.8);transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
+.mo:hover::after,.mo:focus-visible::after{opacity:1;transform:none}
+.mo:focus-visible{outline:none}
+@media(max-width:700px){.mo{width:64px;height:64px;margin:-32px 0 0 -32px}}
 /* detail logo + garis konstruksi */
 #lgx{position:fixed;inset:0;z-index:44;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);background:var(--mc,#0a0a0a);color:var(--mi,#f2f2ee);visibility:hidden;opacity:0;transition:opacity .5s,visibility 0s .5s}
 #lgx.open{visibility:visible;opacity:1;transition:opacity .5s}
@@ -465,9 +479,14 @@ footer[data-mode] #flogoCv{touch-action:none}
    </div>
   </section>
 
-  <section class="marks pad" id="marks">
-    <div class="mk-head"><h2>Marks</h2></div>
-    <div class="mk-grid" id="mkGrid"></div>
+  <section class="marks" id="marks">
+   <!-- Orbit: logo beredar mengelilingi lubang hitam; scroll menyempitkan orbit sampai semua tersedot ke gerbang Other Side -->
+   <div class="mpin">
+    <h2 class="sr">Marks</h2>
+    <svg class="orbits" id="orbits" aria-hidden="true"></svg>
+    <div class="bh" id="bh" aria-hidden="true"></div>
+    <div class="mk-orbit" id="mkGrid"></div>
+   </div>
   </section>
 </main>
 <div id="lgx" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Logo detail">
@@ -583,7 +602,7 @@ const SFX=(()=>{let ctx=null,on=false,noiseBuf=null,scr=null;
 /* ====== CURSOR custom: ikut kursor, merah di elemen interaktif, berputar pelan saat diam ====== */
 if(matchMedia("(hover:hover) and (pointer:fine)").matches){document.documentElement.classList.add("cc");
  const cu=document.getElementById("cur"),ftEl=document.getElementById("contact"),odEl=document.getElementById("odim");let x=-100,y=-100,on=false,rot=0,spin=0,lastMove=0,fm="",mvT=0;
- const SEL="a,button,.row,.mk,.portal,#odim .it,input,label,#wgl[data-hot]";
+ const SEL="a,button,.row,.mk,.mo,.portal,#odim .it,input,label,#wgl[data-hot]";
  addEventListener("pointermove",e=>{x=e.clientX;y=e.clientY;lastMove=performance.now();cu.classList.add("show");
    const o=!!(e.target.closest&&e.target.closest(SEL));if(o!==on){on=o;cu.classList.toggle("on",o)}
    /* mode footer: batang kapur / penghapus */
@@ -882,8 +901,10 @@ const caseHTML=i=>{const p=projects[i],no=pad(i+1),nx=(i+1)%projects.length,q=pr
 const marks=window.CONTENT.marks,{C,L,R}=window.CONTENT.G;
 const mkGrid=document.getElementById("mkGrid");
 const logoSVG=(m,cls="")=>m.src?`<img class="${cls}" src="${esc(m.src)}" alt="${esc(m.client)} logo">`:`<svg class="${cls}" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">${m.svg}</svg>`;
-mkGrid.innerHTML=marks.map((m,i)=>`<button class="mk" data-i="${i}" data-k="${m.kind}" style="--mc:${m.c[0]};--mi:${m.c[1]};--hole:var(--wh)" aria-label="${esc(m.client)}, ${m.kind}, ${m.year}">
-  ${logoSVG(m)}<span class="c"><span>${esc(m.client)}</span><span>${m.year}</span></span></button>`).join("");
+/* warna logo di latar gelap: pakai warna brand yang cukup terang */
+const lum=c=>{const n=parseInt(c.slice(1),16);return .299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255)};
+const markInk=m=>{const a=m.c[0],b=m.c[1];return lum(a)>70?a:lum(b)>70?b:"#f2f2ee"};
+mkGrid.innerHTML=marks.map((m,i)=>`<button class="mo" data-i="${i}" style="--c:${markInk(m)}" aria-label="${esc(m.client)}, ${m.kind}, ${m.year}">${logoSVG(m)}</button>`).join("");
 for(const b of mkGrid.querySelectorAll(".mk"))b.addEventListener("pointerenter",()=>b.style.setProperty("--hole",marks[b.dataset.i].c[0]));
 for(const b of mkGrid.querySelectorAll(".mk"))b.addEventListener("pointerleave",()=>b.style.setProperty("--hole","var(--wh)"));
 /* detail + garis konstruksi */
@@ -904,7 +925,43 @@ const showMark=i=>{mkIdx=(i+marks.length)%marks.length;const m=marks[mkIdx];
   requestAnimationFrame(()=>requestAnimationFrame(()=>lgx.classList.add("draw")))};
 const openMark=i=>{showMark(i);lgx.classList.add("open");lenis?.stop();document.body.classList.add("lock");lgxInfo.querySelector("[data-x=close]").focus({preventScroll:true})};
 const closeMark=()=>{lgx.classList.remove("open","draw");mkIdx=-1;document.body.classList.remove("lock");lenis?.start();const b=mkGrid.querySelector(".mk:hover")||null};
-mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mk");if(b)openMark(+b.dataset.i)});
+mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mo");if(b)openMark(+b.dataset.i)});
+
+/* ====== ORBIT: logo beredar di 3 orbit elips; scroll menyempitkan orbit, logo tersedot satu per satu,
+   lubang hitam membesar memenuhi layar lalu berlanjut ke gerbang Other Side ====== */
+{const sec=document.getElementById("marks"),pin=sec.querySelector(".mpin"),orb=document.getElementById("orbits"),bh=document.getElementById("bh");
+ const items=[...mkGrid.querySelectorAll(".mo")],MN=items.length;
+ const RINGS=[[.42,.15],[.31,.11],[.21,.075]],per=[5,4,3];let k=0;
+ const conf=[];RINGS.forEach((r,ri)=>{const n=per[ri];for(let j=0;j<n&&k<MN;j++,k++)conf.push({ri,a0:j/n*Math.PI*2+ri*.7})});
+ while(conf.length<MN)conf.push({ri:conf.length%3,a0:conf.length*1.3});
+ /* urutan tersedot: orbit dalam dulu */
+ const order=conf.map((c,i)=>i).sort((a,b)=>conf[b].ri-conf[a].ri||a-b);order.forEach((i,r)=>conf[i].s=.3+.48*r/Math.max(1,MN-1));
+ orb.innerHTML=RINGS.map((_,ri)=>`<ellipse stroke-opacity="${.07+ri*.04}" ${ri===1?'stroke-dasharray="2 8"':""}/>`).join("");
+ const ells=[...orb.querySelectorAll("ellipse")];
+ let on=false,t=0,last=performance.now(),hov=0,hovT=0;
+ mkGrid.addEventListener("pointerover",e=>{if(e.target.closest(".mo"))hovT=1});
+ mkGrid.addEventListener("pointerout",e=>{if(e.target.closest(".mo")&&!e.relatedTarget?.closest?.(".mo"))hovT=0});
+ const sm=x=>x*x*(3-2*x);
+ const frame=now=>{const dt=Math.min(50,now-last);last=now;
+   const r=sec.getBoundingClientRect(),run=sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,run));
+   const W=pin.clientWidth,H=pin.clientHeight,cx=W/2,cy=H/2,base=Math.min(W,H*1.9),port=W<H;
+   hov+=(hovT-hov)*.1;if(!reduce)t+=dt*.00022*(1+p*5)*(1-hov*.85);
+   const shrink=1-.45*sm(Math.min(1,p/.85));
+   RINGS.forEach(([rx,ry],ri)=>{const e=ells[ri];e.setAttribute("cx",cx);e.setAttribute("cy",cy);e.setAttribute("rx",rx*base*shrink*(port?.9:1));e.setAttribute("ry",ry*base*shrink*(port?2.4:1))});
+   items.forEach((el,i)=>{const c=conf[i],[rx,ry]=RINGS[c.ri],kk=reduce?0:sm(clamp((p-c.s)/.14));
+     const a=c.a0+t*(1+c.ri*.35)+kk*kk*4,R=1-kk;
+     const x=cx+Math.cos(a)*rx*base*shrink*(port?.9:1)*R,y=cy+Math.sin(a)*ry*base*shrink*(port?2.4:1)*R,front=Math.sin(a);
+     const sc=(.75+.35*(front*.5+.5))*(1-kk*.85)*(c.ri===2?.8:1),op=(.5+.5*(front*.5+.5))*(1-kk*kk);
+     const tang=Math.atan2(Math.cos(a)*ry,-Math.sin(a)*rx)*180/Math.PI;
+     el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(tang*kk).toFixed(1)}deg) scale(${(sc*(1+kk*1.5)).toFixed(3)},${sc.toFixed(3)})`;
+     el.style.opacity=op.toFixed(3);el.style.zIndex=front>0?8:3;el.style.pointerEvents=kk>.3?"none":"";el.tabIndex=kk>.3?-1:0});
+   /* lubang hitam: tumbuh pelan, lalu menelan layar di akhir */
+   const grow=reduce?0:sm(clamp((p-.82)/.18)),rad=60+60*sm(Math.min(1,p/.8)),full=Math.hypot(W,H)/2+40;
+   bh.style.transform=`scale(${((rad+(full-rad)*grow)/60).toFixed(3)})`;
+   if(on)requestAnimationFrame(frame)};
+ new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(sec);
+ frame(performance.now());
+}
 /* scale test: dari favicon 16px sampai ukuran penuh; invert: positif/negatif */
 const ctxName=px=>px<=24?"favicon":px<=72?"app icon":px<=160?"business card":px<=320?"poster":"billboard";
 lgx.addEventListener("input",e=>{if(e.target.id!=="mkScale")return;const v=+e.target.value,big=lgxStage.querySelectorAll(".big"),out=document.getElementById("mkPx");
