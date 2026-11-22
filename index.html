@@ -201,18 +201,16 @@ body.lock{overflow:hidden}
   .row .ini{display:none}
   .row .info .lbl{display:none}
 }
-/* ====== WORK: SPIRAL 3D ====== */
-.work{height:calc(100svh + var(--n,8) * 45svh);padding:0;background:#0a0a0a;color:var(--wh)}
-.wpin{position:sticky;top:0;height:100svh;overflow:hidden}
+/* ====== PERJALANAN: WORK → MARKS → OTHER SIDE ====== */
+.journey{position:relative;z-index:7;height:calc(100svh + 760svh);background-color:#0a0a0a;color:var(--wh)}
+.jpin{position:sticky;top:0;height:100svh;overflow:hidden}
+.jmark{position:absolute;left:0;top:0;width:1px;height:1px;pointer-events:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
-.wpin{background-image:linear-gradient(rgba(242,242,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(242,242,238,.035) 1px,transparent 1px);background-size:56px 56px;background-position:center}
 #wgl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}
-/* daftar link tetap ada untuk keyboard & pembaca layar */
-.work .rows{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-.work .rows .row:focus-visible{outline:2px solid #ff6a1a}
-/* tanpa WebGL: tampilkan daftar biasa */
-.work.nogl{height:auto}.work.nogl .wpin{position:static;height:auto;padding:120px max(2vw,16px)}.work.nogl #wgl{display:none}
-.work.nogl .rows{position:static;width:auto;height:auto;clip-path:none}
+.journey .rows{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.journey .rows .row:focus-visible{outline:2px solid #ff6a1a}
+.journey.nogl #wgl{display:none}
+.journey.nogl .rows{top:90px;left:max(2vw,16px);width:auto;height:auto;clip-path:none}
 /* ====== Mark Index (koleksi logo) ====== */
 .marks{position:relative;z-index:7;background:var(--wh);color:var(--bk);padding-block:clamp(40px,6vw,90px) clamp(100px,12vw,180px)}
 .mk-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
@@ -235,12 +233,12 @@ body.lock{overflow:hidden}
 @media(max-width:900px){.mk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:560px){.mk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mk .c{opacity:1;transform:none}.mk-grid:hover .mk{opacity:1}}
 /* ====== MARKS: ORBIT LUBANG HITAM ====== */
-.marks{height:320svh;padding:0;background:#0a0a0a;color:var(--wh)}
-.mpin{position:sticky;top:0;height:100svh;overflow:hidden;background-image:linear-gradient(rgba(242,242,238,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(242,242,238,.035) 1px,transparent 1px);background-size:56px 56px;background-position:center}
 .orbits{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .orbits ellipse{fill:none;stroke:#f2f2ee}
-.bh{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:var(--bk);z-index:5;pointer-events:none;
-  box-shadow:0 0 0 2px #ff6a1a,0 0 26px 8px rgba(255,106,26,.55),0 0 90px 36px rgba(242,242,238,.10);will-change:transform}
+.bh{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:#000;z-index:5;pointer-events:none;
+  box-shadow:0 0 0 2px #ff6a1a,0 0 26px 8px rgba(255,106,26,.55),0 0 90px 36px rgba(242,242,238,.10);will-change:transform;transition:background .5s,box-shadow .5s}
+/* titik kecil tempat semua cover menghilang */
+.bh.dot{background:#f2f2ee;box-shadow:0 0 0 0 transparent,0 0 30px 12px rgba(242,242,238,.6),0 0 90px 40px rgba(255,106,26,.25)}
 .mk-orbit{position:absolute;inset:0}
 .mo{position:absolute;left:0;top:0;width:96px;height:96px;margin:-48px 0 0 -48px;padding:0;border:0;border-radius:50%;background:none;color:var(--c);cursor:pointer;will-change:transform,opacity}
 .mo svg,.mo img{width:100%;height:100%;object-fit:contain;display:block;overflow:visible;pointer-events:none}
@@ -277,13 +275,14 @@ body.lock{overflow:hidden}
 @media(max-width:800px){#lgx{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}#lgx .info{padding:16px}#lgx .stage svg.big{width:min(70vw,48svh)}}
 
 /* ====== pintu ke dimensi lain ====== */
-.gate{position:relative;z-index:7;min-height:100svh;display:grid;grid-template-rows:1fr;padding-block:72px 28px;background:var(--bk);overflow:hidden}
+.gate{position:absolute;inset:0;z-index:9;display:grid;padding:0 max(2vw,16px);opacity:0;pointer-events:none}
+.gate .portal{pointer-events:none}.gate.live .portal{pointer-events:auto}
 .gate-top{display:flex;justify-content:space-between;gap:16px}
-.gate-mid{position:relative;display:grid;place-items:center}
+.gate-mid{position:relative;display:grid;place-items:center;height:100%}
+@media(max-width:700px){.gate-title{flex-direction:column;justify-content:center;gap:min(64vw,300px);font-size:clamp(56px,17vw,96px)}.portal{width:min(56vw,240px)}}
 .gate-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none;font:400 clamp(48px,11vw,210px)/.9 var(--cond);color:var(--wh)}
-.portal{position:relative;z-index:2;width:clamp(150px,17vw,260px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:var(--wh);cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1),box-shadow .6s;will-change:transform}
+.portal{position:relative;z-index:2;width:clamp(220px,26vw,400px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:transparent;cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1);will-change:transform}
 .portal canvas{position:absolute;inset:0;width:100%;height:100%}
-.portal{filter:url(#chalkMask)}
 .gate-title .gc{display:inline-block;will-change:transform;transform-origin:50% 60%}
 .gate-foot{display:flex;justify-content:space-between;gap:16px;color:var(--grey)}
 main.away,footer.away,.gate.away{transform:scale(.93);filter:brightness(.4);transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
@@ -322,7 +321,7 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 
 /* ====== SISTEM KAPUR ====== */
 /* grain hanya di bidang hitam (bidang putih & Other Side bersih) */
-body,#case,.gate,footer,#intro .bg{background-image:var(--grain,none);background-size:220px 220px}
+body,#case,.journey,footer,#intro .bg{background-image:var(--grain,none);background-size:220px 220px}
 .svgdefs{position:absolute;width:0;height:0;overflow:hidden}
 .bclip{position:absolute;inset:0;overflow:hidden}
 #wipe{position:fixed;inset:-48px;z-index:40;pointer-events:none;filter:url(#chalkMask)}
@@ -470,22 +469,24 @@ footer[data-mode] #flogoCv{touch-action:none}
    </section>
   </div>
 
-  <section class="work" id="work">
-   <div class="wpin pad">
+  <!-- PERJALANAN: Work (spiral) → Marks (orbit) → Other Side (portal) dalam satu layar yang menempel -->
+  <section class="journey" id="journey" aria-label="Work, marks and the other side">
+   <span class="jmark" id="work"></span><span class="jmark" id="marks"></span><span class="jmark" id="other"></span>
+   <div class="jpin">
     <h2 class="sr">Work</h2>
-    <!-- Spiral 3D: cover proyek memutar seperti tangga spiral, berputar mengikuti scroll -->
     <canvas id="wgl" aria-hidden="true"></canvas>
     <ul class="rows" id="rows"></ul>
-   </div>
-  </section>
-
-  <section class="marks" id="marks">
-   <!-- Orbit: logo beredar mengelilingi lubang hitam; scroll menyempitkan orbit sampai semua tersedot ke gerbang Other Side -->
-   <div class="mpin">
     <h2 class="sr">Marks</h2>
     <svg class="orbits" id="orbits" aria-hidden="true"></svg>
     <div class="bh" id="bh" aria-hidden="true"></div>
     <div class="mk-orbit" id="mkGrid"></div>
+    <div class="gate" id="gate">
+     <h2 class="sr">Other side</h2>
+     <div class="gate-mid">
+      <div class="gate-title" aria-hidden="true"><span>Other</span><span>side</span></div>
+      <button class="portal" id="portal" aria-label="Enter the other dimension: posters and print"><canvas id="portalCv"></canvas></button>
+     </div>
+    </div>
    </div>
   </section>
 </main>
@@ -494,12 +495,7 @@ footer[data-mode] #flogoCv{touch-action:none}
   <div class="info" id="lgxInfo"></div>
 </div>
 
-<section class="gate pad" id="other" aria-label="Other work">
-  <div class="gate-mid">
-    <div class="gate-title" aria-hidden="true"><span>Other</span><span>side</span></div>
-    <button class="portal" id="portal" aria-label="Enter the other dimension: posters and print"><canvas id="portalCv"></canvas></button>
-  </div>
-</section>
+
 
 <div id="odim" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Other dimension: posters and print">
   <div class="plane" id="plane"></div>
@@ -765,53 +761,59 @@ const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
   requestAnimationFrame(loop)};
 loop();
 
-/* ====== WORK: SPIRAL 3D (WebGL) ======
-   Cover proyek tersusun memutar seperti tangga spiral. Scroll memutar spiral; saat bergerak, cover
-   melengkung ke samping, lalu spiral terus berputar pelan sendiri. Sisi belakang cover tampil kabur.
-   Hover memperbesar isi cover, klik membuka studi kasus. Cover = gambar pertama tiap proyek
-   (assets/work/pXX/01.jpg); selama belum ada, dibuat otomatis dari warna brand. */
-const workEl=document.getElementById("work"),DN=projects.length;
-workEl.style.setProperty("--n",Math.max(1,DN-1));
+/* ====== PERJALANAN: WORK → MARKS → OTHER SIDE dalam satu panggung ======
+   Satu section panjang dengan satu layar yang menempel. Urutan scroll:
+   spiral cover (Work) → semua cover tersedot jadi satu titik → dari titik itu orbit logo (Marks) mekar →
+   logo tersedot ke lubang hitam → lubang hitam menjadi portal 3D (Other Side), klik untuk masuk. */
+const jEl=document.getElementById("journey"),DN=projects.length;
+const JB={w:.40,c:.47,b:.53,s:.82,g:.90};      /* batas fase dalam progres 0..1 */
+const jRun=()=>Math.max(1,jEl.offsetHeight-innerHeight);
+const jP=()=>clamp(-jEl.getBoundingClientRect().top/jRun());
+const jY=f=>jEl.getBoundingClientRect().top+scrollY+jRun()*f;
+const sm=x=>x*x*(3-2*x),seg=(p,a,b)=>clamp((p-a)/(b-a));
+/* penanda anchor (#work, #marks, #other) diletakkan di posisi fasenya */
+const jMarks=()=>{const r=jRun();document.getElementById("work").style.top="0px";document.getElementById("marks").style.top=(r*(JB.c+.02))+"px";document.getElementById("other").style.top=(r*(JB.g+.02))+"px"};
+new ResizeObserver(jMarks).observe(jEl);jMarks();
 let spDrift=0;
-const CNT=DN*2,CEN=Math.floor(CNT/2),FRONT=1.85; /* sudut .85 x 1.85 = menghadap kamera */
-const workY=i=>{const r=workEl.getBoundingClientRect(),run=workEl.offsetHeight-innerHeight;
-  const off=(((i-CEN-FRONT-spDrift)%DN)+DN)%DN;return r.top+scrollY+run*Math.min(.999,off/DN)};
+const CNT=DN*2,CEN=Math.floor(CNT/2),FRONT=1.85;
+const workY=i=>{const off=(((i-CEN-FRONT-spDrift)%DN)+DN)%DN;return jY(JB.w*Math.min(.999,off/DN))};
+/* ---- WORK: spiral 3D (WebGL) ---- */
 {
 const cv=document.getElementById("wgl"),gl=cv.getContext("webgl",{antialias:true,alpha:true,premultipliedAlpha:false});
-if(!gl){workEl.classList.add("nogl")}else{
+if(!gl){jEl.classList.add("nogl")}else{
  const sh=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(s));return s};
  const prog=gl.createProgram();
  gl.attachShader(prog,sh(gl.VERTEX_SHADER,`
-  attribute vec2 aUV;uniform vec3 uPos;uniform float uRot,uSpeed,uF,uA;uniform vec2 uScale;varying vec2 vUV;
+  attribute vec2 aUV;uniform vec3 uPos;uniform float uRot,uSpeed,uF,uA,uCol;uniform vec2 uScale;varying vec2 vUV;
   #define PI 3.14159265
   void main(){vec3 l=vec3((aUV.x-.5)*uScale.x,(aUV.y-.5)*uScale.y,sin(aUV.x*PI)*.2);
    float c=cos(uRot),s=sin(uRot);vec3 w=vec3(c*l.x+s*l.z,l.y,-s*l.x+c*l.z)+uPos;
+   /* tersedot ke satu titik di tengah */
+   float k=uCol*uCol;w=mix(w,vec3(0.,0.,1.5),k);
    vec3 v=w-vec3(0.,0.,8.);
-   v.x+=pow(uPos.y+l.y,2.)*.1;          /* spiral melengkung ke samping */
-   v.x+=sin(aUV.y*PI)*uSpeed*2.;        /* cover membusur saat scroll */
+   v.x+=pow(uPos.y+l.y,2.)*.1*(1.-k);
+   v.x+=sin(aUV.y*PI)*uSpeed*2.;
    float n=.1,f=100.;gl_Position=vec4(uF*v.x/uA,uF*v.y,v.z*(f+n)/(n-f)+2.*f*n/(n-f),-v.z);vUV=aUV;}`));
  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,`
-  precision mediump float;uniform sampler2D uT;uniform float uZoom,uReveal,uDim;varying vec2 vUV;
+  precision highp float;uniform sampler2D uT;uniform float uZoom,uReveal,uCol;varying vec2 vUV;
   float rr(vec2 uv,vec2 sz,float r){vec2 d=abs(uv-.5)-sz*.5+r;return length(max(d,0.))-r;}
   void main(){vec2 uv=vec2(vUV.x,1.-vUV.y);vec4 col;
    if(gl_FrontFacing){col=texture2D(uT,(uv-.5)/uZoom+.5);}
-   else{float o=40./1024.;vec4 c=vec4(0.);   /* sisi belakang: kabur */
+   else{float o=40./1024.;vec4 c=vec4(0.);
     c+=texture2D(uT,uv+vec2(-o,-o));c+=2.*texture2D(uT,uv+vec2(0.,-o));c+=texture2D(uT,uv+vec2(o,-o));
     c+=2.*texture2D(uT,uv+vec2(-o,0.));c+=4.*texture2D(uT,uv);c+=2.*texture2D(uT,uv+vec2(o,0.));
     c+=texture2D(uT,uv+vec2(-o,o));c+=2.*texture2D(uT,uv+vec2(0.,o));c+=texture2D(uT,uv+vec2(o,o));col=c/16.;}
    float rv=clamp(uReveal,0.,1.),sdf=rr(vUV,vec2(rv),.05*rv);
-   float a=(1.-smoothstep(0.,.002,sdf))*smoothstep(.1,1.,uReveal);
-   gl_FragColor=vec4(col.rgb*uDim,a);}`));
+   float a=(1.-smoothstep(0.,.002,sdf))*smoothstep(.1,1.,uReveal)*(1.-smoothstep(.75,1.,uCol));
+   gl_FragColor=vec4(mix(col.rgb,vec3(1.),uCol*uCol*.8),a);}`));
  gl.linkProgram(prog);gl.useProgram(prog);
  const SX=16,SY=8,V=[],I=[];for(let y=0;y<=SY;y++)for(let x=0;x<=SX;x++)V.push(x/SX,y/SY);
  for(let y=0;y<SY;y++)for(let x=0;x<SX;x++){const a=y*(SX+1)+x,b=a+1,c=a+SX+1,d=c+1;I.push(a,b,c,b,d,c)}
  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(V),gl.STATIC_DRAW);
  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(I),gl.STATIC_DRAW);
  const aUV=gl.getAttribLocation(prog,"aUV");gl.enableVertexAttribArray(aUV);gl.vertexAttribPointer(aUV,2,gl.FLOAT,false,0,0);
- const U={};for(const n of ["uPos","uRot","uSpeed","uF","uA","uScale","uT","uZoom","uReveal","uDim"])U[n]=gl.getUniformLocation(prog,n);
+ const U={};for(const n of ["uPos","uRot","uSpeed","uF","uA","uScale","uT","uZoom","uReveal","uCol"])U[n]=gl.getUniformLocation(prog,n);
  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.CULL_FACE);gl.clearColor(0,0,0,0);
- let need=true;
- /* tekstur cover 1.7:1 */
  const TW=1088,TH=640;
  const ART={0:(a,b)=>`<g stroke="${b}" stroke-width=".8" opacity=".3">${[...Array(13)].map((_,i)=>`<path d="M${i*13.3} 0V120M0 ${i*10}H160"/>`).join("")}</g><path d="M55 92V28L105 92V28" fill="none" stroke="${b}" stroke-width="12"/>`,
   1:(a,b)=>`<path d="M34 56c15-22 31-22 46 0s31 22 46 0" fill="none" stroke="#f2f2ee" stroke-width="10" stroke-linecap="round"/><path d="M34 78c15-15 31-15 46 0s31 15 46 0" fill="none" stroke="${b}" stroke-width="8" stroke-linecap="round"/>`,
@@ -823,47 +825,46 @@ if(!gl){workEl.classList.add("nogl")}else{
   7:(a,b)=>`${[...Array(7)].map((_,i)=>`<path d="M${30+i*15} 108C${30+i*15} 80 ${38+i*15} 58 ${36+i*15} 38" stroke="${b}" stroke-width="5" fill="none" stroke-linecap="round"/>`).join("")}<circle cx="128" cy="24" r="12" fill="${b}"/>`};
  const texs=projects.map((p,i)=>{const t=gl.createTexture(),c=document.createElement("canvas");c.width=TW;c.height=TH;const g=c.getContext("2d");
    const up=()=>{gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
-     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);need=true};
+     gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE)};
    const bg=i%8===3?p.c[1]:p.c[0];g.fillStyle=bg;g.fillRect(0,0,TW,TH);up();
    const fallback=()=>{const im=new Image();im.onload=()=>{const h=TH,w=h*160/120;g.drawImage(im,(TW-w)/2,0,w,h);up()};
      im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(TH*160/120)}" height="${TH}" viewBox="0 0 160 120">${ART[i%8](p.c[0],p.c[1])}</svg>`)};
    const s=p.shots&&p.shots.find(x=>!x.video);
    if(s){const im=new Image();im.onload=()=>{const k=Math.max(TW/im.width,TH/im.height),w=im.width*k,h=im.height*k;g.drawImage(im,(TW-w)/2,(TH-h)/2,w,h);up()};im.onerror=fallback;im.src=s.src}else fallback();
    return t});
- /* bidang: proyek diulang 2x supaya spiral penuh */
  const planes=[...Array(CNT)].map((_,k)=>({k,p:k%DN,hover:0,hid:1,hidT:1,delay:(k%4)*50}));
  let W=0,H=0,dpr=1,F=1,A=1,on=false,off=0,speed=0,lastOff=null,hot=-1,mx=-9,my=-9,revealed=false,last=performance.now();
  const size=()=>{dpr=Math.min(innerWidth<700?1.5:2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr|0;cv.height=H*dpr|0;gl.viewport(0,0,cv.width,cv.height);
-   A=W/H;F=1/Math.tan((W<900?45:35)*Math.PI/360);need=true};
+   A=W/H;F=1/Math.tan((W<900?45:35)*Math.PI/360)};
  new ResizeObserver(size).observe(cv);size();
  const SCX=1.7,SCY=1,GAP=.5,AGAP=.85,RAD=2;
  const place=pl=>{let N=pl.k-off;N=((N%CNT)+CNT)%CNT;const B=N-CEN,dir=pl.hidT?1.5:-1.5;
    const y=B*GAP-.8-pl.hid*dir,G=RAD*(1-pl.hid/2),a=B*AGAP;return {x:Math.cos(a)*G,y,z:Math.sin(a)*G,rot:-a+Math.PI/2}};
  const proj=(x,y,z)=>{const vz=z-8;return [F*x/A/(-vz),F*y/(-vz)]};
- const frame=now=>{const dt=Math.min(50,now-last);last=now;
-   const run=workEl.offsetHeight-innerHeight,p=clamp(-workEl.getBoundingClientRect().top/Math.max(1,run));
-   if(!reduce)spDrift+=.002*dt/16.7;              /* spiral berputar pelan sendiri */
-   const tgt=p*DN+spDrift;if(lastOff===null)off=tgt;
+ const frame=now=>{const dt=Math.min(50,now-last);last=now;const P=jP();
+   const col=reduce?(P>JB.c?1:0):sm(seg(P,JB.w,JB.c));cv.style.visibility=col>=1?"hidden":"";
+   if(!reduce&&col<1)spDrift+=.002*dt/16.7*(1-col);
+   const tgt=seg(P,0,JB.w)*DN+spDrift;if(lastOff===null)off=tgt;
    const prev=off;off+=(tgt-off)*(reduce?1:.1);const d=off-prev;lastOff=off;
-   speed+=((reduce?0:Math.max(-.6,Math.min(.6,(d-.002*dt/16.7)*3)))-speed)*.12;
-   /* muncul dari bawah saat section pertama terlihat */
+   speed+=((reduce?0:Math.max(-.3,Math.min(.3,(d-.002*dt/16.7)*3)))-speed)*.12;
    if(!revealed&&on){revealed=true;planes.forEach(pl=>setTimeout(()=>{pl.hidT=0},pl.delay+100))}
    for(const pl of planes){pl.hid+=(pl.hidT-pl.hid)*(1-Math.pow(.95,dt*.15));pl.P=place(pl)}
-   /* hover: cari bidang menghadap kamera yang memuat kursor, paling dekat */
    let best=-1,bz=-1e9;
-   for(const pl of planes){const P=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P.rot),nz=Math.cos(P.rot);
-     if(nx*(0-P.x)+nz*(8-P.z)<=0)continue;const c=Math.cos(P.rot),s=Math.sin(P.rot),pts=[];
-     for(const [u,v] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){const lx=u*SCX,ly=v*SCY;pts.push(proj(c*lx+P.x+Math.pow(P.y+ly,2)*.1,ly+P.y,-s*lx+P.z))}
+   if(col<.05)for(const pl of planes){const P2=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P2.rot),nz=Math.cos(P2.rot);
+     if(nx*(0-P2.x)+nz*(8-P2.z)<=0)continue;const c=Math.cos(P2.rot),s=Math.sin(P2.rot),pts=[];
+     for(const [u,v] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){const lx=u*SCX,ly=v*SCY;pts.push(proj(c*lx+P2.x+Math.pow(P2.y+ly,2)*.1,ly+P2.y,-s*lx+P2.z))}
      let inside=false;for(let i=0,j=3;i<4;j=i++){const [xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>my)!==(yj>my)&&mx<(xj-xi)*(my-yi)/(yj-yi)+xi)inside=!inside}
-     if(inside&&P.z>bz){bz=P.z;best=pl.k}}
+     if(inside&&P2.z>bz){bz=P2.z;best=pl.k}}
    if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick()}
-   gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform2f(U.uScale,SCX,SCY);gl.uniform1f(U.uSpeed,speed);
-   [...planes].sort((a,b)=>a.P.z-b.P.z).forEach(pl=>{pl.hover+=((pl.k===hot?1:0)-pl.hover)*.12;const P=pl.P;
-     gl.uniform3f(U.uPos,P.x,P.y,P.z);gl.uniform1f(U.uRot,P.rot);gl.uniform1f(U.uZoom,1+.05*pl.hover);
-     gl.uniform1f(U.uReveal,(1-pl.hover*.05)*(1-pl.hid));gl.uniform1f(U.uDim,1);
-     gl.bindTexture(gl.TEXTURE_2D,texs[pl.p]);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0)});
+   cv.style.pointerEvents=col>.05?"none":"";
+   gl.clear(gl.COLOR_BUFFER_BIT);
+   if(col<1){gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform2f(U.uScale,SCX,SCY);gl.uniform1f(U.uSpeed,speed*(1-col));gl.uniform1f(U.uCol,col);
+    [...planes].sort((a,b)=>a.P.z-b.P.z).forEach(pl=>{pl.hover+=((pl.k===hot?1:0)-pl.hover)*.12;const P2=pl.P;
+     gl.uniform3f(U.uPos,P2.x,P2.y,P2.z);gl.uniform1f(U.uRot,P2.rot);gl.uniform1f(U.uZoom,1+.05*pl.hover);
+     gl.uniform1f(U.uReveal,(1-pl.hover*.05)*(1-pl.hid));
+     gl.bindTexture(gl.TEXTURE_2D,texs[pl.p]);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0)})}
    if(on)requestAnimationFrame(frame)};
- new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(workEl);
+ new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(jEl);
  const setM=e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width*2-1;my=1-(e.clientY-r.top)/r.height*2};
  cv.addEventListener("pointermove",setM);cv.addEventListener("pointerleave",()=>{mx=my=-9});
  cv.addEventListener("click",e=>{setM(e);requestAnimationFrame(t=>{frame(t);if(hot>=0)location.hash="#work-"+pad(hot%DN+1)})});
@@ -927,39 +928,39 @@ const openMark=i=>{showMark(i);lgx.classList.add("open");lenis?.stop();document.
 const closeMark=()=>{lgx.classList.remove("open","draw");mkIdx=-1;document.body.classList.remove("lock");lenis?.start();const b=mkGrid.querySelector(".mk:hover")||null};
 mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mo");if(b)openMark(+b.dataset.i)});
 
-/* ====== ORBIT: logo beredar di 3 orbit elips; scroll menyempitkan orbit, logo tersedot satu per satu,
-   lubang hitam membesar memenuhi layar lalu berlanjut ke gerbang Other Side ====== */
-{const sec=document.getElementById("marks"),pin=sec.querySelector(".mpin"),orb=document.getElementById("orbits"),bh=document.getElementById("bh");
+/* ====== MARKS: orbit yang mekar dari satu titik, lalu tersedot ke lubang hitam ====== */
+{const pin=jEl.querySelector(".jpin"),orb=document.getElementById("orbits"),bh=document.getElementById("bh"),btn=document.getElementById("portal");
  const items=[...mkGrid.querySelectorAll(".mo")],MN=items.length;
  const RINGS=[[.42,.15],[.31,.11],[.21,.075]],per=[5,4,3];let k=0;
  const conf=[];RINGS.forEach((r,ri)=>{const n=per[ri];for(let j=0;j<n&&k<MN;j++,k++)conf.push({ri,a0:j/n*Math.PI*2+ri*.7})});
  while(conf.length<MN)conf.push({ri:conf.length%3,a0:conf.length*1.3});
- /* urutan tersedot: orbit dalam dulu */
- const order=conf.map((c,i)=>i).sort((a,b)=>conf[b].ri-conf[a].ri||a-b);order.forEach((i,r)=>conf[i].s=.3+.48*r/Math.max(1,MN-1));
+ const order=conf.map((c,i)=>i).sort((a,b)=>conf[b].ri-conf[a].ri||a-b);order.forEach((i,r)=>conf[i].s=.25+.6*r/Math.max(1,MN-1));
  orb.innerHTML=RINGS.map((_,ri)=>`<ellipse stroke-opacity="${.07+ri*.04}" ${ri===1?'stroke-dasharray="2 8"':""}/>`).join("");
  const ells=[...orb.querySelectorAll("ellipse")];
  let on=false,t=0,last=performance.now(),hov=0,hovT=0;
  mkGrid.addEventListener("pointerover",e=>{if(e.target.closest(".mo"))hovT=1});
  mkGrid.addEventListener("pointerout",e=>{if(e.target.closest(".mo")&&!e.relatedTarget?.closest?.(".mo"))hovT=0});
- const sm=x=>x*x*(3-2*x);
- const frame=now=>{const dt=Math.min(50,now-last);last=now;
-   const r=sec.getBoundingClientRect(),run=sec.offsetHeight-innerHeight,p=clamp(-r.top/Math.max(1,run));
-   const W=pin.clientWidth,H=pin.clientHeight,cx=W/2,cy=H/2,base=Math.min(W,H*1.9),port=W<H;
-   hov+=(hovT-hov)*.1;if(!reduce)t+=dt*.00022*(1+p*5)*(1-hov*.85);
-   const shrink=1-.45*sm(Math.min(1,p/.85));
-   RINGS.forEach(([rx,ry],ri)=>{const e=ells[ri];e.setAttribute("cx",cx);e.setAttribute("cy",cy);e.setAttribute("rx",rx*base*shrink*(port?.9:1));e.setAttribute("ry",ry*base*shrink*(port?2.4:1))});
-   items.forEach((el,i)=>{const c=conf[i],[rx,ry]=RINGS[c.ri],kk=reduce?0:sm(clamp((p-c.s)/.14));
+ const frame=now=>{const dt=Math.min(50,now-last);last=now;const P=jP();
+   const W=pin.clientWidth,H=pin.clientHeight,cx=W/2,cy=H/2,base=Math.min(W,H*1.9),port=W<H,fx=port?.9:1,fy=port?2.4:1;
+   const bloom=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.b)),mp=seg(P,JB.b,JB.s),gp=reduce?(P>=JB.s?1:0):sm(seg(P,JB.s,JB.g));
+   hov+=(hovT-hov)*.1;if(!reduce)t+=dt*.00022*(1+mp*5)*(1-hov*.85);
+   const shrink=(1-.45*sm(mp))*bloom;
+   orb.style.opacity=(bloom*(1-gp)).toFixed(3);
+   RINGS.forEach(([rx,ry],ri)=>{const e=ells[ri];e.setAttribute("cx",cx);e.setAttribute("cy",cy);e.setAttribute("rx",Math.max(0,rx*base*shrink*fx));e.setAttribute("ry",Math.max(0,ry*base*shrink*fy))});
+   items.forEach((el,i)=>{const c=conf[i],[rx,ry]=RINGS[c.ri],kk=reduce?0:sm(seg(mp,c.s,c.s+.15));
      const a=c.a0+t*(1+c.ri*.35)+kk*kk*4,R=1-kk;
-     const x=cx+Math.cos(a)*rx*base*shrink*(port?.9:1)*R,y=cy+Math.sin(a)*ry*base*shrink*(port?2.4:1)*R,front=Math.sin(a);
-     const sc=(.75+.35*(front*.5+.5))*(1-kk*.85)*(c.ri===2?.8:1),op=(.5+.5*(front*.5+.5))*(1-kk*kk);
+     const x=cx+Math.cos(a)*rx*base*shrink*fx*R,y=cy+Math.sin(a)*ry*base*shrink*fy*R,front=Math.sin(a);
+     const sc=(.75+.35*(front*.5+.5))*(1-kk*.85)*(c.ri===2?.8:1)*bloom,op=(.5+.5*(front*.5+.5))*(1-kk*kk)*Math.min(1,bloom*1.5);
      const tang=Math.atan2(Math.cos(a)*ry,-Math.sin(a)*rx)*180/Math.PI;
-     el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(tang*kk).toFixed(1)}deg) scale(${(sc*(1+kk*1.5)).toFixed(3)},${sc.toFixed(3)})`;
-     el.style.opacity=op.toFixed(3);el.style.zIndex=front>0?8:3;el.style.pointerEvents=kk>.3?"none":"";el.tabIndex=kk>.3?-1:0});
-   /* lubang hitam: tumbuh pelan, lalu menelan layar di akhir */
-   const grow=reduce?0:sm(clamp((p-.82)/.18)),rad=60+60*sm(Math.min(1,p/.8)),full=Math.hypot(W,H)/2+40;
-   bh.style.transform=`scale(${((rad+(full-rad)*grow)/60).toFixed(3)})`;
+     el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(tang*kk).toFixed(1)}deg) scale(${Math.max(.001,sc*(1+kk*1.5)).toFixed(3)},${Math.max(.001,sc).toFixed(3)})`;
+     el.style.opacity=op.toFixed(3);el.style.zIndex=front>0?8:3;const dead=kk>.3||bloom<.5;el.style.pointerEvents=dead?"none":"";el.tabIndex=dead?-1:0});
+   /* lubang hitam: titik kecil saat cover habis → membesar pelan → seukuran portal */
+   const pr=(btn.offsetWidth||220)/2,dot=sm(seg(P,JB.w+.03,JB.c));
+   const rad=P<JB.c?6*dot:6+54*bloom+60*sm(mp)+(pr-120)*gp;
+   bh.style.transform=`scale(${Math.max(.001,rad/60).toFixed(3)})`;bh.style.opacity=P<JB.w+.03?0:1;
+   bh.classList.toggle("dot",P<JB.c+.01);
    if(on)requestAnimationFrame(frame)};
- new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(sec);
+ new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(jEl);
  frame(performance.now());
 }
 /* scale test: dari favicon 16px sampai ukuran penuh; invert: positif/negatif */
@@ -985,7 +986,7 @@ const posterHTML=(a,i)=>{if(a.src)return `<img src="${esc(a.src)}" alt="${esc(a.
   const title=a.title.split(" ").join("<br>");
   return `<div class="pst" style="background:${bg};color:${fg}">${shape}<em style="${k===3?"color:"+fg:""}">No.${pad(i+1)}</em><i style="${k===3?"color:"+bg:""}">${a.year}</i><b style="${k===1||k===3?"mix-blend-mode:difference;color:#fff":""}">${title}</b></div>`};
 const dimEl=document.getElementById("odim"),plane=document.getElementById("plane"),lb=document.getElementById("lb"),lbBig=document.getElementById("lbBig"),lbMeta=document.getElementById("lbMeta");
-const mainEls=[document.querySelector("main"),document.querySelector("footer"),document.getElementById("other")];
+const mainEls=[document.querySelector("main"),document.querySelector("footer")];
 let gateSuck=null,gateReset=null,dimOpen=false,dimBusy=false,lastPt={x:innerWidth/2,y:innerHeight/2},slots=[],TW=0,TH=0,cellW=0,cellH=0;
 addEventListener("pointerdown",e=>{lastPt={x:e.clientX,y:e.clientY}},true);
 let mobDim=false;
@@ -1055,39 +1056,77 @@ const closeDim=async()=>{if(!dimOpen||dimBusy)return;dimBusy=true;lb.classList.r
   ink.style.visibility="hidden";dimOpen=false;gateReset&&gateReset();cancelAnimationFrame(raf);document.body.classList.remove("lock");lenis?.start();dimBusy=false};
 document.getElementById("portal").addEventListener("click",()=>{location.hash="other-dimension"});
 document.getElementById("dexit").addEventListener("click",()=>{location.hash="other"});
-/* ====== PORTAL: pusaran poster tersedot ke titik hitam; huruf OTHER/SIDE tertarik gravitasi ====== */
-{const cv=document.getElementById("portalCv"),g=cv.getContext("2d"),btn=document.getElementById("portal"),gate=document.getElementById("other");
- let hov=0,t=0,on=false,sp=.4,hole=.06,suck=0,hs=0;
- const size=()=>{const d=Math.min(2,devicePixelRatio||1);cv.width=cv.clientWidth*d;cv.height=cv.clientHeight*d;g.setTransform(d,0,0,d,0,0)};
+/* ====== PORTAL 3D: giroskop krom yang berputar di dalam lubang hitam; huruf OTHER/SIDE tertarik gravitasi ======
+   Digambar dengan raymarching (WebGL). Hover: cincin berputar makin cepat & saling mengunci; klik: tersedot masuk. */
+{const cv=document.getElementById("portalCv"),btn=document.getElementById("portal"),gate=document.getElementById("gate");
+ let hov=0,hovS=0,t=0,on=false,suck=0,hs=0,gv=0,pmx=0,pmy=0;
+ const gl=cv.getContext("webgl",{alpha:true,premultipliedAlpha:false,antialias:false});
+ let U=null;
+ if(gl){const sh=(ty,src)=>{const s=gl.createShader(ty);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(s));return s};
+  const pg=gl.createProgram();
+  gl.attachShader(pg,sh(gl.VERTEX_SHADER,"attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}"));
+  gl.attachShader(pg,sh(gl.FRAGMENT_SHADER,`precision highp float;uniform vec2 uR;uniform float uT,uH,uS;uniform vec2 uM;
+   mat3 rx(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,-s,0.,s,c);}
+   mat3 ry(float a){float c=cos(a),s=sin(a);return mat3(c,0.,s,0.,1.,0.,-s,0.,c);}
+   mat3 rz(float a){float c=cos(a),s=sin(a);return mat3(c,-s,0.,s,c,0.,0.,0.,1.);}
+   float tor(vec3 p,vec2 t){vec2 q=vec2(length(p.xz)-t.x,p.y);return length(q)-t.y;}
+   float id;
+   float map(vec3 p){float k=1.-uS*.92;p/=max(k,.08);float d=1e9;
+    for(int i=0;i<5;i++){float fi=float(i);float r=1.2-fi*.21;
+     float sp=(.35+fi*.17)*(1.+uH*2.2);
+     mat3 m=rx(uT*sp+fi*1.3+uM.y*.6)*rz(uT*sp*.73+fi*.7)*ry(uT*.3*sp+uM.x*.6);
+     m=mat3(mix(m[0],vec3(1.,0.,0.),uH*.35),mix(m[1],vec3(0.,1.,0.),uH*.35),mix(m[2],vec3(0.,0.,1.),uH*.35));
+     float di=tor(m*p,vec2(r,.05+.012*sin(uT*2.+fi)));if(di<d){d=di;id=fi;}}
+    float core=length(p)-(.16+.04*sin(uT*3.));if(core<d){d=core;id=9.;}
+    return d*max(k,.08);}
+   vec3 nrm(vec3 p){vec2 e=vec2(.002,0.);return normalize(vec3(map(p+e.xyy)-map(p-e.xyy),map(p+e.yxy)-map(p-e.yxy),map(p+e.yyx)-map(p-e.yyx)));}
+   vec3 env(vec3 r){float h=r.y*.5+.5;vec3 c=mix(vec3(.25,.12,.08),vec3(1.,.5,.15),smoothstep(.05,.55,h));c=mix(c,vec3(1.,.97,.92),smoothstep(.62,.9,h));
+    c+=vec3(.15,.35,1.)*pow(max(0.,-r.x),6.)*.8;return c;}
+   void main(){vec2 uv=(gl_FragCoord.xy-.5*uR)/uR.y;float rr=length(uv);
+    vec3 ro=vec3(0.,0.,3.4),rd=normalize(vec3(uv,-1.35));float tt=0.;bool hit=false;vec3 p;
+    for(int i=0;i<72;i++){p=ro+rd*tt;float d=map(p);if(d<.0015){hit=true;break;}tt+=d;if(tt>7.)break;}
+    vec3 col=vec3(0.);float a=0.;
+    if(hit){vec3 n=nrm(p),r=reflect(rd,n);float fr=pow(1.-max(0.,dot(n,-rd)),3.);
+     vec3 ir=.5+.5*cos(6.283*(fr*1.4+vec3(0.,.33,.67)+uT*.05));
+     float df=max(0.,dot(n,normalize(vec3(.4,.7,.6))));col=env(r)*mix(vec3(1.),ir,.4)*(.7+.5*df)+fr*.9;if(id>8.)col=vec3(1.,.55,.2)*1.6+fr;a=1.;}
+    /* cahaya di pusat & kabut tepi */
+    col+=vec3(1.,.42,.1)*.18/(1.+rr*rr*40.)*(1.+uH);a=max(a,smoothstep(.5,.0,rr)*.0);
+    gl_FragColor=vec4(col,max(a,clamp(length(col)*1.2,0.,1.))*smoothstep(.5,.47,rr));}`));
+  gl.linkProgram(pg);gl.useProgram(pg);
+  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+  const l=gl.getAttribLocation(pg,"p");gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
+  U={R:gl.getUniformLocation(pg,"uR"),T:gl.getUniformLocation(pg,"uT"),H:gl.getUniformLocation(pg,"uH"),S:gl.getUniformLocation(pg,"uS"),M:gl.getUniformLocation(pg,"uM")};
+  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0)}
+ const size=()=>{const d=Math.min(innerWidth<700?1.25:1.75,devicePixelRatio||1);cv.width=cv.clientWidth*d|0;cv.height=cv.clientHeight*d|0;gl&&gl.viewport(0,0,cv.width,cv.height)};
  new ResizeObserver(size).observe(cv);
- /* huruf judul dipecah agar bisa ditarik satu-satu */
  const chars=[];for(const w of gate.querySelectorAll(".gate-title span")){const tx=w.textContent;w.innerHTML=[...tx].map(c=>`<span class="gc">${c}</span>`).join("");chars.push(...w.querySelectorAll(".gc"))}
  const st=chars.map(()=>({x:0,y:0,sx:1,r:0}));
- let mx=-1e4,my=-1e4;gate.addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});gate.addEventListener("pointerleave",()=>{mx=my=-1e4});
+ let mx=-1e4,my=-1e4;jEl.addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});jEl.addEventListener("pointerleave",()=>{mx=my=-1e4});
  btn.addEventListener("pointerenter",()=>hov=1);
  btn.addEventListener("pointerleave",()=>{hov=0;btn.style.transform=""});
- btn.addEventListener("pointermove",e=>{const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;btn.style.transform=`translate(${dx*.18}px,${dy*.18}px) scale(1.07)`});
- new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on)requestAnimationFrame(tick)}).observe(gate);
- function tick(){if(!on&&suck===0)return;const W=cv.clientWidth,H=cv.clientHeight,cx=W/2,cy=H/2,R=Math.hypot(W,H)/2;
-   sp+=((hov?3.2:.6)+suck*8-sp)*.06;hole+=((hov?.16:.07)+suck*.5-hole)*.08;t+=sp*.004;
-   g.fillStyle="#f2f2ee";g.fillRect(0,0,W,H);
-   for(let i=0;i<26;i++){const a=archive[i%archive.length],u=(t*(.8+(i%5)*.07)+i/26)%1,r=1-u;
-     const ang=i*2.399+u*u*9+t*2,d=r*R*1.05,x=cx+Math.cos(ang)*d,y=cy+Math.sin(ang)*d,w=W*.2*(.15+.85*r),h=w*a.ratio;
-     g.save();g.translate(x,y);g.rotate(ang+1.57*u);g.globalAlpha=Math.min(1,r*3);g.fillStyle=a.c[0];g.fillRect(-w/2,-h/2,w,h);g.fillStyle=a.c[1];g.fillRect(-w/2+w*.1,h*.22,w*.6,h*.08);g.restore()}
-   g.globalAlpha=1;const hr=W*hole,grd=g.createRadialGradient(cx,cy,0,cx,cy,hr*2.2);grd.addColorStop(0,"rgba(10,10,10,1)");grd.addColorStop(.45,"rgba(10,10,10,.95)");grd.addColorStop(1,"rgba(10,10,10,0)");
-   g.fillStyle=grd;g.beginPath();g.arc(cx,cy,hr*2.2,0,6.283);g.fill();
+ btn.addEventListener("pointermove",e=>{const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;pmx=dx/r.width;pmy=dy/r.height;btn.style.transform=`translate(${dx*.12}px,${dy*.12}px)`});
+ new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on)requestAnimationFrame(tick)}).observe(jEl);
+ let last=performance.now();
+ function tick(now){if(!on&&suck===0)return;now=now||performance.now();const dt=Math.min(50,now-last);last=now;
+   const P=jP(),G=reduce?(P>=JB.s?1:0):sm(seg(P,JB.s+.02,JB.g));gv=G;
+   gate.style.opacity=G.toFixed(3);gate.classList.toggle("live",G>.6);
+   if(G>0||suck>0){hovS+=((hov?1:0)-hovS)*.06;if(!reduce)t+=dt*.001*(1+hovS*1.5+suck*6);
+     if(gl){gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,t);gl.uniform1f(U.H,hovS);gl.uniform1f(U.S,suck);gl.uniform2f(U.M,pmx,pmy);gl.drawArrays(gl.TRIANGLES,0,3)}}
    /* gravitasi pada huruf */
    const br=btn.getBoundingClientRect(),pcx=br.left+br.width/2,pcy=br.top+br.height/2;
    hs+=((hov&&!reduce?1:0)-hs)*(hov?.05:.07);const S=Math.max(suck,hs*hs*(3-2*hs)),near=Math.max(S,mx<-1e3?0:Math.max(0,1-Math.hypot(mx-pcx,my-pcy)/(innerWidth*.42)));
    chars.forEach((c,i)=>{const s0=st[i],cr=c.getBoundingClientRect(),dx=pcx-(cr.left+cr.width/2-s0.x),dy=pcy-(cr.top+cr.height/2-s0.y),dist=Math.hypot(dx,dy)||1;
-     const gv=reduce?0:near*.32*Math.min(1,320/dist+.25)*(1-S),pull=gv+S*(1-gv),k=S>.01?.25:.12;
-     s0.x+=(dx*pull-s0.x)*k;s0.y+=(dy*(gv*.6+S*(1-gv))-s0.y)*k;s0.sx+=((1+gv*1.4)*(1-S)-s0.sx)*k;s0.r+=((dx>0?1:-1)*(gv*18+S*120)-s0.r)*k;
-     c.style.transform=`translate(${s0.x.toFixed(1)}px,${s0.y.toFixed(1)}px) scale(${Math.max(.001,s0.sx).toFixed(3)},${Math.max(.001,(1-gv*.25)*(1-S)).toFixed(3)}) rotate(${s0.r.toFixed(1)}deg)`;
-     c.style.opacity=(1-S*S).toFixed(3)});
-   if(!reduce||suck||hs>.001)requestAnimationFrame(tick)}
+     const g2=reduce?0:near*.32*Math.min(1,320/dist+.25)*(1-S),pull=g2+S*(1-g2),k=S>.01?.25:.12;
+     /* huruf masuk dari pusat saat portal muncul */
+     const inn=1-G;
+     s0.x+=(dx*Math.max(pull,inn)-s0.x)*k;s0.y+=(dy*Math.max(g2*.6+S*(1-g2),inn)-s0.y)*k;s0.sx+=((1+g2*1.4)*(1-S)*(1-inn*.9)-s0.sx)*k;s0.r+=((dx>0?1:-1)*(g2*18+S*120+inn*90)-s0.r)*k;
+     c.style.transform=`translate(${s0.x.toFixed(1)}px,${s0.y.toFixed(1)}px) scale(${Math.max(.001,s0.sx).toFixed(3)},${Math.max(.001,(1-g2*.25)*(1-S)*(1-inn*.9)).toFixed(3)}) rotate(${s0.r.toFixed(1)}deg)`;
+     c.style.opacity=((1-S*S)*G).toFixed(3)});
+   if(on||suck)requestAnimationFrame(tick)}
  gateSuck=()=>new Promise(res=>{const t0=performance.now(),D=reduce?1:780;if(!on)requestAnimationFrame(tick);
-   const st=()=>{const k=Math.min(1,(performance.now()-t0)/D);suck=k<.5?4*k*k*k:1-(-2*k+2)**3/2;if(k<1)requestAnimationFrame(st);else res()};st()});
+   const st2=()=>{const k=Math.min(1,(performance.now()-t0)/D);suck=k<.5?4*k*k*k:1-(-2*k+2)**3/2;if(k<1)requestAnimationFrame(st2);else res()};st2()});
  gateReset=()=>{suck=0;hs=0;hov=0}}
+
 let shotIO=null,busy=false,openIdx=-1,caseLenis=null;
 const wait=ms=>new Promise(r=>setTimeout(r,reduce?0:ms));
 const showCase=async i=>{if(busy)return;busy=true;
