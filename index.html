@@ -738,7 +738,7 @@ const hLabel=t=>{if(t){hlab.textContent=t;hlab.style.transform=`translate(${hlx+
    spiral cover (Work) → semua cover tersedot jadi satu titik → dari titik itu orbit logo (Marks) mekar →
    logo tersedot ke lubang hitam → lubang hitam menjadi portal 3D (Other Side), klik untuk masuk. */
 const jEl=document.getElementById("journey"),DN=projects.length;
-const JB={w:.62,c:.72,s:.82,g:.88};      /* batas fase: spiral → titik → portal (progres 0..1) */
+const JB={w:.62,c:.76,s:.74,g:.86};      /* batas fase: spiral → titik → portal (progres 0..1) */
 const jRun=()=>Math.max(1,jEl.offsetHeight-innerHeight);
 const jP=()=>clamp(-jEl.getBoundingClientRect().top/jRun());
 const jY=f=>jEl.getBoundingClientRect().top+scrollY+jRun()*f;
@@ -756,14 +756,13 @@ if(!gl){jEl.classList.add("nogl")}else{
  const sh=(t,src)=>{const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(s));return s};
  const prog=gl.createProgram();
  gl.attachShader(prog,sh(gl.VERTEX_SHADER,`
-  attribute vec2 aUV;uniform vec3 uPos;uniform float uRot,uSpeed,uF,uA,uCol;uniform vec2 uScale;varying vec2 vUV;
+  attribute vec2 aUV;uniform vec3 uPos;uniform float uRot,uRoll,uBend,uSpeed,uF,uA,uCol;uniform vec2 uScale;varying vec2 vUV;
   #define PI 3.14159265
-  void main(){vec3 l=vec3((aUV.x-.5)*uScale.x,(aUV.y-.5)*uScale.y,sin(aUV.x*PI)*.2);
+  void main(){vec3 l=vec3((aUV.x-.5)*uScale.x,(aUV.y-.5)*uScale.y,sin(aUV.x*PI)*.2*uScale.y);
+   float cr=cos(uRoll),sr=sin(uRoll);l.xy=vec2(cr*l.x-sr*l.y,sr*l.x+cr*l.y);   /* miring searah pusaran */
    float c=cos(uRot),s=sin(uRot);vec3 w=vec3(c*l.x+s*l.z,l.y,-s*l.x+c*l.z)+uPos;
-   /* tersedot ke satu titik di tengah */
-   float k=uCol*uCol;w=mix(w,vec3(0.,0.,1.5),k);
    vec3 v=w-vec3(0.,0.,8.);
-   float yy=uPos.y+l.y;v.x+=yy*yy*.1*(1.-k);   /* bukan pow(): pow dengan bilangan negatif = NaN di GPU Windows */
+   float yy=uPos.y+l.y;v.x+=yy*yy*.1*uBend;   /* bukan pow(): pow dengan bilangan negatif = NaN di GPU Windows */
    v.x+=sin(aUV.y*PI)*uSpeed*2.;
    float n=.1,f=100.;gl_Position=vec4(uF*v.x/uA,uF*v.y,v.z*(f+n)/(n-f)+2.*f*n/(n-f),-v.z);vUV=aUV;}`));
  gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,`
@@ -777,14 +776,14 @@ if(!gl){jEl.classList.add("nogl")}else{
     c+=texture2D(uT,uv+vec2(-o,o));c+=2.*texture2D(uT,uv+vec2(0.,o));c+=texture2D(uT,uv+vec2(o,o));col=c/16.;}
    float rv=clamp(uReveal,0.,1.),sdf=rr(vUV,vec2(rv),.05*rv);
    float a=(1.-smoothstep(0.,.002,sdf))*smoothstep(.1,1.,uReveal)*(1.-smoothstep(.75,1.,uCol));
-   gl_FragColor=vec4(mix(col.rgb,vec3(1.),uCol*uCol*.8),a);}`));
+   gl_FragColor=vec4(col.rgb*(1.-uCol*.5),a);}`));
  gl.linkProgram(prog);gl.useProgram(prog);
  const SX=16,SY=8,V=[],I=[];for(let y=0;y<=SY;y++)for(let x=0;x<=SX;x++)V.push(x/SX,y/SY);
  for(let y=0;y<SY;y++)for(let x=0;x<SX;x++){const a=y*(SX+1)+x,b=a+1,c=a+SX+1,d=c+1;I.push(a,b,c,b,d,c)}
  const vb=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,vb);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(V),gl.STATIC_DRAW);
  const ib=gl.createBuffer();gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ib);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,new Uint16Array(I),gl.STATIC_DRAW);
  const aUV=gl.getAttribLocation(prog,"aUV");gl.enableVertexAttribArray(aUV);gl.vertexAttribPointer(aUV,2,gl.FLOAT,false,0,0);
- const U={};for(const n of ["uPos","uRot","uSpeed","uF","uA","uScale","uT","uZoom","uReveal","uCol"])U[n]=gl.getUniformLocation(prog,n);
+ const U={};for(const n of ["uPos","uRot","uRoll","uBend","uSpeed","uF","uA","uScale","uT","uZoom","uReveal","uCol"])U[n]=gl.getUniformLocation(prog,n);
  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.CULL_FACE);gl.clearColor(0,0,0,0);
  const TW=1088,TH=640;
  const ART={0:(a,b)=>`<g stroke="${b}" stroke-width=".8" opacity=".3">${[...Array(13)].map((_,i)=>`<path d="M${i*13.3} 0V120M0 ${i*10}H160"/>`).join("")}</g><path d="M55 92V28L105 92V28" fill="none" stroke="${b}" stroke-width="12"/>`,
@@ -810,11 +809,20 @@ if(!gl){jEl.classList.add("nogl")}else{
    A=W/H;F=1/Math.tan((W<900?45:35)*Math.PI/360)};
  new ResizeObserver(size).observe(cv);size();
  const SCX=1.7,SCY=1,GAP=.5,AGAP=.85,RAD=2;
+ let T1=0,T2=0;
+ const wrapA=a=>Math.atan2(Math.sin(a),Math.cos(a));
+ /* posisi di spiral, lalu (T1) dilihat dari atas sumbunya sehingga menjadi pusaran datar, lalu (T2) tersedot ke pusat */
  const place=pl=>{let N=pl.k-off;N=((N%CNT)+CNT)%CNT;const B=N-CEN,dir=pl.hidT?1.5:-1.5;
-   const y=B*GAP-.8-pl.hid*dir,G=RAD*(1-pl.hid/2),a=B*AGAP;return {x:Math.cos(a)*G,y,z:Math.sin(a)*G,rot:-a+Math.PI/2}};
+   const y=B*GAP-.8-pl.hid*dir,G=RAD*(1-pl.hid/2),a=B*AGAP;
+   const h={x:Math.cos(a)*G,y,z:Math.sin(a)*G,rot:-a+Math.PI/2};
+   if(T1<=0)return {...h,roll:0,sc:1};
+   const kk=pl.k/CNT,ad=pl.k*2.399+T1*1.4+T2*T2*7,rd=(.45+2.1*kk)*Math.min(1,A*1.05)*(1-T2);
+   const dx=Math.cos(ad)*rd,dy=Math.sin(ad)*rd,e=T1;
+   return {x:h.x+(dx-h.x)*e,y:h.y+(dy-h.y)*e,z:h.z*(1-e),rot:wrapA(h.rot)*(1-e),roll:wrapA(ad+Math.PI/2)*e,sc:(1-.55*e)*(1-T2*.9),r:rd}};
  const proj=(x,y,z)=>{const vz=z-8;return [F*x/A/(-vz),F*y/(-vz)]};
  const frame=now=>{const dt=Math.min(50,now-last);last=now;const P=jP();
-   const col=reduce?(P>JB.c?1:0):sm(seg(P,JB.w,JB.c));cv.style.visibility=col>=1?"hidden":"";
+   T1=reduce?(P>JB.w?1:0):sm(seg(P,JB.w,JB.w+.05));T2=reduce?(P>JB.c?1:0):sm(seg(P,JB.w+.04,JB.c));
+   const col=T2;cv.style.visibility=col>=1?"hidden":"";
    if(!reduce&&col<1)spDrift+=.002*dt/16.7*(1-col);
    const tgt=seg(P,0,JB.w)*DN+spDrift;if(lastOff===null)off=tgt;
    const prev=off;off+=(tgt-off)*(reduce?1:.1);const d=off-prev;lastOff=off;
@@ -822,16 +830,17 @@ if(!gl){jEl.classList.add("nogl")}else{
    if(!revealed&&on){revealed=true;planes.forEach(pl=>setTimeout(()=>{pl.hidT=0},pl.delay+100))}
    for(const pl of planes){pl.hid+=(pl.hidT-pl.hid)*(1-Math.pow(.95,dt*.15));pl.P=place(pl)}
    let best=-1,bz=-1e9;
-   if(col<.05)for(const pl of planes){const P2=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P2.rot),nz=Math.cos(P2.rot);
+   if(T1<.02)for(const pl of planes){const P2=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P2.rot),nz=Math.cos(P2.rot);
      if(nx*(0-P2.x)+nz*(8-P2.z)<=0)continue;const c=Math.cos(P2.rot),s=Math.sin(P2.rot),pts=[];
      for(const [u,v] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){const lx=u*SCX,ly=v*SCY;pts.push(proj(c*lx+P2.x+Math.pow(P2.y+ly,2)*.1,ly+P2.y,-s*lx+P2.z))}
      let inside=false;for(let i=0,j=3;i<4;j=i++){const [xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>my)!==(yj>my)&&mx<(xj-xi)*(my-yi)/(yj-yi)+xi)inside=!inside}
      if(inside&&P2.z>bz){bz=P2.z;best=pl.k}}
    if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick();const pr=hot>=0?projects[hot%DN]:null;hLabel(pr?`${pr.name} · ${pr.year}`:null)}
-   cv.style.pointerEvents=col>.05?"none":"";
+   cv.style.pointerEvents=T1>.02?"none":"";if(T1>.02&&hot>=0){hot=-1;cv.removeAttribute("data-hot");hLabel(null)}
    gl.clear(gl.COLOR_BUFFER_BIT);
-   if(col<1){gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform2f(U.uScale,SCX,SCY);gl.uniform1f(U.uSpeed,speed*(1-col));gl.uniform1f(U.uCol,col);
-    [...planes].sort((a,b)=>a.P.z-b.P.z).forEach(pl=>{pl.hover+=((pl.k===hot?1:0)-pl.hover)*.12;const P2=pl.P;
+   if(col<1){gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform1f(U.uSpeed,speed*(1-T1));gl.uniform1f(U.uCol,col);gl.uniform1f(U.uBend,1-T1);
+    [...planes].sort((a,b)=>a.P.z-b.P.z||(b.P.r||0)-(a.P.r||0)).forEach(pl=>{pl.hover+=((pl.k===hot?1:0)-pl.hover)*.12;const P2=pl.P;
+     gl.uniform2f(U.uScale,SCX*P2.sc,SCY*P2.sc);gl.uniform1f(U.uRoll,P2.roll);
      gl.uniform3f(U.uPos,P2.x,P2.y,P2.z);gl.uniform1f(U.uRot,P2.rot);gl.uniform1f(U.uZoom,1+.05*pl.hover);
      gl.uniform1f(U.uReveal,(1-pl.hover*.05)*(1-pl.hid));
      gl.bindTexture(gl.TEXTURE_2D,texs[pl.p]);gl.drawElements(gl.TRIANGLES,I.length,gl.UNSIGNED_SHORT,0)})}
@@ -902,10 +911,10 @@ const markInk=m=>{const a=m.c[0],b=m.c[1];return lum(a)>70?a:lum(b)>70?b:"#f2f2e
    const ph=P<JB.c?0:1;
    if(ph!==jph){jph=ph;jbtn.forEach((b,i)=>{b.classList.toggle("on",i===ph);b.toggleAttribute("aria-current",i===ph)});jhint.textContent=["Tap a cover to open","Tap the portal to enter"][ph]}
    jbar.style.transform=`scaleX(${P.toFixed(4)})`;
-   const pr=(btn.offsetWidth||220)/2,dot=sm(seg(P,JB.w+.03,JB.c)),grow=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.g));
-   const rad=P<JB.c?6*dot:6+(pr-6)*grow;
-   bh.style.transform=`scale(${Math.max(.001,rad/60).toFixed(3)})`;bh.style.opacity=P<JB.w+.03?0:1;
-   bh.classList.toggle("dot",P<JB.c+.01);
+   /* lubang hitam muncul di pusat pusaran saat cover mulai tersedot, lalu membesar seukuran portal */
+   const pr=(btn.offsetWidth||220)/2,suckP=sm(seg(P,JB.w+.04,JB.c)),grow=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.g));
+   const rad=pr*.55*suckP+pr*.45*grow;
+   bh.style.transform=`scale(${Math.max(.001,rad/60).toFixed(3)})`;bh.style.opacity=P<JB.w+.04?0:1;
    if(on)requestAnimationFrame(frame)};
  new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was)requestAnimationFrame(frame)}).observe(jEl);
  frame();
