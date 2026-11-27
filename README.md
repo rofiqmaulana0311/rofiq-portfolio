@@ -31,7 +31,7 @@ Buka `index.html` lewat server lokal (mis. `npx serve .`) atau upload seluruh fo
 | Foto potret | `img/portrait.webp` | `PORTRAIT` (kalau nama file beda) |
 | Gambar studi kasus | `assets/work/p01-.../01.jpg, 02.jpg…` | `shots:W("p01-...", jumlah)` |
 | Nama, info, tahun proyek | – | `PROJECTS` |
-| Logo di section Marks | `assets/marks/m01-....svg` | `src` di `MARKS` |
+| Ikon di hero (PNG) | `assets/icons/01.png` | `ICONS` (cadangan: logo di `MARKS`) |
 | Poster / print | `assets/other/o01-....jpg` | `src` & `ratio` di `ARCHIVE` |
 | Baris "Currently" di hero | – | `CURRENTLY` |
 | Link sosial & email | – | bagian footer di `index.html` (cari "EDIT DI SINI") |
@@ -51,7 +51,6 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Sistem kapur**: grain diam hanya di bidang hitam; foto, tirai studi kasus, dan portal membuka dengan tepi bergerigi.
 - **Footer papan tulis**: ikon batang kapur = Draw, ikon penghapus di bawahnya = Erase, ikon panah melingkar = Reset (hapus coretan, logo kembali); ikon panah atas di kanan bawah = Back to top, lalu tekan & seret. Menggambar dan menghapus hanya berlaku pada bentuk logo itu sendiri, bukan kotak bingkainya: Erase mengikis logo, Draw menggambar kembali bagian logo yang terhapus. Di luar logo tidak ada efek, dan di HP halaman tetap bisa di-scroll. Di HP logo dan tombolnya lebih kecil supaya tidak bertumpuk. Saat Draw, titik gambar ada di ujung kapur (pojok kiri atas cursor); saat Erase, ikon penghapus selebar kuas (`BRUSH`).
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
-- **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
 - **Statement About**: setelah section About menempel (200svh), kata demi kata muncul (pudar biasa, tanpa garis luar, gerak, blur, atau huruf acak); "the 404" tetap link ke halaman 404 tanpa garis bawah; kalimat hanya tampil selama section menempel, jadi tidak pernah terlihat bergerak naik
 - **Perjalanan Work → Other Side (satu section, satu layar menempel)**: latar gelap bergrain yang sama dengan hero.
   - *Work*: spiral 3D (WebGL) cover proyek; scroll memutar spiral, cover membusur saat bergerak, sisi belakang kabur. Hover = label nama + tahun, klik membuka studi kasus. Cover = `assets/work/pXX-.../01.jpg` (rasio ideal 1.7:1).
