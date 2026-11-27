@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Rofiq Maulana / Brand designer</title>
+<meta name="description" content="Rofiq Maulana — brand &amp; logo designer from Central Java. Identity systems, logomarks, posters and print.">
+<!-- pratinjau saat link dibagikan (WhatsApp, LinkedIn, X). Ganti URL gambar ke alamat lengkap setelah situs online, mis. https://domainmu.com/img/og.jpg -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rofiq Maulana / Brand designer">
+<meta property="og:description" content="Brand &amp; logo designer from Central Java. Identity systems, logomarks, posters and print.">
+<meta property="og:image" content="img/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0a0a">
 <link rel="icon" type="image/png" href="img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,6 +50,8 @@ a{color:inherit;text-decoration:none}
 #intro .cam{position:absolute;inset:0;transform-style:preserve-3d}
 #intro .fly{position:absolute;left:50%;top:50%;overflow:hidden;background:#1a1a1a;backface-visibility:hidden;will-change:transform,opacity,filter}
 #intro .fly>*,.pcard>*{width:100%;height:100%;object-fit:cover;display:block}
+#intro .iskip{position:absolute;right:max(2vw,16px);bottom:12px;pointer-events:auto;background:none;border:0;padding:6px 0;color:var(--grey);font:400 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
+#intro .iskip:hover{color:var(--wh)}
 #intro .icount{position:absolute;left:max(2vw,16px);bottom:18px;color:var(--grey);font:400 12px/1 var(--mono);font-variant-numeric:tabular-nums}
 .tileph{position:relative;display:block;width:100%;height:100%;font:400 10px/1.3 var(--mono);text-transform:uppercase}
 .tileph span{position:absolute}.tileph .a{left:8%;top:6%}.tileph .b{left:8%;bottom:6%}.tileph .c{right:8%;bottom:6%}
@@ -232,6 +243,18 @@ body.lock{overflow:hidden}
 .mk.hide{display:none}
 @media(max-width:900px){.mk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:560px){.mk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mk .c{opacity:1;transform:none}.mk-grid:hover .mk{opacity:1}}
+/* label kecil yang mengikuti kursor saat hover cover / logo */
+#hlab{position:fixed;left:0;top:0;z-index:60;pointer-events:none;padding:6px 9px;background:#f2f2ee;color:#0a0a0a;font:500 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .2s}
+#hlab.on{opacity:1}
+@media(hover:none){#hlab{display:none}}
+/* penunjuk posisi di perjalanan Work → Marks → Other side */
+.jnav{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);z-index:12;display:grid;grid-template-columns:repeat(3,auto);column-gap:22px;row-gap:8px;justify-items:center;font:500 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase}
+.jnav button{white-space:nowrap;background:none;border:0;padding:6px 2px;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;opacity:.35;cursor:pointer;transition:opacity .3s}
+.jnav button.on{opacity:1}.jnav button:hover{opacity:.8}
+.jbar{grid-column:1/-1;width:100%;height:1px;background:rgba(242,242,238,.18)}
+.jbar i{display:block;height:100%;width:100%;background:#f2f2ee;transform-origin:0 50%;transform:scaleX(0)}
+.jhint{grid-column:1/-1;opacity:.6;display:none}
+@media(hover:none){.jhint{display:block}}
 /* ====== MARKS: ORBIT LUBANG HITAM ====== */
 .orbits{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
 .orbits ellipse{fill:none;stroke:#f2f2ee}
@@ -381,7 +404,12 @@ footer[data-mode] #flogoCv{touch-action:none}
 .fhint{position:absolute;left:max(2vw,16px);bottom:18px;z-index:3;display:flex;gap:18px;align-items:center;color:var(--grey)}
 .fhint button{background:none;border:0;padding:0;color:var(--wh);font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;min-height:24px}
 /* tombol suara */
-.hr{display:flex;justify-content:flex-end;gap:24px}
+.hr{display:flex;justify-content:flex-end;align-items:center;gap:24px}
+/* ajakan kerja sama: titik berdenyut + teks; di HP cukup "Hire me" */
+.cta{display:inline-flex;align-items:center;white-space:nowrap}
+.cta i{margin-right:8px;width:7px;height:7px;border-radius:50%;background:currentColor;animation:ctaP 1.8s ease-in-out infinite}
+@keyframes ctaP{50%{opacity:.25;transform:scale(.7)}}
+@media(max-width:700px){.cta{font-size:0}.cta i{margin-right:0}.cta::after{content:"Hire me";font-size:11px;margin-left:7px}}
 .snd{display:inline-grid;place-items:center;width:24px;height:18px;background:none;border:0;padding:0;color:inherit;cursor:pointer}
 .snd svg{width:18px;height:14px;overflow:visible}
 .snd .w{opacity:0;transition:opacity .2s}
@@ -424,10 +452,12 @@ footer[data-mode] #flogoCv{touch-action:none}
 </div>
 <div id="ink" aria-hidden="true"><div class="ic" id="inkC"></div></div>
 
+<div id="hlab" aria-hidden="true"></div>
 <div id="intro" aria-hidden="true">
   <div class="bg"></div>
   <div class="world"><div class="cam" id="cam"></div></div>
   <div class="icount" id="icount">000</div>
+  <button class="iskip" id="iskip">Skip intro</button>
 </div>
 <div id="peek" aria-hidden="true"><div class="tile"></div></div>
 <div id="wipe" aria-hidden="true"><div class="wc"></div></div>
@@ -436,7 +466,7 @@ footer[data-mode] #flogoCv{touch-action:none}
 <header class="pad">
   <a href="#top">Rofiq Maulana</a>
   <nav class="hide-m"><a href="#work">Work</a><a href="#marks">Marks</a><a href="#about">About</a></nav>
-  <div class="hr"><button class="snd" id="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h3l4-3.5v11L4 9H1z" fill="currentColor" stroke="none"/><path class="w" d="M11 4.5c1 1.4 1 3.6 0 5"/><path class="w w2" d="M13.5 2.5c2 2.5 2 6.5 0 9"/><path class="x" d="M11.5 4.5l5 5M16.5 4.5l-5 5"/></svg></button></div>
+  <div class="hr"><a class="cta" href="mailto:hello@rofiqmaulana.com"><i aria-hidden="true"></i>Available for work</a><button class="snd" id="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h3l4-3.5v11L4 9H1z" fill="currentColor" stroke="none"/><path class="w" d="M11 4.5c1 1.4 1 3.6 0 5"/><path class="w w2" d="M13.5 2.5c2 2.5 2 6.5 0 9"/><path class="x" d="M11.5 4.5l5 5M16.5 4.5l-5 5"/></svg></button></div>
 </header>
 
 <main id="top">
@@ -480,6 +510,7 @@ footer[data-mode] #flogoCv{touch-action:none}
     <svg class="orbits" id="orbits" aria-hidden="true"></svg>
     <div class="bh" id="bh" aria-hidden="true"></div>
     <div class="mk-orbit" id="mkGrid"></div>
+    <nav class="jnav" id="jnav" aria-label="Section progress"><button data-f="0">Work</button><button data-f="1">Marks</button><button data-f="2">Other side</button><span class="jbar"><i id="jbarI"></i></span><span class="jhint" id="jhint"></span></nav>
     <div class="gate" id="gate">
      <h2 class="sr">Other side</h2>
      <div class="gate-mid">
@@ -581,7 +612,7 @@ const SFX=(()=>{let ctx=null,on=false,noiseBuf=null,scr=null;
 /* ====== NAV: setiap huruf jatuh seperti serpihan kapur saat mentok bawah, kembali saat scroll naik ====== */
 {const hd=document.querySelector("header");const parts=[];
  for(const el of hd.querySelectorAll("a,.snd")){if(el.classList.contains("snd")){parts.push(el);continue}
-   const t=el.textContent;el.setAttribute("aria-label",t);el.innerHTML=[...t].map(c=>`<span class="hc" aria-hidden="true">${c}</span>`).join("");parts.push(...el.querySelectorAll(".hc"))}
+   const t=el.textContent;el.setAttribute("aria-label",t);el.innerHTML=(el.classList.contains("cta")?'<i aria-hidden="true" class="hc"></i>':"")+[...t].map(c=>`<span class="hc" aria-hidden="true">${c}</span>`).join("");parts.push(...el.querySelectorAll(".hc"))}
  document.getElementById("snd").classList.add("hc");
  parts.forEach((p,i)=>{p.style.setProperty("--fx",((Math.random()-.5)*160).toFixed(0)+"px");p.style.setProperty("--fr",((Math.random()-.5)*540).toFixed(0)+"deg");
    p.style.setProperty("--fd",(Math.random()*.35).toFixed(2)+"s");p.style.setProperty("--rd",(Math.random()*.25).toFixed(2)+"s")});
@@ -761,6 +792,9 @@ const loop=()=>{px+=(mx-px)*.12;py+=(my-py)*.12;
   requestAnimationFrame(loop)};
 loop();
 
+const hlab=document.getElementById("hlab");let hlx=0,hly=0;
+addEventListener("pointermove",e=>{hlx=e.clientX;hly=e.clientY;if(hlab.classList.contains("on"))hlab.style.transform=`translate(${hlx+16}px,${hly+18}px)`},{passive:true});
+const hLabel=t=>{if(t){hlab.textContent=t;hlab.style.transform=`translate(${hlx+16}px,${hly+18}px)`;hlab.classList.add("on")}else hlab.classList.remove("on")};
 /* ====== PERJALANAN: WORK → MARKS → OTHER SIDE dalam satu panggung ======
    Satu section panjang dengan satu layar yang menempel. Urutan scroll:
    spiral cover (Work) → semua cover tersedot jadi satu titik → dari titik itu orbit logo (Marks) mekar →
@@ -772,7 +806,7 @@ const jP=()=>clamp(-jEl.getBoundingClientRect().top/jRun());
 const jY=f=>jEl.getBoundingClientRect().top+scrollY+jRun()*f;
 const sm=x=>x*x*(3-2*x),seg=(p,a,b)=>clamp((p-a)/(b-a));
 /* penanda anchor (#work, #marks, #other) diletakkan di posisi fasenya */
-const jMarks=()=>{const r=jRun();document.getElementById("work").style.top="0px";document.getElementById("marks").style.top=(r*(JB.c+.02))+"px";document.getElementById("other").style.top=(r*(JB.g+.02))+"px"};
+const jMarks=()=>{const r=jRun();document.getElementById("work").style.top="0px";document.getElementById("marks").style.top=(r*(JB.b+.01))+"px";document.getElementById("other").style.top=(r*(JB.g+.02))+"px"};
 new ResizeObserver(jMarks).observe(jEl);jMarks();
 let spDrift=0;
 const CNT=DN*2,CEN=Math.floor(CNT/2),FRONT=1.85;
@@ -855,7 +889,7 @@ if(!gl){jEl.classList.add("nogl")}else{
      for(const [u,v] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){const lx=u*SCX,ly=v*SCY;pts.push(proj(c*lx+P2.x+Math.pow(P2.y+ly,2)*.1,ly+P2.y,-s*lx+P2.z))}
      let inside=false;for(let i=0,j=3;i<4;j=i++){const [xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>my)!==(yj>my)&&mx<(xj-xi)*(my-yi)/(yj-yi)+xi)inside=!inside}
      if(inside&&P2.z>bz){bz=P2.z;best=pl.k}}
-   if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick()}
+   if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick();const pr=hot>=0?projects[hot%DN]:null;hLabel(pr?`${pr.name} · ${pr.year}`:null)}
    cv.style.pointerEvents=col>.05?"none":"";
    gl.clear(gl.COLOR_BUFFER_BIT);
    if(col<1){gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform2f(U.uScale,SCX,SCY);gl.uniform1f(U.uSpeed,speed*(1-col));gl.uniform1f(U.uCol,col);
@@ -866,8 +900,8 @@ if(!gl){jEl.classList.add("nogl")}else{
    if(on)requestAnimationFrame(frame)};
  new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(jEl);
  const setM=e=>{const r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width*2-1;my=1-(e.clientY-r.top)/r.height*2};
- cv.addEventListener("pointermove",setM);cv.addEventListener("pointerleave",()=>{mx=my=-9});
- cv.addEventListener("click",e=>{setM(e);requestAnimationFrame(t=>{frame(t);if(hot>=0)location.hash="#work-"+pad(hot%DN+1)})});
+ cv.addEventListener("pointermove",setM);cv.addEventListener("pointerleave",()=>{mx=my=-9;hLabel(null)});
+ cv.addEventListener("click",e=>{setM(e);requestAnimationFrame(t=>{frame(t);if(hot>=0){hLabel(null);location.hash="#work-"+pad(hot%DN+1)}})});
 }}
 
 
@@ -938,8 +972,12 @@ mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mo");if(b)openMar
  orb.innerHTML=RINGS.map((_,ri)=>`<ellipse stroke-opacity="${.07+ri*.04}" ${ri===1?'stroke-dasharray="2 8"':""}/>`).join("");
  const ells=[...orb.querySelectorAll("ellipse")];
  let on=false,t=0,last=performance.now(),hov=0,hovT=0;
- mkGrid.addEventListener("pointerover",e=>{if(e.target.closest(".mo"))hovT=1});
- mkGrid.addEventListener("pointerout",e=>{if(e.target.closest(".mo")&&!e.relatedTarget?.closest?.(".mo"))hovT=0});
+ mkGrid.addEventListener("pointerover",e=>{const b=e.target.closest(".mo");if(b){hovT=1;const m=marks[b.dataset.i];hLabel(`${m.client} · ${m.year}`)}});
+ mkGrid.addEventListener("pointerout",e=>{if(e.target.closest(".mo")&&!e.relatedTarget?.closest?.(".mo")){hovT=0;hLabel(null)}});
+ /* penunjuk fase + lompat */
+ const jnav=document.getElementById("jnav"),jbtn=[...jnav.querySelectorAll("button")],jbar=document.getElementById("jbarI"),jhint=document.getElementById("jhint");
+ const FSTART=[0,JB.b+.01,JB.g+.02];let jph=-1;
+ jnav.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const y=jY(FSTART[+b.dataset.f]);lenis?lenis.scrollTo(y,{duration:1.6}):scrollTo({top:y,behavior:"smooth"})});
  const frame=now=>{const dt=Math.min(50,now-last);last=now;const P=jP();
    const W=pin.clientWidth,H=pin.clientHeight,cx=W/2,cy=H/2,base=Math.min(W,H*1.9),port=W<H,fx=port?.9:1,fy=port?2.4:1;
    const bloom=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.b)),mp=seg(P,JB.b,JB.s),gp=reduce?(P>=JB.s?1:0):sm(seg(P,JB.s,JB.g));
@@ -955,6 +993,9 @@ mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mo");if(b)openMar
      el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(tang*kk).toFixed(1)}deg) scale(${Math.max(.001,sc*(1+kk*1.5)).toFixed(3)},${Math.max(.001,sc).toFixed(3)})`;
      el.style.opacity=op.toFixed(3);el.style.zIndex=front>0?8:3;const dead=kk>.3||bloom<.5;el.style.pointerEvents=dead?"none":"";el.tabIndex=dead?-1:0});
    /* lubang hitam: titik kecil saat cover habis → membesar pelan → seukuran portal */
+   const ph=P<JB.c?0:P<JB.s+.02?1:2;
+   if(ph!==jph){jph=ph;jbtn.forEach((b,i)=>{b.classList.toggle("on",i===ph);b.toggleAttribute("aria-current",i===ph)});jhint.textContent=["Tap a cover to open","Tap a mark to open","Tap the portal to enter"][ph]}
+   jbar.style.transform=`scaleX(${P.toFixed(4)})`;
    const pr=(btn.offsetWidth||220)/2,dot=sm(seg(P,JB.w+.03,JB.c));
    const rad=P<JB.c?6*dot:6+54*bloom+60*sm(mp)+(pr-120)*gp;
    bh.style.transform=`scale(${Math.max(.001,rad/60).toFixed(3)})`;bh.style.opacity=P<JB.w+.03?0:1;
@@ -1112,7 +1153,8 @@ document.getElementById("dexit").addEventListener("click",()=>{location.hash="ot
    gate.style.opacity=G.toFixed(3);gate.classList.toggle("live",G>.6);
    if(G>0||suck>0){hovS+=((hov?1:0)-hovS)*.06;if(!reduce)t+=dt*.001*(1+hovS*1.5+suck*6);
      if(gl){gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,t);gl.uniform1f(U.H,hovS);gl.uniform1f(U.S,suck);gl.uniform2f(U.M,pmx,pmy);gl.drawArrays(gl.TRIANGLES,0,3)}}
-   /* gravitasi pada huruf */
+   /* gravitasi pada huruf (dilewati selama portal belum terlihat, hemat baterai) */
+   if(G<=0&&suck===0){if(on||suck)requestAnimationFrame(tick);return}
    const br=btn.getBoundingClientRect(),pcx=br.left+br.width/2,pcy=br.top+br.height/2;
    hs+=((hov&&!reduce?1:0)-hs)*(hov?.05:.07);const S=Math.max(suck,hs*hs*(3-2*hs)),near=Math.max(S,mx<-1e3?0:Math.max(0,1-Math.hypot(mx-pcx,my-pcy)/(innerWidth*.42)));
    chars.forEach((c,i)=>{const s0=st[i],cr=c.getBoundingClientRect(),dx=pcx-(cr.left+cr.width/2-s0.x),dy=pcy-(cr.top+cr.height/2-s0.y),dist=Math.hypot(dx,dy)||1;
@@ -1176,7 +1218,11 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const finishIntro=()=>{document.body.classList.add("ready");comp.classList.add("in");intro.remove();document.body.classList.remove("intro");lenis?.start();base=null;parallax()};
 const easeIO=t=>t<.5?8*t**4:1-(-2*t+2)**4/2;
 const runIntro=async()=>{
-  if(reduce||/^#(work-\d+|other-dimension)$/.test(location.hash)){finishIntro();return}
+  let seen=false;try{seen=sessionStorage.getItem("rmIntro")==="1"}catch(_){}
+  if(reduce||seen||/^#(work-\d+|other-dimension)$/.test(location.hash)){finishIntro();return}
+  try{sessionStorage.setItem("rmIntro","1")}catch(_){}
+  let skip=false;const doSkip=()=>{skip=true};document.getElementById("iskip").addEventListener("click",doSkip);
+  addEventListener("keydown",e=>{if(e.key==="Escape")doSkip()},{once:true});
   document.body.classList.add("intro");scrollTo(0,0);lenis?.stop();
   const block=e=>{if(document.body.classList.contains("intro")){if(e.type!=="keydown"||/^(Arrow|Page|Home|End| )/.test(e.key))e.preventDefault()}};
   for(const t of ["wheel","touchmove","keydown"])addEventListener(t,block,{passive:false});
@@ -1204,7 +1250,7 @@ const runIntro=async()=>{
   let mxn=0,myn=0,rx=0,ry=0;const onMove=e=>{mxn=e.clientX/vw-.5;myn=e.clientY/vh-.5};addEventListener("pointermove",onMove);
   const DUR=3600;
   await new Promise(res=>{const t0=performance.now();
-    const frame=now=>{const t=Math.min(1,(now-t0)/DUR),c=total*easeIO(t),settle=Math.min(1,Math.max(0,(t-.8)/.2));
+    const frame=now=>{const t=skip?1:Math.min(1,(now-t0)/DUR),c=total*easeIO(t),settle=Math.min(1,Math.max(0,(t-.8)/.2));
       rx+=(myn*-6*(1-settle)-rx)*.08;ry+=(mxn*8*(1-settle)-ry)*.08;
       cam.style.transform=`rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
       for(const it of items){const zr=it.z+c;

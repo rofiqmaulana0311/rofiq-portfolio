@@ -64,3 +64,11 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Nav** jatuh berhamburan seperti serpihan kapur saat mentok di footer, kembali saat scroll naik.
 - **Suara** (default mati, ikon speaker di header): klik halus hanya saat hover cover proyek. Dibuat dengan WebAudio, tanpa file.
 - Semua animasi mati otomatis untuk pengunjung yang memilih *reduced motion*.
+
+## UX
+- **Label hover**: nama proyek / klien + tahun muncul kecil di samping kursor saat hover cover (spiral) atau logo (orbit). Tidak tampil di HP.
+- **Penunjuk fase** di bawah layar perjalanan: Work · Marks · Other side, dengan garis progres; bisa diklik untuk lompat. Di HP ada petunjuk "Tap a cover / mark / the portal".
+- **Ajakan kerja sama** di header: "Available for work" (titik berdenyut) → email. Di HP tampil "Hire me". Ganti alamat email di header & footer.
+- **Intro** hanya diputar sekali per kunjungan (sessionStorage), dengan tombol "Skip intro" (atau tombol Esc).
+- **Pratinjau link** (Open Graph): `img/og.jpg` 1200×630 + judul & deskripsi di `<head>`. Setelah situs online, ganti `og:image` ke URL lengkap (mis. https://domainmu.com/img/og.jpg) supaya WhatsApp/LinkedIn bisa membacanya.
+
