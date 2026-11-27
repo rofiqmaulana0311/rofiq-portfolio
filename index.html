@@ -262,7 +262,8 @@ body.lock{overflow:hidden}
   box-shadow:0 0 0 2px #ff6a1a,0 0 26px 8px rgba(255,106,26,.55),0 0 90px 36px rgba(242,242,238,.10);will-change:transform;transition:background .5s,box-shadow .5s}
 /* titik kecil tempat semua cover menghilang */
 .bh.dot{background:#f2f2ee;box-shadow:0 0 0 0 transparent,0 0 30px 12px rgba(242,242,238,.6),0 0 90px 40px rgba(255,106,26,.25)}
-.mk-orbit{position:absolute;inset:0}
+.mk-orbit{position:absolute;inset:0;pointer-events:none} /* lapisan orbit tidak boleh menutupi spiral; hanya logonya yang bisa diklik */
+.mk-orbit .mo{pointer-events:auto}
 .mo{position:absolute;left:0;top:0;width:96px;height:96px;margin:-48px 0 0 -48px;padding:0;border:0;border-radius:50%;background:none;color:var(--c);cursor:pointer;will-change:transform,opacity}
 .mo svg,.mo img{width:100%;height:100%;object-fit:contain;display:block;overflow:visible;pointer-events:none}
 .mo::after{content:"";position:absolute;inset:-14%;border-radius:50%;border:1.5px solid #ff6a1a;opacity:0;transform:scale(.8);transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
