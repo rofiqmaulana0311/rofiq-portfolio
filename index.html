@@ -249,9 +249,9 @@ body.lock{overflow:hidden}
 .gate .portal{pointer-events:none}.gate.live .portal{pointer-events:auto}
 .gate-top{display:flex;justify-content:space-between;gap:16px}
 .gate-mid{position:relative;display:grid;place-items:center;height:100%}
-@media(max-width:700px){.gate .gate-title{flex-direction:column;justify-content:center;gap:calc(min(56vw,240px) + 36px);font-size:clamp(52px,15vw,90px)}.gate .portal{width:min(56vw,240px)}}
+@media(max-width:700px){.gate .gate-title{flex-direction:column;justify-content:center;gap:calc(clamp(150px,17vw,260px) + 36px);font-size:clamp(52px,15vw,90px)}}
 .gate-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none;font:400 clamp(48px,11vw,210px)/.9 var(--cond);color:var(--wh)}
-.portal{position:relative;z-index:2;width:clamp(220px,26vw,400px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:transparent;cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1);will-change:transform}
+.portal{position:relative;z-index:2;width:clamp(150px,17vw,260px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:var(--wh);cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1);will-change:transform;filter:url(#chalkMask)}
 .portal canvas{position:absolute;inset:0;width:100%;height:100%}
 .gate-title .gc{display:inline-block;will-change:transform;transform-origin:50% 60%}
 .gate-foot{display:flex;justify-content:space-between;gap:16px;color:var(--grey)}
@@ -992,62 +992,30 @@ const closeDim=async()=>{if(!dimOpen||dimBusy)return;dimBusy=true;lb.classList.r
   ink.style.visibility="hidden";dimOpen=false;gateReset&&gateReset();cancelAnimationFrame(raf);document.body.classList.remove("lock");lenis?.start();dimBusy=false};
 document.getElementById("portal").addEventListener("click",()=>{location.hash="other-dimension"});
 document.getElementById("dexit").addEventListener("click",()=>{location.hash="other"});
-/* ====== PORTAL 3D: giroskop krom yang berputar di dalam lubang hitam; huruf OTHER/SIDE tertarik gravitasi ======
-   Digambar dengan raymarching (WebGL). Hover: cincin berputar makin cepat & saling mengunci; klik: tersedot masuk. */
-{const cv=document.getElementById("portalCv"),btn=document.getElementById("portal"),gate=document.getElementById("gate");
- let hov=0,hovS=0,t=0,on=false,suck=0,hs=0,gv=0,pmx=0,pmy=0;
- const gl=cv.getContext("webgl",{alpha:true,premultipliedAlpha:false,antialias:false});
- let U=null;
- if(gl){const sh=(ty,src)=>{const s=gl.createShader(ty);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))console.warn(gl.getShaderInfoLog(s));return s};
-  const pg=gl.createProgram();
-  gl.attachShader(pg,sh(gl.VERTEX_SHADER,"attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}"));
-  gl.attachShader(pg,sh(gl.FRAGMENT_SHADER,`precision highp float;uniform vec2 uR;uniform float uT,uH,uS;uniform vec2 uM;
-   mat3 rx(float a){float c=cos(a),s=sin(a);return mat3(1.,0.,0.,0.,c,-s,0.,s,c);}
-   mat3 ry(float a){float c=cos(a),s=sin(a);return mat3(c,0.,s,0.,1.,0.,-s,0.,c);}
-   mat3 rz(float a){float c=cos(a),s=sin(a);return mat3(c,-s,0.,s,c,0.,0.,0.,1.);}
-   float tor(vec3 p,vec2 t){vec2 q=vec2(length(p.xz)-t.x,p.y);return length(q)-t.y;}
-   float id;
-   float map(vec3 p){float k=1.-uS*.92;p/=max(k,.08);float d=1e9;
-    for(int i=0;i<5;i++){float fi=float(i);float r=1.2-fi*.21;
-     float sp=(.35+fi*.17)*(1.+uH*2.2);
-     mat3 m=rx(uT*sp+fi*1.3+uM.y*.6)*rz(uT*sp*.73+fi*.7)*ry(uT*.3*sp+uM.x*.6);
-     m=mat3(mix(m[0],vec3(1.,0.,0.),uH*.35),mix(m[1],vec3(0.,1.,0.),uH*.35),mix(m[2],vec3(0.,0.,1.),uH*.35));
-     float di=tor(m*p,vec2(r,.05+.012*sin(uT*2.+fi)));if(di<d){d=di;id=fi;}}
-    float core=length(p)-(.16+.04*sin(uT*3.));if(core<d){d=core;id=9.;}
-    return d*max(k,.08);}
-   vec3 nrm(vec3 p){vec2 e=vec2(.002,0.);return normalize(vec3(map(p+e.xyy)-map(p-e.xyy),map(p+e.yxy)-map(p-e.yxy),map(p+e.yyx)-map(p-e.yyx)));}
-   vec3 env(vec3 r){float h=r.y*.5+.5;vec3 c=mix(vec3(.25,.12,.08),vec3(1.,.5,.15),smoothstep(.05,.55,h));c=mix(c,vec3(1.,.97,.92),smoothstep(.62,.9,h));
-    c+=vec3(.15,.35,1.)*pow(max(0.,-r.x),6.)*.8;return c;}
-   void main(){vec2 uv=(gl_FragCoord.xy-.5*uR)/uR.y;float rr=length(uv);
-    vec3 ro=vec3(0.,0.,3.4),rd=normalize(vec3(uv,-1.35));float tt=0.;bool hit=false;vec3 p;
-    for(int i=0;i<72;i++){p=ro+rd*tt;float d=map(p);if(d<.0015){hit=true;break;}tt+=d;if(tt>7.)break;}
-    vec3 col=vec3(0.);float a=0.;
-    if(hit){vec3 n=nrm(p),r=reflect(rd,n);float fr=pow(1.-max(0.,dot(n,-rd)),3.);
-     vec3 ir=.5+.5*cos(6.283*(fr*1.4+vec3(0.,.33,.67)+uT*.05));
-     float df=max(0.,dot(n,normalize(vec3(.4,.7,.6))));col=env(r)*mix(vec3(1.),ir,.4)*(.7+.5*df)+fr*.9;if(id>8.)col=vec3(1.,.55,.2)*1.6+fr;a=1.;}
-    /* cahaya di pusat & kabut tepi */
-    col+=vec3(1.,.42,.1)*.18/(1.+rr*rr*40.)*(1.+uH);a=max(a,smoothstep(.5,.0,rr)*.0);
-    gl_FragColor=vec4(col,max(a,clamp(length(col)*1.2,0.,1.))*smoothstep(.5,.47,rr));}`));
-  gl.linkProgram(pg);gl.useProgram(pg);
-  const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
-  const l=gl.getAttribLocation(pg,"p");gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,2,gl.FLOAT,false,0,0);
-  U={R:gl.getUniformLocation(pg,"uR"),T:gl.getUniformLocation(pg,"uT"),H:gl.getUniformLocation(pg,"uH"),S:gl.getUniformLocation(pg,"uS"),M:gl.getUniformLocation(pg,"uM")};
-  gl.enable(gl.BLEND);gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0)}
- const size=()=>{const d=Math.min(innerWidth<700?1.25:1.75,devicePixelRatio||1);cv.width=cv.clientWidth*d|0;cv.height=cv.clientHeight*d|0;gl&&gl.viewport(0,0,cv.width,cv.height)};
+/* ====== PORTAL: pusaran poster tersedot ke titik hitam; huruf OTHER/SIDE tertarik gravitasi ====== */
+{const cv=document.getElementById("portalCv"),g=cv.getContext("2d"),btn=document.getElementById("portal"),gate=document.getElementById("gate");
+ let hov=0,t=0,on=false,suck=0,hs=0,gv=0,sp=.4,hole=.06;
+ const size=()=>{const d=Math.min(2,devicePixelRatio||1);cv.width=cv.clientWidth*d;cv.height=cv.clientHeight*d;g.setTransform(d,0,0,d,0,0)};
  new ResizeObserver(size).observe(cv);
  const chars=[];for(const w of gate.querySelectorAll(".gate-title span")){const tx=w.textContent;w.innerHTML=[...tx].map(c=>`<span class="gc">${c}</span>`).join("");chars.push(...w.querySelectorAll(".gc"))}
  const st=chars.map(()=>({x:0,y:0,sx:1,r:0}));
  let mx=-1e4,my=-1e4;jEl.addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});jEl.addEventListener("pointerleave",()=>{mx=my=-1e4});
  btn.addEventListener("pointerenter",()=>hov=1);
  btn.addEventListener("pointerleave",()=>{hov=0;btn.style.transform=""});
- btn.addEventListener("pointermove",e=>{const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;pmx=dx/r.width;pmy=dy/r.height;btn.style.transform=`translate(${dx*.12}px,${dy*.12}px)`});
+ btn.addEventListener("pointermove",e=>{const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;btn.style.transform=`translate(${dx*.18}px,${dy*.18}px) scale(1.07)`});
  new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on)requestAnimationFrame(tick)}).observe(jEl);
  let last=performance.now();
  function tick(now){if(!on&&suck===0)return;now=now||performance.now();const dt=Math.min(50,now-last);last=now;
    const P=jP(),G=reduce?(P>=JB.s?1:0):sm(seg(P,JB.s+.02,JB.g));gv=G;
    gate.style.opacity=G.toFixed(3);gate.classList.toggle("live",G>.6);
-   if(G>0||suck>0){hovS+=((hov?1:0)-hovS)*.06;if(!reduce)t+=dt*.001*(1+hovS*1.5+suck*6);
-     if(gl){gl.clear(gl.COLOR_BUFFER_BIT);gl.uniform2f(U.R,cv.width,cv.height);gl.uniform1f(U.T,t);gl.uniform1f(U.H,hovS);gl.uniform1f(U.S,suck);gl.uniform2f(U.M,pmx,pmy);gl.drawArrays(gl.TRIANGLES,0,3)}}
+   if(G>0||suck>0){const W=cv.clientWidth,H=cv.clientHeight,cx=W/2,cy=H/2,R=Math.hypot(W,H)/2;
+     sp+=((hov?3.2:.6)+suck*8-sp)*.06;hole+=((hov?.16:.07)+suck*.5-hole)*.08;if(!reduce)t+=sp*.004;
+     g.fillStyle="#f2f2ee";g.fillRect(0,0,W,H);
+     for(let i=0;i<26;i++){const a=archive[i%archive.length],u=(t*(.8+(i%5)*.07)+i/26)%1,r=1-u;
+       const ang=i*2.399+u*u*9+t*2,d=r*R*1.05,x=cx+Math.cos(ang)*d,y=cy+Math.sin(ang)*d,w=W*.2*(.15+.85*r),h=w*a.ratio;
+       g.save();g.translate(x,y);g.rotate(ang+1.57*u);g.globalAlpha=Math.min(1,r*3);g.fillStyle=a.c[0];g.fillRect(-w/2,-h/2,w,h);g.fillStyle=a.c[1];g.fillRect(-w/2+w*.1,h*.22,w*.6,h*.08);g.restore()}
+     g.globalAlpha=1;const hr=W*hole,grd=g.createRadialGradient(cx,cy,0,cx,cy,hr*2.2);grd.addColorStop(0,"rgba(10,10,10,1)");grd.addColorStop(.45,"rgba(10,10,10,.95)");grd.addColorStop(1,"rgba(10,10,10,0)");
+     g.fillStyle=grd;g.beginPath();g.arc(cx,cy,hr*2.2,0,6.283);g.fill()}
    /* gravitasi pada huruf (dilewati selama portal belum terlihat, hemat baterai) */
    if(G<=0&&suck===0){if(on||suck)requestAnimationFrame(tick);return}
    const br=btn.getBoundingClientRect(),pcx=br.left+br.width/2,pcy=br.top+br.height/2;

@@ -55,7 +55,7 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Perjalanan Work → Other Side (satu section, satu layar menempel)**: latar gelap bergrain yang sama dengan hero.
   - *Work*: spiral 3D (WebGL) cover proyek; scroll memutar spiral, cover membusur saat bergerak, sisi belakang kabur. Hover = label nama + tahun, klik membuka studi kasus. Cover = `assets/work/pXX-.../01.jpg` (rasio ideal 1.7:1).
   - *Transisi*: semua cover tersedot jadi satu titik cahaya, titik itu membesar jadi lubang hitam bercincin oranye.
-  - *Other Side*: lubang hitam menjadi portal berisi giroskop krom 3D; huruf OTHER / SIDE keluar dari pusat. Klik untuk masuk.
+  - *Other Side*: lubang hitam menjadi portal putih berisi pusaran poster yang tersedot ke titik hitam (efek kapur di tepinya); huruf OTHER / SIDE keluar dari pusat. Klik untuk masuk.
   - Batas fase diatur di `JB` (index.html). Link #work dan #other di menu menuju fase masing-masing.
 - **Hero: ikon mengikuti kursor**: saat kursor bergerak di hero (atau layar diketuk di HP), ikon muncul satu per satu lalu jatuh memudar. Ikon diambil dari `ICONS` di content.js (PNG transparan di `assets/icons/`); selama kosong, dipakai logo dari `MARKS`.
 - **Other Side**: kanvas tak berujung, poster tidak saling bersentuhan; di HP dua kolom yang bergerak atas-bawah.
