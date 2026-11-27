@@ -53,12 +53,12 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Marks**: garis konstruksi, scale test (16 px sampai penuh), dan invert.
 - **Statement About**: setelah section About menempel (200svh), kata demi kata muncul (pudar biasa, tanpa garis luar, gerak, blur, atau huruf acak); "the 404" tetap link ke halaman 404 tanpa garis bawah; kalimat hanya tampil selama section menempel, jadi tidak pernah terlihat bergerak naik
-- **Perjalanan Work → Marks → Other Side (satu section, satu layar menempel)**: latar gelap bergrain yang sama dengan hero, menyambung tanpa putus.
-  - *Work*: spiral 3D (WebGL) cover proyek, terinspirasi pacomepertant.com; scroll memutar spiral, cover membusur saat bergerak, sisi belakang kabur. Hover memperbesar isi cover, klik membuka studi kasus. Cover = `assets/work/pXX-.../01.jpg` (rasio ideal 1.7:1), selama belum ada dibuat dari warna brand.
-  - *Transisi*: semua cover tersedot ke satu titik cahaya kecil di tengah.
-  - *Marks*: dari titik itu orbit logo mekar; scroll menyempitkan orbit dan logo tersedot satu per satu ke lubang hitam bercincin oranye. Hover memperlambat orbit, klik membuka detail mark.
-  - *Other Side*: lubang hitam membesar jadi portal berisi giroskop krom 3D (raymarching WebGL) yang berputar; huruf OTHER / SIDE muncul dari pusat. Hover membuat cincin berputar makin cepat dan huruf tertarik gravitasi; klik untuk masuk.
-  - Link #work, #marks, #other di menu tetap menuju fase masing-masing. Batas fase diatur di `JB` (index.html).
+- **Perjalanan Work → Other Side (satu section, satu layar menempel)**: latar gelap bergrain yang sama dengan hero.
+  - *Work*: spiral 3D (WebGL) cover proyek; scroll memutar spiral, cover membusur saat bergerak, sisi belakang kabur. Hover = label nama + tahun, klik membuka studi kasus. Cover = `assets/work/pXX-.../01.jpg` (rasio ideal 1.7:1).
+  - *Transisi*: semua cover tersedot jadi satu titik cahaya, titik itu membesar jadi lubang hitam bercincin oranye.
+  - *Other Side*: lubang hitam menjadi portal berisi giroskop krom 3D; huruf OTHER / SIDE keluar dari pusat. Klik untuk masuk.
+  - Batas fase diatur di `JB` (index.html). Link #work dan #other di menu menuju fase masing-masing.
+- **Hero: ikon mengikuti kursor**: saat kursor bergerak di hero (atau layar diketuk di HP), ikon muncul satu per satu lalu jatuh memudar. Ikon diambil dari `ICONS` di content.js (PNG transparan di `assets/icons/`); selama kosong, dipakai logo dari `MARKS`.
 - **Other Side**: kanvas tak berujung, poster tidak saling bersentuhan; di HP dua kolom yang bergerak atas-bawah.
 - **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): oranye di elemen interaktif, berputar saat diam; hitam di Other Side.
 - **Nav** jatuh berhamburan seperti serpihan kapur saat mentok di footer, kembali saat scroll naik.
@@ -66,8 +66,8 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - Semua animasi mati otomatis untuk pengunjung yang memilih *reduced motion*.
 
 ## UX
-- **Label hover**: nama proyek / klien + tahun muncul kecil di samping kursor saat hover cover (spiral) atau logo (orbit). Tidak tampil di HP.
-- **Penunjuk fase** di bawah layar perjalanan: Work · Marks · Other side, dengan garis progres; bisa diklik untuk lompat. Di HP ada petunjuk "Tap a cover / mark / the portal".
+- **Label hover**: nama proyek / klien + tahun muncul kecil di samping kursor saat hover cover di spiral. Tidak tampil di HP.
+- **Penunjuk fase** di bawah layar perjalanan: Work · Other side, dengan garis progres; bisa diklik untuk lompat. Di HP ada petunjuk "Tap a cover / the portal".
 - **Ajakan kerja sama** di header: "Available for work" (titik berdenyut) → email. Di HP tampil "Hire me". Ganti alamat email di header & footer.
 - **Intro** hanya diputar sekali per kunjungan (sessionStorage), dengan tombol "Skip intro" (atau tombol Esc).
 - **Pratinjau link** (Open Graph): `img/og.jpg` 1200×630 + judul & deskripsi di `<head>`. Setelah situs online, ganti `og:image` ke URL lengkap (mis. https://domainmu.com/img/og.jpg) supaya WhatsApp/LinkedIn bisa membacanya.

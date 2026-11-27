@@ -213,7 +213,7 @@ body.lock{overflow:hidden}
   .row .info .lbl{display:none}
 }
 /* ====== PERJALANAN: WORK → MARKS → OTHER SIDE ====== */
-.journey{position:relative;z-index:7;height:calc(100svh + 760svh);background-color:#0a0a0a;color:var(--wh)}
+.journey{position:relative;z-index:7;height:calc(100svh + 520svh);background-color:#0a0a0a;color:var(--wh)}
 .jpin{position:sticky;top:0;height:100svh;overflow:hidden}
 .jmark{position:absolute;left:0;top:0;width:1px;height:1px;pointer-events:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
@@ -222,27 +222,6 @@ body.lock{overflow:hidden}
 .journey .rows .row:focus-visible{outline:2px solid #ff6a1a}
 .journey.nogl #wgl{display:none}
 .journey.nogl .rows{top:90px;left:max(2vw,16px);width:auto;height:auto;clip-path:none}
-/* ====== Mark Index (koleksi logo) ====== */
-.marks{position:relative;z-index:7;background:var(--wh);color:var(--bk);padding-block:clamp(40px,6vw,90px) clamp(100px,12vw,180px)}
-.mk-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:28px}
-.mk-head h2{font:400 clamp(48px,9vw,140px)/.85 var(--cond);margin:0}
-.mk-filter{display:flex;gap:6px;flex-wrap:wrap}
-.mk-filter button{min-height:36px;padding:8px 14px;border:1px solid #c9c9c4;border-radius:999px;background:none;color:inherit;font:500 11px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
-.mk-filter button[aria-pressed=true]{background:var(--bk);color:var(--wh);border-color:var(--bk)}
-.mk-filter sup{font-size:9px;opacity:.6;margin-left:2px}
-.mk-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid #c9c9c4;border-left:1px solid #c9c9c4}
-.mk{position:relative;aspect-ratio:1;background:var(--wh);color:var(--bk);border:0;border-right:1px solid #c9c9c4;border-bottom:1px solid #c9c9c4;padding:0;cursor:pointer;overflow:hidden;transition:background .35s,color .35s,opacity .35s;font:500 10px/1.2 var(--mono);letter-spacing:.04em;text-transform:uppercase;text-align:left}
-.mk svg{position:absolute;left:50%;top:50%;width:44%;height:44%;transform:translate(-50%,-50%);transition:transform .6s cubic-bezier(.2,.8,.2,1);overflow:visible}
-.mk img{position:absolute;left:50%;top:50%;width:52%;height:52%;object-fit:contain;transform:translate(-50%,-50%)}
-.mk .n{position:absolute;left:10px;top:10px;opacity:.55}
-.mk .c{position:absolute;left:10px;right:10px;bottom:10px;display:flex;justify-content:space-between;gap:6px;opacity:0;transform:translateY(6px);transition:opacity .35s,transform .35s}
-.mk-grid:hover .mk{opacity:.45}
-.mk-grid .mk:hover,.mk-grid .mk:focus-visible{opacity:1;background:var(--mc);color:var(--mi);outline:none}
-.mk:hover svg{transform:translate(-50%,-50%) scale(1.08)}
-.mk:hover .c,.mk:focus-visible .c{opacity:1;transform:none}
-.mk.hide{display:none}
-@media(max-width:900px){.mk-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:560px){.mk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mk .c{opacity:1;transform:none}.mk-grid:hover .mk{opacity:1}}
 /* label kecil yang mengikuti kursor saat hover cover / logo */
 #hlab{position:fixed;left:0;top:0;z-index:60;pointer-events:none;padding:6px 9px;background:#f2f2ee;color:#0a0a0a;font:500 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity .2s}
 #hlab.on{opacity:1}
@@ -255,55 +234,22 @@ body.lock{overflow:hidden}
 .jbar i{display:block;height:100%;width:100%;background:#f2f2ee;transform-origin:0 50%;transform:scaleX(0)}
 .jhint{grid-column:1/-1;opacity:.6;display:none}
 @media(hover:none){.jhint{display:block}}
-/* ====== MARKS: ORBIT LUBANG HITAM ====== */
-.orbits{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-.orbits ellipse{fill:none;stroke:#f2f2ee}
+/* ====== HERO: ikon muncul mengikuti kursor ====== */
+.trail{position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.trail .ic{position:absolute;left:0;top:0;width:clamp(72px,9vw,150px);aspect-ratio:1;margin:calc(clamp(72px,9vw,150px)/-2) 0 0 calc(clamp(72px,9vw,150px)/-2);color:var(--c,#f2f2ee);will-change:transform,opacity}
+.trail .ic img,.trail .ic svg{width:100%;height:100%;object-fit:contain;display:block;overflow:visible}
+/* ====== LUBANG HITAM → PORTAL ====== */
 .bh{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;background:#000;z-index:5;pointer-events:none;
   box-shadow:0 0 0 2px #ff6a1a,0 0 26px 8px rgba(255,106,26,.55),0 0 90px 36px rgba(242,242,238,.10);will-change:transform;transition:background .5s,box-shadow .5s}
 /* titik kecil tempat semua cover menghilang */
 .bh.dot{background:#f2f2ee;box-shadow:0 0 0 0 transparent,0 0 30px 12px rgba(242,242,238,.6),0 0 90px 40px rgba(255,106,26,.25)}
-.mk-orbit{position:absolute;inset:0;pointer-events:none} /* lapisan orbit tidak boleh menutupi spiral; hanya logonya yang bisa diklik */
-.mk-orbit .mo{pointer-events:auto}
-.mo{position:absolute;left:0;top:0;width:96px;height:96px;margin:-48px 0 0 -48px;padding:0;border:0;border-radius:50%;background:none;color:var(--c);cursor:pointer;will-change:transform,opacity}
-.mo svg,.mo img{width:100%;height:100%;object-fit:contain;display:block;overflow:visible;pointer-events:none}
-.mo::after{content:"";position:absolute;inset:-14%;border-radius:50%;border:1.5px solid #ff6a1a;opacity:0;transform:scale(.8);transition:opacity .3s,transform .4s cubic-bezier(.2,.8,.2,1)}
-.mo:hover::after,.mo:focus-visible::after{opacity:1;transform:none}
-.mo:focus-visible{outline:none}
-@media(max-width:700px){.mo{width:64px;height:64px;margin:-32px 0 0 -32px}}
-/* detail logo + garis konstruksi */
-#lgx{position:fixed;inset:0;z-index:44;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);background:var(--mc,#0a0a0a);color:var(--mi,#f2f2ee);visibility:hidden;opacity:0;transition:opacity .5s,visibility 0s .5s}
-#lgx.open{visibility:visible;opacity:1;transition:opacity .5s}
-#lgx .stage{position:relative;display:grid;place-items:center;min-height:0}
-#lgx .stage svg.big{width:min(62vmin,90%);height:auto;aspect-ratio:1;overflow:visible}
-#lgx .stage img.big{width:min(56vmin,80%);height:min(56vmin,80%);object-fit:contain}
-#lgx .gd *{fill:none;stroke:currentColor;stroke-width:1;opacity:.5;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 1.2s cubic-bezier(.65,0,.35,1)}
-#lgx.draw .gd *{stroke-dashoffset:0}
-#lgx .lg{opacity:0;transition:opacity .8s .9s}
-#lgx.draw .lg{opacity:1}
-#lgx .info{display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:22px max(2vw,16px) 22px 0;font:500 12px/1.5 var(--mono);letter-spacing:.04em;text-transform:uppercase}
-#lgx .top{display:flex;justify-content:space-between;align-items:center;gap:12px}
-#lgx h3{margin:0;font:400 clamp(44px,6vw,110px)/.88 var(--cond)}
-#lgx dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
-#lgx dt{opacity:.6}#lgx dd{margin:0}
-#lgx .sw{display:flex;gap:8px}
-#lgx .sw span{display:grid;align-content:end;width:76px;aspect-ratio:1;padding:6px;font-size:9px;box-shadow:inset 0 0 0 1px currentColor}
-#lgx .nav{display:flex;gap:8px}
-#lgx .ctl{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px 14px}
-#lgx .ctl input{width:100%;accent-color:currentColor;height:28px}
-#lgx .ctl output{min-width:13ch;text-align:right;font-variant-numeric:tabular-nums}
-#lgx .ctl .b{grid-column:1/-1;justify-self:start}
-#lgx.small .gd{opacity:0;transition:opacity .3s}
-#lgx .stage .big{transition:width .25s,height .25s}
-#lgx button.b{min-height:44px;min-width:44px;padding:10px 16px;border-radius:999px;border:1px solid currentColor;background:none;color:inherit;font:500 12px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
-#lgx button.b:hover{background:var(--mi);color:var(--mc)}
-@media(max-width:800px){#lgx{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}#lgx .info{padding:16px}#lgx .stage svg.big{width:min(70vw,48svh)}}
 
 /* ====== pintu ke dimensi lain ====== */
 .gate{position:absolute;inset:0;z-index:9;display:grid;padding:0 max(2vw,16px);opacity:0;pointer-events:none}
 .gate .portal{pointer-events:none}.gate.live .portal{pointer-events:auto}
 .gate-top{display:flex;justify-content:space-between;gap:16px}
 .gate-mid{position:relative;display:grid;place-items:center;height:100%}
-@media(max-width:700px){.gate-title{flex-direction:column;justify-content:center;gap:min(64vw,300px);font-size:clamp(56px,17vw,96px)}.portal{width:min(56vw,240px)}}
+@media(max-width:700px){.gate .gate-title{flex-direction:column;justify-content:center;gap:calc(min(56vw,240px) + 36px);font-size:clamp(52px,15vw,90px)}.gate .portal{width:min(56vw,240px)}}
 .gate-title{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;pointer-events:none;font:400 clamp(48px,11vw,210px)/.9 var(--cond);color:var(--wh)}
 .portal{position:relative;z-index:2;width:clamp(220px,26vw,400px);aspect-ratio:1;border-radius:50%;border:0;padding:0;background:transparent;cursor:pointer;overflow:hidden;transition:transform .6s cubic-bezier(.2,.8,.2,1);will-change:transform}
 .portal canvas{position:absolute;inset:0;width:100%;height:100%}
@@ -466,13 +412,14 @@ footer[data-mode] #flogoCv{touch-action:none}
 
 <header class="pad">
   <a href="#top">Rofiq Maulana</a>
-  <nav class="hide-m"><a href="#work">Work</a><a href="#marks">Marks</a><a href="#about">About</a></nav>
+  <nav class="hide-m"><a href="#work">Work</a><a href="#about">About</a><a href="#other">Other side</a></nav>
   <div class="hr"><a class="cta" href="mailto:hello@rofiqmaulana.com"><i aria-hidden="true"></i>Available for work</a><button class="snd" id="snd" aria-pressed="false" aria-label="Sound"><svg viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M1 5h3l4-3.5v11L4 9H1z" fill="currentColor" stroke="none"/><path class="w" d="M11 4.5c1 1.4 1 3.6 0 5"/><path class="w w2" d="M13.5 2.5c2 2.5 2 6.5 0 9"/><path class="x" d="M11.5 4.5l5 5M16.5 4.5l-5 5"/></svg></button></div>
 </header>
 
 <main id="top">
   <div class="stage" id="stage">
    <section class="hero pad" id="hero">
+    <div class="trail" id="trail" aria-hidden="true"></div>
     <h1 class="name" aria-label="Rofiq Maulana">
       <span class="w" aria-hidden="true">ROFIQ</span><span class="w" aria-hidden="true">MAULANA</span>
     </h1>
@@ -501,17 +448,14 @@ footer[data-mode] #flogoCv{touch-action:none}
   </div>
 
   <!-- PERJALANAN: Work (spiral) → Marks (orbit) → Other Side (portal) dalam satu layar yang menempel -->
-  <section class="journey" id="journey" aria-label="Work, marks and the other side">
-   <span class="jmark" id="work"></span><span class="jmark" id="marks"></span><span class="jmark" id="other"></span>
+  <section class="journey" id="journey" aria-label="Work and the other side">
+   <span class="jmark" id="work"></span><span class="jmark" id="other"></span>
    <div class="jpin">
     <h2 class="sr">Work</h2>
     <canvas id="wgl" aria-hidden="true"></canvas>
     <ul class="rows" id="rows"></ul>
-    <h2 class="sr">Marks</h2>
-    <svg class="orbits" id="orbits" aria-hidden="true"></svg>
     <div class="bh" id="bh" aria-hidden="true"></div>
-    <div class="mk-orbit" id="mkGrid"></div>
-    <nav class="jnav" id="jnav" aria-label="Section progress"><button data-f="0">Work</button><button data-f="1">Marks</button><button data-f="2">Other side</button><span class="jbar"><i id="jbarI"></i></span><span class="jhint" id="jhint"></span></nav>
+    <nav class="jnav" id="jnav" aria-label="Section progress"><button data-f="0">Work</button><button data-f="1">Other side</button><span class="jbar"><i id="jbarI"></i></span><span class="jhint" id="jhint"></span></nav>
     <div class="gate" id="gate">
      <h2 class="sr">Other side</h2>
      <div class="gate-mid">
@@ -522,13 +466,6 @@ footer[data-mode] #flogoCv{touch-action:none}
    </div>
   </section>
 </main>
-<div id="lgx" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Logo detail">
-  <div class="stage" id="lgxStage"></div>
-  <div class="info" id="lgxInfo"></div>
-</div>
-
-
-
 <div id="odim" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Other dimension: posters and print">
   <div class="plane" id="plane"></div>
   <div class="dhud t"><span class="dtitle">Other side</span><button class="dexit" id="dexit">Exit ✕</button></div>
@@ -630,14 +567,14 @@ const SFX=(()=>{let ctx=null,on=false,noiseBuf=null,scr=null;
 /* ====== CURSOR custom: ikut kursor, merah di elemen interaktif, berputar pelan saat diam ====== */
 if(matchMedia("(hover:hover) and (pointer:fine)").matches){document.documentElement.classList.add("cc");
  const cu=document.getElementById("cur"),ftEl=document.getElementById("contact"),odEl=document.getElementById("odim");let x=-100,y=-100,on=false,rot=0,spin=0,lastMove=0,fm="",mvT=0;
- const SEL="a,button,.row,.mk,.mo,.portal,#odim .it,input,label,#wgl[data-hot]";
+ const SEL="a,button,.row,.portal,#odim .it,input,label,#wgl[data-hot]";
  addEventListener("pointermove",e=>{x=e.clientX;y=e.clientY;lastMove=performance.now();cu.classList.add("show");
    const o=!!(e.target.closest&&e.target.closest(SEL));if(o!==on){on=o;cu.classList.toggle("on",o)}
    /* mode footer: batang kapur / penghapus */
    const m=e.target.id==="flogoCv"&&ftEl.dataset.mode&&window.__logoHit?.(e)?ftEl.dataset.mode:"";if(m!==fm){cu.classList.remove("m-draw","m-erase");if(m)cu.classList.add("m-"+m);fm=m}
    cu.classList.add("moving");clearTimeout(mvT);mvT=setTimeout(()=>cu.classList.remove("moving"),120);
    /* di Other Side (latar putih): bintang hitam, oranye di poster */
-   cu.classList.toggle("dark",odEl.classList.contains("open")||!!e.target.closest?.("#lgx"))},{passive:true});
+   cu.classList.toggle("dark",odEl.classList.contains("open"))},{passive:true});
  document.addEventListener("pointerleave",()=>cu.classList.remove("show"));
  addEventListener("blur",()=>cu.classList.remove("show"));
  const go=now=>{const idle=now-lastMove>350&&!fm;spin+=((idle&&!reduce?2.4:0)-spin)*.06;rot=(rot+spin)%360;if(fm)rot=0;
@@ -801,13 +738,13 @@ const hLabel=t=>{if(t){hlab.textContent=t;hlab.style.transform=`translate(${hlx+
    spiral cover (Work) → semua cover tersedot jadi satu titik → dari titik itu orbit logo (Marks) mekar →
    logo tersedot ke lubang hitam → lubang hitam menjadi portal 3D (Other Side), klik untuk masuk. */
 const jEl=document.getElementById("journey"),DN=projects.length;
-const JB={w:.40,c:.47,b:.53,s:.82,g:.90};      /* batas fase dalam progres 0..1 */
+const JB={w:.62,c:.72,s:.82,g:.88};      /* batas fase: spiral → titik → portal (progres 0..1) */
 const jRun=()=>Math.max(1,jEl.offsetHeight-innerHeight);
 const jP=()=>clamp(-jEl.getBoundingClientRect().top/jRun());
 const jY=f=>jEl.getBoundingClientRect().top+scrollY+jRun()*f;
 const sm=x=>x*x*(3-2*x),seg=(p,a,b)=>clamp((p-a)/(b-a));
 /* penanda anchor (#work, #marks, #other) diletakkan di posisi fasenya */
-const jMarks=()=>{const r=jRun();document.getElementById("work").style.top="0px";document.getElementById("marks").style.top=(r*(JB.b+.01))+"px";document.getElementById("other").style.top=(r*(JB.g+.02))+"px"};
+const jMarks=()=>{const r=jRun();document.getElementById("work").style.top="0px";document.getElementById("other").style.top=(r*(JB.g+.02))+"px"};
 new ResizeObserver(jMarks).observe(jEl);jMarks();
 let spDrift=0;
 const CNT=DN*2,CEN=Math.floor(CNT/2),FRONT=1.85;
@@ -933,89 +870,46 @@ const caseHTML=i=>{const p=projects[i],no=pad(i+1),nx=(i+1)%projects.length,q=pr
     <div class="cs-meta">${meta}</div>
     ${info}
   </aside></div>`};
-/* ====================== MARK INDEX: koleksi logo ====================== */
-const marks=window.CONTENT.marks,{C,L,R}=window.CONTENT.G;
-const mkGrid=document.getElementById("mkGrid");
-const logoSVG=(m,cls="")=>m.src?`<img class="${cls}" src="${esc(m.src)}" alt="${esc(m.client)} logo">`:`<svg class="${cls}" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">${m.svg}</svg>`;
-/* warna logo di latar gelap: pakai warna brand yang cukup terang */
+/* ====================== LOGO: dipakai sebagai ikon di hero ====================== */
+const marks=window.CONTENT.marks,icons=(window.CONTENT.icons||[]).filter(Boolean);
+const logoSVG=(m,cls="")=>m.src?`<img class="${cls}" src="${esc(m.src)}" alt="">`:`<svg class="${cls}" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">${m.svg}</svg>`;
 const lum=c=>{const n=parseInt(c.slice(1),16);return .299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255)};
 const markInk=m=>{const a=m.c[0],b=m.c[1];return lum(a)>70?a:lum(b)>70?b:"#f2f2ee"};
-mkGrid.innerHTML=marks.map((m,i)=>`<button class="mo" data-i="${i}" style="--c:${markInk(m)}" aria-label="${esc(m.client)}, ${m.kind}, ${m.year}">${logoSVG(m)}</button>`).join("");
-for(const b of mkGrid.querySelectorAll(".mk"))b.addEventListener("pointerenter",()=>b.style.setProperty("--hole",marks[b.dataset.i].c[0]));
-for(const b of mkGrid.querySelectorAll(".mk"))b.addEventListener("pointerleave",()=>b.style.setProperty("--hole","var(--wh)"));
-/* detail + garis konstruksi */
-const lgx=document.getElementById("lgx"),lgxStage=document.getElementById("lgxStage"),lgxInfo=document.getElementById("lgxInfo");
-let mkIdx=-1;
-const genericGuides=L(0,50,100,50)+L(50,0,50,100)+C(50,50,40)+R(10,10,80,80)+L(10,10,90,90)+L(90,10,10,90);
-const showMark=i=>{mkIdx=(i+marks.length)%marks.length;const m=marks[mkIdx];
-  lgx.style.setProperty("--mc",m.c[0]);lgx.style.setProperty("--mi",m.c[1]);lgx.classList.remove("draw");
-  lgxStage.innerHTML=m.src?`<svg class="big" viewBox="0 0 100 100" style="position:absolute"><g class="gd">${genericGuides}</g></svg><img class="big lg" src="${esc(m.src)}" alt="${esc(m.client)} logo">`
-    :`<svg class="big" viewBox="0 0 100 100" fill="currentColor" style="--hole:${m.c[0]}"><g class="gd">${m.g}</g><g class="lg">${m.svg}</g></svg>`;
-  lgxInfo.innerHTML=`<div class="top"><span>M.${pad(mkIdx+1)} / ${pad(marks.length)}</span><button class="b" data-x="close">Close ✕</button></div>
-   <div><h3>${esc(m.client)}</h3></div>
-   <dl><dt>Type</dt><dd>${m.kind}</dd><dt>Industry</dt><dd>${esc(m.industry)}</dd><dt>Year</dt><dd>${m.year}</dd></dl>
-   <div class="sw"><span style="background:${m.c[0]};color:${m.c[1]}">${m.c[0]}</span><span style="background:${m.c[1]};color:${m.c[0]}">${m.c[1]}</span></div>
-   <div class="ctl"><label for="mkScale">Scale test</label><input type="range" id="mkScale" min="0" max="100" value="100" aria-describedby="mkPx"><output id="mkPx">Full size</output><button class="b" data-x="inv" aria-pressed="false">Invert</button></div>
-   <div class="nav"><button class="b" data-x="prev" aria-label="Previous logo">←</button><button class="b" data-x="next" aria-label="Next logo">→</button></div>`;
-  lgx.classList.remove("small");
-  requestAnimationFrame(()=>requestAnimationFrame(()=>lgx.classList.add("draw")))};
-const openMark=i=>{showMark(i);lgx.classList.add("open");lenis?.stop();document.body.classList.add("lock");lgxInfo.querySelector("[data-x=close]").focus({preventScroll:true})};
-const closeMark=()=>{lgx.classList.remove("open","draw");mkIdx=-1;document.body.classList.remove("lock");lenis?.start();const b=mkGrid.querySelector(".mk:hover")||null};
-mkGrid.addEventListener("click",e=>{const b=e.target.closest(".mo");if(b)openMark(+b.dataset.i)});
 
-/* ====== MARKS: orbit yang mekar dari satu titik, lalu tersedot ke lubang hitam ====== */
-{const pin=jEl.querySelector(".jpin"),orb=document.getElementById("orbits"),bh=document.getElementById("bh"),btn=document.getElementById("portal");
- const items=[...mkGrid.querySelectorAll(".mo")],MN=items.length;
- const RINGS=[[.42,.15],[.31,.11],[.21,.075]],per=[5,4,3];let k=0;
- const conf=[];RINGS.forEach((r,ri)=>{const n=per[ri];for(let j=0;j<n&&k<MN;j++,k++)conf.push({ri,a0:j/n*Math.PI*2+ri*.7})});
- while(conf.length<MN)conf.push({ri:conf.length%3,a0:conf.length*1.3});
- const order=conf.map((c,i)=>i).sort((a,b)=>conf[b].ri-conf[a].ri||a-b);order.forEach((i,r)=>conf[i].s=.25+.6*r/Math.max(1,MN-1));
- orb.innerHTML=RINGS.map((_,ri)=>`<ellipse stroke-opacity="${.07+ri*.04}" ${ri===1?'stroke-dasharray="2 8"':""}/>`).join("");
- const ells=[...orb.querySelectorAll("ellipse")];
- let on=false,t=0,last=performance.now(),hov=0,hovT=0;
- mkGrid.addEventListener("pointerover",e=>{const b=e.target.closest(".mo");if(b){hovT=1;const m=marks[b.dataset.i];hLabel(`${m.client} · ${m.year}`)}});
- mkGrid.addEventListener("pointerout",e=>{if(e.target.closest(".mo")&&!e.relatedTarget?.closest?.(".mo")){hovT=0;hLabel(null)}});
- /* penunjuk fase + lompat */
+/* ====== HERO: ikon PNG muncul satu per satu mengikuti gerak kursor (atau jari) ======
+   Ikon dari ICONS di content.js; selama kosong dipakai logo dari MARKS. */
+{const tr=document.getElementById("trail"),hero=document.getElementById("hero");
+ const pool=icons.length?icons.map(src=>({html:`<img src="${esc(src)}" alt="">`,c:"#f2f2ee"})):marks.map(m=>({html:logoSVG(m),c:markInk(m)}));
+ let lx=null,ly=null,n=0,live=0;const GAPPX=innerWidth<700?70:95;
+ const spawn=(x,y)=>{if(live>14)return;const it=pool[n++%pool.length],el=document.createElement("div");el.className="ic";el.style.setProperty("--c",it.c);el.innerHTML=it.html;
+   const r=(Math.random()-.5)*28,dx=(Math.random()-.5)*40;tr.appendChild(el);live++;
+   const T=`translate(${x}px,${y}px)`;
+   el.animate([{transform:`${T} scale(0) rotate(${r-20}deg)`,opacity:1},{transform:`${T} scale(1.08) rotate(${r}deg)`,opacity:1,offset:.18},{transform:`${T} scale(1) rotate(${r}deg)`,opacity:1,offset:.6},
+     {transform:`translate(${x+dx}px,${y+60}px) scale(.4) rotate(${r+25}deg)`,opacity:0}],{duration:reduce?1:1300,easing:"cubic-bezier(.2,.8,.2,1)"}).finished.then(()=>{el.remove();live--})};
+ hero.addEventListener("pointermove",e=>{if(reduce||!document.body.classList.contains("ready")||scrollY>innerHeight*.35)return;
+   const r=hero.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+   if(lx===null){lx=x;ly=y;return}if(Math.hypot(x-lx,y-ly)>GAPPX){lx=x;ly=y;spawn(x,y)}},{passive:true});
+ hero.addEventListener("pointerdown",e=>{if(reduce||!document.body.classList.contains("ready"))return;const r=hero.getBoundingClientRect();spawn(e.clientX-r.left,e.clientY-r.top)});
+ hero.addEventListener("pointerleave",()=>{lx=ly=null})}
+
+/* ====== LUBANG HITAM: cover habis jadi titik cahaya → titik membesar jadi lubang hitam seukuran portal ====== */
+{const bh=document.getElementById("bh"),btn=document.getElementById("portal");
+ let on=false;
  const jnav=document.getElementById("jnav"),jbtn=[...jnav.querySelectorAll("button")],jbar=document.getElementById("jbarI"),jhint=document.getElementById("jhint");
- const FSTART=[0,JB.b+.01,JB.g+.02];let jph=-1;
+ const FSTART=[0,JB.g+.02];let jph=-1;
  jnav.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const y=jY(FSTART[+b.dataset.f]);lenis?lenis.scrollTo(y,{duration:1.6}):scrollTo({top:y,behavior:"smooth"})});
- const frame=now=>{const dt=Math.min(50,now-last);last=now;const P=jP();
-   const W=pin.clientWidth,H=pin.clientHeight,cx=W/2,cy=H/2,base=Math.min(W,H*1.9),port=W<H,fx=port?.9:1,fy=port?2.4:1;
-   const bloom=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.b)),mp=seg(P,JB.b,JB.s),gp=reduce?(P>=JB.s?1:0):sm(seg(P,JB.s,JB.g));
-   hov+=(hovT-hov)*.1;if(!reduce)t+=dt*.00022*(1+mp*5)*(1-hov*.85);
-   const shrink=(1-.45*sm(mp))*bloom;
-   orb.style.opacity=(bloom*(1-gp)).toFixed(3);
-   RINGS.forEach(([rx,ry],ri)=>{const e=ells[ri];e.setAttribute("cx",cx);e.setAttribute("cy",cy);e.setAttribute("rx",Math.max(0,rx*base*shrink*fx));e.setAttribute("ry",Math.max(0,ry*base*shrink*fy))});
-   items.forEach((el,i)=>{const c=conf[i],[rx,ry]=RINGS[c.ri],kk=reduce?0:sm(seg(mp,c.s,c.s+.15));
-     const a=c.a0+t*(1+c.ri*.35)+kk*kk*4,R=1-kk;
-     const x=cx+Math.cos(a)*rx*base*shrink*fx*R,y=cy+Math.sin(a)*ry*base*shrink*fy*R,front=Math.sin(a);
-     const sc=(.75+.35*(front*.5+.5))*(1-kk*.85)*(c.ri===2?.8:1)*bloom,op=(.5+.5*(front*.5+.5))*(1-kk*kk)*Math.min(1,bloom*1.5);
-     const tang=Math.atan2(Math.cos(a)*ry,-Math.sin(a)*rx)*180/Math.PI;
-     el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) rotate(${(tang*kk).toFixed(1)}deg) scale(${Math.max(.001,sc*(1+kk*1.5)).toFixed(3)},${Math.max(.001,sc).toFixed(3)})`;
-     el.style.opacity=op.toFixed(3);el.style.zIndex=front>0?8:3;const dead=kk>.3||bloom<.5;el.style.pointerEvents=dead?"none":"";el.tabIndex=dead?-1:0});
-   /* lubang hitam: titik kecil saat cover habis → membesar pelan → seukuran portal */
-   const ph=P<JB.c?0:P<JB.s+.02?1:2;
-   if(ph!==jph){jph=ph;jbtn.forEach((b,i)=>{b.classList.toggle("on",i===ph);b.toggleAttribute("aria-current",i===ph)});jhint.textContent=["Tap a cover to open","Tap a mark to open","Tap the portal to enter"][ph]}
+ const frame=()=>{const P=jP();
+   const ph=P<JB.c?0:1;
+   if(ph!==jph){jph=ph;jbtn.forEach((b,i)=>{b.classList.toggle("on",i===ph);b.toggleAttribute("aria-current",i===ph)});jhint.textContent=["Tap a cover to open","Tap the portal to enter"][ph]}
    jbar.style.transform=`scaleX(${P.toFixed(4)})`;
-   const pr=(btn.offsetWidth||220)/2,dot=sm(seg(P,JB.w+.03,JB.c));
-   const rad=P<JB.c?6*dot:6+54*bloom+60*sm(mp)+(pr-120)*gp;
+   const pr=(btn.offsetWidth||220)/2,dot=sm(seg(P,JB.w+.03,JB.c)),grow=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.g));
+   const rad=P<JB.c?6*dot:6+(pr-6)*grow;
    bh.style.transform=`scale(${Math.max(.001,rad/60).toFixed(3)})`;bh.style.opacity=P<JB.w+.03?0:1;
    bh.classList.toggle("dot",P<JB.c+.01);
    if(on)requestAnimationFrame(frame)};
- new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was){last=performance.now();requestAnimationFrame(frame)}}).observe(jEl);
- frame(performance.now());
+ new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was)requestAnimationFrame(frame)}).observe(jEl);
+ frame();
 }
-/* scale test: dari favicon 16px sampai ukuran penuh; invert: positif/negatif */
-const ctxName=px=>px<=24?"favicon":px<=72?"app icon":px<=160?"business card":px<=320?"poster":"billboard";
-lgx.addEventListener("input",e=>{if(e.target.id!=="mkScale")return;const v=+e.target.value,big=lgxStage.querySelectorAll(".big"),out=document.getElementById("mkPx");
-  if(v>=100){lgx.classList.remove("small");big.forEach(b=>{b.style.width="";b.style.height=""});out.textContent="Full size";return}
-  const max=Math.min(innerWidth,innerHeight)*.56,px=Math.round(16*Math.pow(max/16,v/100));
-  lgx.classList.add("small");big.forEach(b=>{b.style.width=px+"px";b.style.height=px+"px"});out.textContent=`${px} px · ${ctxName(px)}`;});
-lgx.addEventListener("click",e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;
-  if(a==="inv"){const m=marks[mkIdx],on=x.getAttribute("aria-pressed")!=="true";x.setAttribute("aria-pressed",on);
-    lgx.style.setProperty("--mc",on?m.c[1]:m.c[0]);lgx.style.setProperty("--mi",on?m.c[0]:m.c[1]);lgxStage.querySelector("svg.big")?.style.setProperty("--hole",on?m.c[1]:m.c[0]);return}
-  if(a==="close")closeMark();if(a==="prev")showMark(mkIdx-1);if(a==="next")showMark(mkIdx+1)});
-addEventListener("keydown",e=>{if(mkIdx<0)return;if(e.key==="Escape"){e.stopImmediatePropagation();closeMark()}if(e.key==="ArrowRight")showMark(mkIdx+1);if(e.key==="ArrowLeft")showMark(mkIdx-1)},true);
 
 /* ====================== DIMENSI LAIN: poster, print, dll ====================== */
 const archive=window.CONTENT.archive;

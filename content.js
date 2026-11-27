@@ -78,6 +78,13 @@ const MARKS=[
   svg:`${[0,1,2].flatMap(r=>[0,1,2].map(c=>r===1&&c===1?"":`<circle cx="${22+c*28}" cy="${22+r*28}" r="9"/>`)).join("")}`,g:L(22,0,22,100)+L(50,0,50,100)+L(78,0,78,100)+L(0,22,100,22)+L(0,50,100,50)+L(0,78,100,78)}
 ];
 
+/* ---------- 3b. ICON HERO: ikon PNG yang muncul mengikuti kursor di hero ----------
+   Taruh PNG transparan (persegi, mis. 512x512) di assets/icons/ lalu daftarkan di sini.
+   Selama kosong, hero memakai logo dari MARKS di atas sebagai ikon. */
+const ICONS=[
+  /* "assets/icons/01.png", "assets/icons/02.png", ... */
+];
+
 /* ---------- 4. OTHER SIDE: poster, print, dll ----------
    Taruh file di assets/other/ lalu isi src, mis. src:"assets/other/o01-kopi-pagi-fest.jpg"
    ratio = tinggi/lebar (A-series 1.414, persegi 1, 4:5 = 1.25). */
@@ -96,4 +103,4 @@ const ARCHIVE=[
   {title:"Ruang Kosong",type:"Calendar",year:2022,format:"A3, 13 pp",ratio:1.414,c:["#FFB400","#0A0A0A"],src:"" /* assets/other/o12-ruang-kosong.jpg */}
 ];
 
-window.CONTENT={currently:CURRENTLY,portrait:PORTRAIT,projects:PROJECTS,marks:MARKS,archive:ARCHIVE,G};
+window.CONTENT={currently:CURRENTLY,portrait:PORTRAIT,projects:PROJECTS,marks:MARKS,icons:ICONS,archive:ARCHIVE,G};
