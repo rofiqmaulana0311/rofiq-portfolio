@@ -52,11 +52,8 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 - **Footer papan tulis**: ikon batang kapur = Draw, ikon penghapus di bawahnya = Erase, ikon panah melingkar = Reset (hapus coretan, logo kembali); ikon panah atas di kanan bawah = Back to top, lalu tekan & seret. Menggambar dan menghapus hanya berlaku pada bentuk logo itu sendiri, bukan kotak bingkainya: Erase mengikis logo, Draw menggambar kembali bagian logo yang terhapus. Di luar logo tidak ada efek, dan di HP halaman tetap bisa di-scroll. Di HP logo dan tombolnya lebih kecil supaya tidak bertumpuk. Saat Draw, titik gambar ada di ujung kapur (pojok kiri atas cursor); saat Erase, ikon penghapus selebar kuas (`BRUSH`).
 - **Morph**: klik proyek, pratinjau berubah menjadi gambar pembuka studi kasus.
 - **Statement About**: setelah section About menempel (200svh), kata demi kata muncul (pudar biasa, tanpa garis luar, gerak, blur, atau huruf acak); "the 404" tetap link ke halaman 404 tanpa garis bawah; kalimat hanya tampil selama section menempel, jadi tidak pernah terlihat bergerak naik
-- **Perjalanan Work → Other Side (satu section, satu layar menempel)**: latar gelap bergrain yang sama dengan hero.
-  - *Work*: spiral 3D (WebGL) cover proyek; scroll memutar spiral, cover membusur saat bergerak, sisi belakang kabur. Hover = label nama + tahun, klik membuka studi kasus. Cover = `assets/work/pXX-.../01.jpg` (rasio ideal 1.7:1).
-  - *Transisi*: spiral dilihat dari atas sumbunya sehingga berubah jadi pusaran datar; cover berputar makin cepat dan tersedot ke lubang hitam di pusat, lalu lubang itu membesar seukuran portal.
-  - *Other Side*: lubang hitam menjadi portal putih berisi pusaran poster yang tersedot ke titik hitam (efek kapur di tepinya); huruf OTHER / SIDE keluar dari pusat. Klik untuk masuk.
-  - Batas fase diatur di `JB` (index.html). Link #work dan #other di menu menuju fase masing-masing.
+- **Work: spiral 3D (WebGL)**: 8 cover proyek (tanpa duplikat) tersusun seperti tangga spiral. Scroll memutar spiral dari proyek pertama sampai terakhir di depan; scroll ke atas memutar balik. Kartu tidak pernah hilang. Saat bergerak cover membusur, sisi belakang kabur. Hover = label nama + tahun, klik membuka studi kasus. Cover = `assets/work/pXX-.../01.jpg` (rasio ideal 1.7:1).
+- **Other Side**: section sendiri setelah Work. Portal putih berisi pusaran poster tersedot ke titik hitam; huruf OTHER / SIDE keluar dari pusat saat section terlihat. Klik untuk masuk.
 - **Hero: ikon mengikuti kursor**: saat kursor bergerak di hero (atau layar diketuk di HP), ikon muncul satu per satu lalu jatuh memudar. Ikon diambil dari `ICONS` di content.js (PNG transparan di `assets/icons/`); selama kosong, dipakai logo dari `MARKS`.
 - **Other Side**: kanvas tak berujung, poster tidak saling bersentuhan; di HP dua kolom yang bergerak atas-bawah.
 - **Cursor custom** (`img/cursor-default.png`, `img/cursor-pointer.png`): oranye di elemen interaktif, berputar saat diam; hitam di Other Side.
@@ -66,7 +63,7 @@ Selama `src` kosong / jumlah gambar `0`, website memakai placeholder, jadi tidak
 
 ## UX
 - **Label hover**: nama proyek / klien + tahun muncul kecil di samping kursor saat hover cover di spiral. Tidak tampil di HP.
-- **Penunjuk fase** di bawah layar perjalanan: Work · Other side, dengan garis progres; bisa diklik untuk lompat. Di HP ada petunjuk "Tap a cover / the portal".
+- **Penunjuk** di bawah spiral: Work · Other side, dengan garis progres putaran; "Other side" lompat ke gerbang. Di HP ada petunjuk "Tap a cover to open".
 - **Ajakan kerja sama** di header: "Available for work" (titik berdenyut) → email. Di HP tampil "Hire me". Ganti alamat email di header & footer.
 - **Intro** hanya diputar sekali per kunjungan (sessionStorage), dengan tombol "Skip intro" (atau tombol Esc).
 - **Pratinjau link** (Open Graph): `img/og.jpg` 1200×630 + judul & deskripsi di `<head>`. Setelah situs online, ganti `og:image` ke URL lengkap (mis. https://domainmu.com/img/og.jpg) supaya WhatsApp/LinkedIn bisa membacanya.

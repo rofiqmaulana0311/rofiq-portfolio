@@ -213,7 +213,7 @@ body.lock{overflow:hidden}
   .row .info .lbl{display:none}
 }
 /* ====== PERJALANAN: WORK → MARKS → OTHER SIDE ====== */
-.journey{position:relative;z-index:7;height:calc(100svh + 520svh);background-color:#0a0a0a;color:var(--wh)}
+.journey{position:relative;z-index:7;height:calc(100svh + 360svh);background-color:#0a0a0a;color:var(--wh)}
 .jpin{position:sticky;top:0;height:100svh;overflow:hidden}
 .jmark{position:absolute;left:0;top:0;width:1px;height:1px;pointer-events:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);margin:0}
@@ -245,8 +245,8 @@ body.lock{overflow:hidden}
 .bh.dot{background:#f2f2ee;box-shadow:0 0 0 0 transparent,0 0 30px 12px rgba(242,242,238,.6),0 0 90px 40px rgba(255,106,26,.25)}
 
 /* ====== pintu ke dimensi lain ====== */
-.gate{position:absolute;inset:0;z-index:9;display:grid;padding:0 max(2vw,16px);opacity:0;pointer-events:none}
-.gate .portal{pointer-events:none}.gate.live .portal{pointer-events:auto}
+.gate{position:relative;z-index:7;height:100svh;background-color:#0a0a0a;color:var(--wh)}
+.gate-in{position:absolute;inset:0;display:grid;padding:0 max(2vw,16px)}
 .gate-top{display:flex;justify-content:space-between;gap:16px}
 .gate-mid{position:relative;display:grid;place-items:center;height:100%}
 @media(max-width:700px){.gate .gate-title{flex-direction:column;justify-content:center;gap:calc(clamp(150px,17vw,260px) + 36px);font-size:clamp(52px,15vw,90px)}}
@@ -291,7 +291,7 @@ main,footer,.gate{transition:transform 1s cubic-bezier(.77,0,.18,1),filter 1s}
 
 /* ====== SISTEM KAPUR ====== */
 /* grain hanya di bidang hitam (bidang putih & Other Side bersih) */
-body,#case,.journey,footer,#intro .bg{background-image:var(--grain,none);background-size:220px 220px}
+body,#case,.journey,.gate,footer,#intro .bg{background-image:var(--grain,none);background-size:220px 220px}
 .svgdefs{position:absolute;width:0;height:0;overflow:hidden}
 .bclip{position:absolute;inset:0;overflow:hidden}
 #wipe{position:fixed;inset:-48px;z-index:40;pointer-events:none;filter:url(#chalkMask)}
@@ -448,21 +448,22 @@ footer[data-mode] #flogoCv{touch-action:none}
   </div>
 
   <!-- PERJALANAN: Work (spiral) → Marks (orbit) → Other Side (portal) dalam satu layar yang menempel -->
-  <section class="journey" id="journey" aria-label="Work and the other side">
-   <span class="jmark" id="work"></span><span class="jmark" id="other"></span>
+  <section class="journey" id="journey" aria-label="Work">
+   <span class="jmark" id="work"></span>
    <div class="jpin">
     <h2 class="sr">Work</h2>
     <canvas id="wgl" aria-hidden="true"></canvas>
     <ul class="rows" id="rows"></ul>
-    <div class="bh" id="bh" aria-hidden="true"></div>
     <nav class="jnav" id="jnav" aria-label="Section progress"><button data-f="0">Work</button><button data-f="1">Other side</button><span class="jbar"><i id="jbarI"></i></span><span class="jhint" id="jhint"></span></nav>
-    <div class="gate" id="gate">
+   </div>
+  </section>
+  <section class="gate" id="other" aria-label="Other side">
+   <div class="gate-in" id="gate">
      <h2 class="sr">Other side</h2>
      <div class="gate-mid">
       <div class="gate-title" aria-hidden="true"><span>Other</span><span>side</span></div>
       <button class="portal" id="portal" aria-label="Enter the other dimension: posters and print"><canvas id="portalCv"></canvas></button>
      </div>
-    </div>
    </div>
   </section>
 </main>
@@ -738,17 +739,18 @@ const hLabel=t=>{if(t){hlab.textContent=t;hlab.style.transform=`translate(${hlx+
    spiral cover (Work) → semua cover tersedot jadi satu titik → dari titik itu orbit logo (Marks) mekar →
    logo tersedot ke lubang hitam → lubang hitam menjadi portal 3D (Other Side), klik untuk masuk. */
 const jEl=document.getElementById("journey"),DN=projects.length;
-const JB={w:.62,c:.76,s:.74,g:.86};      /* batas fase: spiral → titik → portal (progres 0..1) */
+const JB={w:1};      /* batas fase: spiral → titik → portal (progres 0..1) */
 const jRun=()=>Math.max(1,jEl.offsetHeight-innerHeight);
 const jP=()=>clamp(-jEl.getBoundingClientRect().top/jRun());
 const jY=f=>jEl.getBoundingClientRect().top+scrollY+jRun()*f;
 const sm=x=>x*x*(3-2*x),seg=(p,a,b)=>clamp((p-a)/(b-a));
 /* penanda anchor (#work, #marks, #other) diletakkan di posisi fasenya */
-const jMarks=()=>{const r=jRun();document.getElementById("work").style.top="0px";document.getElementById("other").style.top=(r*(JB.g+.02))+"px"};
-new ResizeObserver(jMarks).observe(jEl);jMarks();
 let spDrift=0;
-const CNT=DN*2,CEN=Math.floor(CNT/2),FRONT=1.85;
-const workY=i=>{const off=(((i-CEN-FRONT-spDrift)%DN)+DN)%DN;return jY(JB.w*Math.min(.999,off/DN))};
+/* 8 kartu, tanpa duplikat. Progres scroll 0..1 memutar spiral dari kartu pertama sampai terakhir di depan;
+   scroll ke atas memutar balik. Arah putaran: searah jarum jam dilihat dari atas. */
+const CNT=DN,CEN=Math.floor(CNT/2),FRONT=1.85;
+const offAt=p=>p*(CNT-1)-CEN+FRONT;
+const workY=i=>jY(CNT>1?i/(CNT-1):0);
 /* ---- WORK: spiral 3D (WebGL) ---- */
 {
 const cv=document.getElementById("wgl"),gl=cv.getContext("webgl",{antialias:true,alpha:true,premultipliedAlpha:false});
@@ -803,42 +805,36 @@ if(!gl){jEl.classList.add("nogl")}else{
    const s=p.shots&&p.shots.find(x=>!x.video);
    if(s){const im=new Image();im.onload=()=>{const k=Math.max(TW/im.width,TH/im.height),w=im.width*k,h=im.height*k;g.drawImage(im,(TW-w)/2,(TH-h)/2,w,h);up()};im.onerror=fallback;im.src=s.src}else fallback();
    return t});
- const planes=[...Array(CNT)].map((_,k)=>({k,p:k%DN,hover:0,hid:1,hidT:1,delay:(k%4)*50}));
+ const planes=[...Array(CNT)].map((_,k)=>({k,p:k,hover:0,hid:1,hidT:1,delay:(k%4)*50}));
  let W=0,H=0,dpr=1,F=1,A=1,on=false,off=0,speed=0,lastOff=null,hot=-1,mx=-9,my=-9,revealed=false,last=performance.now();
  const size=()=>{dpr=Math.min(innerWidth<700?1.5:2,devicePixelRatio||1);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr|0;cv.height=H*dpr|0;gl.viewport(0,0,cv.width,cv.height);
    A=W/H;F=1/Math.tan((W<900?45:35)*Math.PI/360)};
  new ResizeObserver(size).observe(cv);size();
  const SCX=1.7,SCY=1,GAP=.5,AGAP=.85,RAD=2;
- let T1=0,T2=0;
- const wrapA=a=>Math.atan2(Math.sin(a),Math.cos(a));
- /* posisi di spiral, lalu (T1) dilihat dari atas sumbunya sehingga menjadi pusaran datar, lalu (T2) tersedot ke pusat */
- const place=pl=>{let N=pl.k-off;N=((N%CNT)+CNT)%CNT;const B=N-CEN,dir=pl.hidT?1.5:-1.5;
-   const y=B*GAP-.8-pl.hid*dir,G=RAD*(1-pl.hid/2),a=B*AGAP;
-   const h={x:Math.cos(a)*G,y,z:Math.sin(a)*G,rot:-a+Math.PI/2};
-   if(T1<=0)return {...h,roll:0,sc:1};
-   const kk=pl.k/CNT,ad=pl.k*2.399+T1*1.4+T2*T2*7,rd=(.45+2.1*kk)*Math.min(1,A*1.05)*(1-T2);
-   const dx=Math.cos(ad)*rd,dy=Math.sin(ad)*rd,e=T1;
-   return {x:h.x+(dx-h.x)*e,y:h.y+(dy-h.y)*e,z:h.z*(1-e),rot:wrapA(h.rot)*(1-e),roll:wrapA(ad+Math.PI/2)*e,sc:(1-.55*e)*(1-T2*.9),r:rd}};
+ /* penunjuk: Work (progres putaran) · Other side (lompat ke gerbang) */
+ const jnav=document.getElementById("jnav"),jbar=document.getElementById("jbarI");
+ jnav.querySelector('[data-f="0"]').classList.add("on");document.getElementById("jhint").textContent="Tap a cover to open";
+ jnav.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const el=b.dataset.f==="1"?document.getElementById("other"):null,y=el?el.getBoundingClientRect().top+scrollY:jY(0);lenis?lenis.scrollTo(y,{duration:1.6}):scrollTo({top:y,behavior:"smooth"})});
+ const place=pl=>{const B=pl.k-off-CEN,dir=pl.hidT?1.5:-1.5;
+   const y=(B+FRONT)*GAP-pl.hid*dir,G=RAD*(1-pl.hid/2),a=-B*AGAP;   /* kartu yang di depan selalu di tengah layar */   /* tanda minus = arah putar dibalik */
+   return {x:Math.cos(a)*G,y,z:Math.sin(a)*G,rot:-a+Math.PI/2,roll:0,sc:1}};
  const proj=(x,y,z)=>{const vz=z-8;return [F*x/A/(-vz),F*y/(-vz)]};
  const frame=now=>{const dt=Math.min(50,now-last);last=now;const P=jP();
-   T1=reduce?(P>JB.w?1:0):sm(seg(P,JB.w,JB.w+.05));T2=reduce?(P>JB.c?1:0):sm(seg(P,JB.w+.04,JB.c));
-   const col=T2;cv.style.visibility=col>=1?"hidden":"";
-   if(!reduce&&col<1)spDrift+=.002*dt/16.7*(1-col);
-   const tgt=seg(P,0,JB.w)*DN+spDrift;if(lastOff===null)off=tgt;
+   const tgt=offAt(P);if(lastOff===null)off=tgt;
    const prev=off;off+=(tgt-off)*(reduce?1:.1);const d=off-prev;lastOff=off;
-   speed+=((reduce?0:Math.max(-.3,Math.min(.3,(d-.002*dt/16.7)*3)))-speed)*.12;
+   speed+=((reduce?0:Math.max(-.3,Math.min(.3,d*3)))-speed)*.12;
    if(!revealed&&on){revealed=true;planes.forEach(pl=>setTimeout(()=>{pl.hidT=0},pl.delay+100))}
    for(const pl of planes){pl.hid+=(pl.hidT-pl.hid)*(1-Math.pow(.95,dt*.15));pl.P=place(pl)}
    let best=-1,bz=-1e9;
-   if(T1<.02)for(const pl of planes){const P2=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P2.rot),nz=Math.cos(P2.rot);
+   for(const pl of planes){const P2=pl.P;if(pl.hid>.05)continue;const nx=Math.sin(P2.rot),nz=Math.cos(P2.rot);
      if(nx*(0-P2.x)+nz*(8-P2.z)<=0)continue;const c=Math.cos(P2.rot),s=Math.sin(P2.rot),pts=[];
      for(const [u,v] of [[-.5,-.5],[.5,-.5],[.5,.5],[-.5,.5]]){const lx=u*SCX,ly=v*SCY;pts.push(proj(c*lx+P2.x+Math.pow(P2.y+ly,2)*.1,ly+P2.y,-s*lx+P2.z))}
      let inside=false;for(let i=0,j=3;i<4;j=i++){const [xi,yi]=pts[i],[xj,yj]=pts[j];if((yi>my)!==(yj>my)&&mx<(xj-xi)*(my-yi)/(yj-yi)+xi)inside=!inside}
      if(inside&&P2.z>bz){bz=P2.z;best=pl.k}}
    if(best!==hot){hot=best;cv.toggleAttribute("data-hot",hot>=0);if(hot>=0&&!reduce)SFX.tick();const pr=hot>=0?projects[hot%DN]:null;hLabel(pr?`${pr.name} · ${pr.year}`:null)}
-   cv.style.pointerEvents=T1>.02?"none":"";if(T1>.02&&hot>=0){hot=-1;cv.removeAttribute("data-hot");hLabel(null)}
+   jbar.style.transform=`scaleX(${P.toFixed(4)})`;
    gl.clear(gl.COLOR_BUFFER_BIT);
-   if(col<1){gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform1f(U.uSpeed,speed*(1-T1));gl.uniform1f(U.uCol,col);gl.uniform1f(U.uBend,1-T1);
+   {gl.uniform1f(U.uF,F);gl.uniform1f(U.uA,A);gl.uniform1f(U.uSpeed,speed);gl.uniform1f(U.uCol,0);gl.uniform1f(U.uBend,1);
     [...planes].sort((a,b)=>a.P.z-b.P.z||(b.P.r||0)-(a.P.r||0)).forEach(pl=>{pl.hover+=((pl.k===hot?1:0)-pl.hover)*.12;const P2=pl.P;
      gl.uniform2f(U.uScale,SCX*P2.sc,SCY*P2.sc);gl.uniform1f(U.uRoll,P2.roll);
      gl.uniform3f(U.uPos,P2.x,P2.y,P2.z);gl.uniform1f(U.uRot,P2.rot);gl.uniform1f(U.uZoom,1+.05*pl.hover);
@@ -901,24 +897,7 @@ const markInk=m=>{const a=m.c[0],b=m.c[1];return lum(a)>70?a:lum(b)>70?b:"#f2f2e
  hero.addEventListener("pointerdown",e=>{if(reduce||!document.body.classList.contains("ready"))return;const r=hero.getBoundingClientRect();spawn(e.clientX-r.left,e.clientY-r.top)});
  hero.addEventListener("pointerleave",()=>{lx=ly=null})}
 
-/* ====== LUBANG HITAM: cover habis jadi titik cahaya → titik membesar jadi lubang hitam seukuran portal ====== */
-{const bh=document.getElementById("bh"),btn=document.getElementById("portal");
- let on=false;
- const jnav=document.getElementById("jnav"),jbtn=[...jnav.querySelectorAll("button")],jbar=document.getElementById("jbarI"),jhint=document.getElementById("jhint");
- const FSTART=[0,JB.g+.02];let jph=-1;
- jnav.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;const y=jY(FSTART[+b.dataset.f]);lenis?lenis.scrollTo(y,{duration:1.6}):scrollTo({top:y,behavior:"smooth"})});
- const frame=()=>{const P=jP();
-   const ph=P<JB.c?0:1;
-   if(ph!==jph){jph=ph;jbtn.forEach((b,i)=>{b.classList.toggle("on",i===ph);b.toggleAttribute("aria-current",i===ph)});jhint.textContent=["Tap a cover to open","Tap the portal to enter"][ph]}
-   jbar.style.transform=`scaleX(${P.toFixed(4)})`;
-   /* lubang hitam muncul di pusat pusaran saat cover mulai tersedot, lalu membesar seukuran portal */
-   const pr=(btn.offsetWidth||220)/2,suckP=sm(seg(P,JB.w+.04,JB.c)),grow=reduce?(P>=JB.c?1:0):sm(seg(P,JB.c,JB.g));
-   const rad=pr*.55*suckP+pr*.45*grow;
-   bh.style.transform=`scale(${Math.max(.001,rad/60).toFixed(3)})`;bh.style.opacity=P<JB.w+.04?0:1;
-   if(on)requestAnimationFrame(frame)};
- new IntersectionObserver(es=>{const was=on;on=es[0].isIntersecting;if(on&&!was)requestAnimationFrame(frame)}).observe(jEl);
- frame();
-}
+
 
 /* ====================== DIMENSI LAIN: poster, print, dll ====================== */
 const archive=window.CONTENT.archive;
@@ -1008,15 +987,14 @@ document.getElementById("dexit").addEventListener("click",()=>{location.hash="ot
  new ResizeObserver(size).observe(cv);
  const chars=[];for(const w of gate.querySelectorAll(".gate-title span")){const tx=w.textContent;w.innerHTML=[...tx].map(c=>`<span class="gc">${c}</span>`).join("");chars.push(...w.querySelectorAll(".gc"))}
  const st=chars.map(()=>({x:0,y:0,sx:1,r:0}));
- let mx=-1e4,my=-1e4;jEl.addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});jEl.addEventListener("pointerleave",()=>{mx=my=-1e4});
+ let mx=-1e4,my=-1e4;const gsec=document.getElementById("other");gsec.addEventListener("pointermove",e=>{mx=e.clientX;my=e.clientY},{passive:true});gsec.addEventListener("pointerleave",()=>{mx=my=-1e4});
  btn.addEventListener("pointerenter",()=>hov=1);
  btn.addEventListener("pointerleave",()=>{hov=0;btn.style.transform=""});
  btn.addEventListener("pointermove",e=>{const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;btn.style.transform=`translate(${dx*.18}px,${dy*.18}px) scale(1.07)`});
- new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on)requestAnimationFrame(tick)}).observe(jEl);
+ new IntersectionObserver(es=>{on=es[0].isIntersecting;if(on)requestAnimationFrame(tick);else gv=0},{threshold:.35}).observe(gsec);
  let last=performance.now();
  function tick(now){if(!on&&suck===0)return;now=now||performance.now();const dt=Math.min(50,now-last);last=now;
-   const P=jP(),G=reduce?(P>=JB.s?1:0):sm(seg(P,JB.s+.02,JB.g));gv=G;
-   gate.style.opacity=G.toFixed(3);gate.classList.toggle("live",G>.6);
+   gv+=((on?1:0)-gv)*.04;const G=reduce?1:sm(Math.min(1,gv*1.15));
    if(G>0||suck>0){const W=cv.clientWidth,H=cv.clientHeight,cx=W/2,cy=H/2,R=Math.hypot(W,H)/2;
      sp+=((hov?3.2:.6)+suck*8-sp)*.06;hole+=((hov?.16:.07)+suck*.5-hole)*.08;if(!reduce)t+=sp*.004;
      g.fillStyle="#f2f2ee";g.fillRect(0,0,W,H);
